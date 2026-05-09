@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import trivistaLogo from '../assets/logo.png';
 
 const TEAL = '#00D1B2';
 const BG = '#0A0A0A';
@@ -52,27 +53,21 @@ export default function LoadingScreen({ onComplete }) {
         pointerEvents: phase >= 3 ? 'none' : 'all',
       }}
     >
-      {/* Logo SVG with stroke animation */}
-      <svg
-        width="80"
-        height="80"
-        viewBox="0 0 24 24"
-        fill="none"
-        style={{ marginBottom: 32 }}
-      >
-        <path
-          d="M12 2L22 9l-10 13L2 9z"
-          stroke={TEAL}
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{
-            strokeDasharray: 60,
-            strokeDashoffset: phase >= 1 ? 0 : 60,
-            transition: 'stroke-dashoffset 1200ms cubic-bezier(0.65, 0, 0.35, 1)',
-          }}
-        />
-      </svg>
+      {/* Logo image with entrance animation */}
+      <img
+        src={trivistaLogo}
+        alt="Trivista Labs"
+        style={{
+          width: 90,
+          height: 90,
+          objectFit: 'contain',
+          marginBottom: 32,
+          opacity: phase >= 1 ? 1 : 0,
+          transform: phase >= 1 ? 'scale(1)' : 'scale(0.6)',
+          transition: 'opacity 800ms cubic-bezier(0.16, 1, 0.3, 1), transform 800ms cubic-bezier(0.16, 1, 0.3, 1)',
+          filter: `drop-shadow(0 0 24px rgba(0, 209, 178, ${phase >= 1 ? 0.3 : 0}))`,
+        }}
+      />
 
       {/* Text */}
       <div style={{ display: 'flex', gap: 0, fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>

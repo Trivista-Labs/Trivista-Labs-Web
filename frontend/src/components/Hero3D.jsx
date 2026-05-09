@@ -2,60 +2,48 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 /*
-  Trivista Labs Logo — 3D recreation
-  Three interlocking L-shaped ribbon bands forming a triangular knot:
-    • White/silver band — turns at top vertex
-    • Teal band — turns at bottom-left vertex
-    • Dark gray band — turns at bottom-right vertex
+  Trivista Labs Logo — 3D Penrose triangle (downward-pointing)
+  Three interlocking L-shaped ribbon bands:
+    • White/silver — turns at top-right vertex
+    • Teal (#00D1B2) — turns at top-left vertex
+    • Dark gray — turns at bottom vertex
+  
+  Triangle orientation: flat top edge, point at bottom (V shape)
 */
 
-function buildRibbonShape(p1, vertex, p2, width) {
-  const hw = width / 2;
-
-  function outwardNormal(from, to) {
-    const dx = to[0] - from[0];
-    const dy = to[1] - from[1];
-    const len = Math.sqrt(dx * dx + dy * dy);
-    let nx = -dy / len, ny = dx / len;
-    const mx = (from[0] + to[0]) / 2;
-    const my = (from[1] + to[1]) / 2;
-    if (nx * mx + ny * my < 0) { nx = -nx; ny = -ny; }
-    return [nx, ny];
-  }
-
-  function lineHit(a1, a2, b1, b2) {
-    const d1x = a2[0] - a1[0], d1y = a2[1] - a1[1];
-    const d2x = b2[0] - b1[0], d2y = b2[1] - b1[1];
-    const det = d1x * d2y - d1y * d2x;
-    if (Math.abs(det) < 1e-10) return a2;
-    const t = ((b1[0] - a1[0]) * d2y - (b1[1] - a1[1]) * d2x) / det;
-    return [a1[0] + t * d1x, a1[1] + t * d1y];
-  }
-
-  const [n1x, n1y] = outwardNormal(p1, vertex);
-  const [n2x, n2y] = outwardNormal(vertex, p2);
-
-  const p1o = [p1[0] + n1x * hw, p1[1] + n1y * hw];
-  const p1i = [p1[0] - n1x * hw, p1[1] - n1y * hw];
-  const v1o = [vertex[0] + n1x * hw, vertex[1] + n1y * hw];
-  const v1i = [vertex[0] - n1x * hw, vertex[1] - n1y * hw];
-  const v2o = [vertex[0] + n2x * hw, vertex[1] + n2y * hw];
-  const v2i = [vertex[0] - n2x * hw, vertex[1] - n2y * hw];
-  const p2o = [p2[0] + n2x * hw, p2[1] + n2y * hw];
-  const p2i = [p2[0] - n2x * hw, p2[1] - n2y * hw];
-
-  const vOuter = lineHit(p1o, v1o, v2o, p2o);
-  const vInner = lineHit(p1i, v1i, v2i, p2i);
-
+function buildBand(points, depth, color, zOff) {
+  // points = array of [x,y] forming the 2D polygon outline
   const shape = new THREE.Shape();
-  shape.moveTo(p1o[0], p1o[1]);
-  shape.lineTo(vOuter[0], vOuter[1]);
-  shape.lineTo(p2o[0], p2o[1]);
-  shape.lineTo(p2i[0], p2i[1]);
-  shape.lineTo(vInner[0], vInner[1]);
-  shape.lineTo(p1i[0], p1i[1]);
+  shape.moveTo(points[0][0], points[0][1]);
+  for (let i = 1; i < points.length; i++) {
+    shape.lineTo(points[i][0], points[i][1]);
+  }
   shape.closePath();
-  return shape;
+
+  const geo = new THREE.ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: true,
+    bevelThickness: 0.018,
+    bevelSize: 0.018,
+    bevelSegments: 2,
+  });
+
+  const mat = new THREE.MeshPhysicalMaterial({
+    color,
+    roughness: 0.22,
+    metalness: 0.7,
+    clearcoat: 0.35,
+    clearcoatRoughness: 0.15,
+  });
+
+  if (color === 0x00D1B2) {
+    mat.emissive = new THREE.Color(0x00D1B2);
+    mat.emissiveIntensity = 0.06;
+  }
+
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.z = zOff - depth / 2;
+  return mesh;
 }
 
 export default function Hero3D() {
@@ -79,87 +67,76 @@ export default function Hero3D() {
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // --- Triangle vertices ---
-    const s = 1.4;
+    // ── Logo geometry ──
+    // Downward-pointing equilateral triangle
+    const s = 1.45;
     const h = s * Math.sqrt(3) / 2;
-    const A = [0, s];                // top vertex
-    const B = [-h, -s * 0.5];       // bottom-left vertex
-    const C = [h, -s * 0.5];        // bottom-right vertex
 
-    // Edge midpoints — each ribbon starts/ends at midpoints
-    const midBA = [(B[0] + A[0]) / 2, (B[1] + A[1]) / 2];
-    const midAC = [(A[0] + C[0]) / 2, (A[1] + C[1]) / 2];
-    const midCB = [(C[0] + B[0]) / 2, (C[1] + B[1]) / 2];
+    // Outer triangle vertices
+    const TL = [-s, h * 0.6];       // top-left
+    const TR = [s, h * 0.6];        // top-right
+    const BT = [0, -h * 1.2];       // bottom point
 
-    const ribbonW = 0.34;
-    const ribbonD = 0.24;
-    const extrudeOpts = {
-      depth: ribbonD,
-      bevelEnabled: true,
-      bevelThickness: 0.025,
-      bevelSize: 0.025,
-      bevelSegments: 3,
-    };
+    // Inner triangle (scaled ~55% inward toward center)
+    const cx = 0, cy = (TL[1] + TL[1] + BT[1]) / 3;
+    const inr = 0.48;
+    const iTL = [cx + (TL[0] - cx) * inr, cy + (TL[1] - cy) * inr];
+    const iTR = [cx + (TR[0] - cx) * inr, cy + (TR[1] - cy) * inr];
+    const iBT = [cx + (BT[0] - cx) * inr, cy + (BT[1] - cy) * inr];
 
+    // Each band is an L-shaped polygon between outer and inner edges
+    // Midpoints on outer edges
+    const mTop = [(TL[0] + TR[0]) / 2, (TL[1] + TR[1]) / 2];
+    const mRight = [(TR[0] + BT[0]) / 2, (TR[1] + BT[1]) / 2];
+    const mLeft = [(TL[0] + BT[0]) / 2, (TL[1] + BT[1]) / 2];
+
+    // Midpoints on inner edges
+    const miTop = [(iTL[0] + iTR[0]) / 2, (iTL[1] + iTR[1]) / 2];
+    const miRight = [(iTR[0] + iBT[0]) / 2, (iTR[1] + iBT[1]) / 2];
+    const miLeft = [(iTL[0] + iBT[0]) / 2, (iTL[1] + iBT[1]) / 2];
+
+    const ribbonD = 0.22;
     const logoGroup = new THREE.Group();
 
-    // --- White band: midBA → A → midAC (top vertex) ---
-    const whiteShape = buildRibbonShape(midBA, A, midAC, ribbonW);
-    const whiteMat = new THREE.MeshPhysicalMaterial({
-      color: 0xdcdcdc, roughness: 0.2, metalness: 0.65,
-      clearcoat: 0.4, clearcoatRoughness: 0.15,
-    });
-    const whiteMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(whiteShape, extrudeOpts), whiteMat);
-    whiteMesh.position.z = 0.13;
-    logoGroup.add(whiteMesh);
+    // ── WHITE BAND (turns at TR — top-right vertex) ──
+    // Outer: mTop → TR → mRight
+    // Inner: miTop → iTR → miRight
+    const white = buildBand([
+      mTop, TR, mRight,       // outer path
+      miRight, iTR, miTop,    // inner path (reversed)
+    ], ribbonD, 0xdcdcdc, 0.12);
+    logoGroup.add(white);
 
-    // --- Teal band: midCB → B → midBA (bottom-left vertex) ---
-    // Correction: teal comes FROM midAC side, turns at B, goes TO midCB
-    // Actually in the logo: teal turns at bottom-left (B)
-    // It arrives from above (along edge AB) and exits along bottom (edge BC)
-    const tealShape = buildRibbonShape(midAC, B, midCB, ribbonW);
-    const tealMat = new THREE.MeshPhysicalMaterial({
-      color: 0x00D1B2, roughness: 0.15, metalness: 0.6,
-      clearcoat: 0.5, clearcoatRoughness: 0.1,
-      emissive: 0x00D1B2, emissiveIntensity: 0.08,
-    });
-    const tealMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(tealShape, extrudeOpts), tealMat);
-    tealMesh.position.z = -0.13;
-    logoGroup.add(tealMesh);
+    // ── TEAL BAND (turns at TL — top-left vertex) ──
+    // Outer: mLeft → TL → mTop
+    // Inner: miLeft → iTL → miTop
+    const teal = buildBand([
+      mLeft, TL, mTop,
+      miTop, iTL, miLeft,
+    ], ribbonD, 0x00D1B2, -0.12);
+    logoGroup.add(teal);
 
-    // --- Dark band: midBA → C → midAC (bottom-right vertex) ---
-    // Dark turns at bottom-right (C)
-    // Arrives from bottom (edge BC) and exits going up-right (edge CA)
-    const darkShape = buildRibbonShape(midCB, C, midBA, ribbonW);
-    const darkMat = new THREE.MeshPhysicalMaterial({
-      color: 0x444444, roughness: 0.25, metalness: 0.7,
-      clearcoat: 0.3, clearcoatRoughness: 0.2,
-    });
-    const darkMesh = new THREE.Mesh(new THREE.ExtrudeGeometry(darkShape, extrudeOpts), darkMat);
-    darkMesh.position.z = 0.0;
-    logoGroup.add(darkMesh);
+    // ── DARK BAND (turns at BT — bottom vertex) ──
+    // Outer: mRight → BT → mLeft
+    // Inner: miRight → iBT → miLeft
+    const dark = buildBand([
+      mRight, BT, mLeft,
+      miLeft, iBT, miRight,
+    ], ribbonD, 0x444444, 0.0);
+    logoGroup.add(dark);
 
-    // Center offset
-    logoGroup.position.y = -0.15;
-    // Center the extrusion depth
-    logoGroup.children.forEach(child => {
-      if (child.isMesh) child.position.z -= ribbonD / 2;
-    });
-    // Readjust z layering after centering
-    whiteMesh.position.z = 0.13;
-    tealMesh.position.z = -0.13;
-    darkMesh.position.z = 0.0;
-
+    // Center vertically
+    logoGroup.position.y = 0.1;
     scene.add(logoGroup);
 
-    // --- Lighting ---
-    const mainTeal = new THREE.PointLight(0x00D1B2, 3.0, 20);
-    mainTeal.position.set(2, 2, 4);
-    scene.add(mainTeal);
+    // ── Lighting ──
+    const tealPt1 = new THREE.PointLight(0x00D1B2, 3.0, 20);
+    tealPt1.position.set(2, 2, 4);
+    scene.add(tealPt1);
 
-    const backTeal = new THREE.PointLight(0x00D1B2, 1.5, 15);
-    backTeal.position.set(-3, -1, 3);
-    scene.add(backTeal);
+    const tealPt2 = new THREE.PointLight(0x00D1B2, 1.5, 15);
+    tealPt2.position.set(-3, -1, 3);
+    scene.add(tealPt2);
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
@@ -167,11 +144,11 @@ export default function Hero3D() {
     dir.position.set(3, 5, 4);
     scene.add(dir);
 
-    const rimLight = new THREE.DirectionalLight(0x00D1B2, 0.25);
-    rimLight.position.set(-2, -3, -3);
-    scene.add(rimLight);
+    const rim = new THREE.DirectionalLight(0x00D1B2, 0.2);
+    rim.position.set(-2, -3, -3);
+    scene.add(rim);
 
-    // --- Mouse parallax ---
+    // ── Mouse parallax ──
     const mouse = { x: 0, y: 0 };
     const target = { x: 0, y: 0 };
     const onMouseMove = (e) => {
@@ -180,7 +157,7 @@ export default function Hero3D() {
     };
     window.addEventListener('mousemove', onMouseMove);
 
-    // --- Animate ---
+    // ── Animation loop ──
     const clock = new THREE.Clock();
     let animId;
 
@@ -188,22 +165,16 @@ export default function Hero3D() {
       animId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      // Slow Y rotation
       logoGroup.rotation.y += 0.003;
-      // Subtle X tilt for depth
       logoGroup.rotation.x = Math.sin(t * 0.3) * 0.08;
-      // Idle float
-      logoGroup.position.y = -0.15 + Math.sin(t * 0.5) * 0.12;
+      logoGroup.position.y = 0.1 + Math.sin(t * 0.5) * 0.12;
 
-      // Mouse parallax (lerp)
       target.x += (mouse.x * 0.6 - target.x) * 0.03;
       target.y += (-mouse.y * 0.6 - target.y) * 0.03;
       logoGroup.position.x = target.x;
 
-      // Scroll-driven fade
       const progress = Math.min(window.scrollY / window.innerHeight, 1);
-      const sc = 1 - progress * 0.7;
-      logoGroup.scale.setScalar(Math.max(sc, 0.3));
+      logoGroup.scale.setScalar(Math.max(1 - progress * 0.7, 0.3));
       logoGroup.traverse(c => {
         if (c.isMesh && c.material) {
           c.material.opacity = 1 - progress;
@@ -215,13 +186,12 @@ export default function Hero3D() {
     };
     animate();
 
-    // Resize
     const onResize = () => {
       const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
+      const h2 = container.clientHeight;
+      camera.aspect = w / h2;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      renderer.setSize(w, h2);
     };
     window.addEventListener('resize', onResize);
 
@@ -230,23 +200,14 @@ export default function Hero3D() {
       window.removeEventListener('resize', onResize);
       cancelAnimationFrame(animId);
       renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
+      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
     };
   }, []);
 
   return (
-    <div
-      ref={mountRef}
-      className="hero-3d-canvas"
-      style={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: 'none',
-        willChange: 'transform, opacity',
-      }}
-    />
+    <div ref={mountRef} className="hero-3d-canvas" style={{
+      position: 'absolute', inset: 0, zIndex: 0,
+      pointerEvents: 'none', willChange: 'transform, opacity',
+    }} />
   );
 }

@@ -3,6 +3,7 @@ import Hero3D from "./components/Hero3D";
 import LoadingScreen from "./components/LoadingScreen";
 import BackgroundLayers from "./components/BackgroundLayers";
 import { useScrollAnimations, useActiveSection } from "./hooks/useAnimations";
+import trivistaLogo from "./assets/logo.png";
 
 const TEAL = "#00D1B2";
 const BG = "#0A0A0A";
@@ -982,7 +983,7 @@ export default function TrivistaLabs() {
       <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
         <a href="#" className="nav-logo" onClick={e => { e.preventDefault(); scrollTo('home'); }}>
           <div className="nav-logo-icon">
-            <DiamondIcon size={16} color={TEAL} />
+            <img src={trivistaLogo} alt="Trivista Labs" style={{ width: 22, height: 22, objectFit: 'contain' }} />
           </div>
           Trivista Labs
         </a>
@@ -1167,7 +1168,7 @@ export default function TrivistaLabs() {
           <div className="footer-grid">
             <div>
               <a href="#" className="nav-logo" style={{ marginBottom: 16 }}>
-                <div className="nav-logo-icon"><DiamondIcon size={16} color={TEAL} /></div>
+                <div className="nav-logo-icon"><img src={trivistaLogo} alt="Trivista Labs" style={{ width: 22, height: 22, objectFit: 'contain' }} /></div>
                 Trivista Labs
               </a>
               <p className="footer-brand-desc">Pioneering technical excellence through hardware-software convergence. Built for the high-end technical frontier.</p>
