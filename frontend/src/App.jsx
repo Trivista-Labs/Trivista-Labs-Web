@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Hero3D from "./components/Hero3D";
 import LoadingScreen from "./components/LoadingScreen";
+import LegalPage from "./components/LegalPage";
 import BackgroundLayers from "./components/BackgroundLayers";
 import { useScrollAnimations, useActiveSection } from "./hooks/useAnimations";
 import trivistaLogo from "./assets/logo.png";
+import esalaImg from "./assets/esala.png";
+import umeshImg from "./assets/Umesh.png";
+import dulajImg from "./assets/Dulaj.png";
 
 const TEAL = "#00D1B2";
 const BG = "#0A0A0A";
@@ -470,11 +474,11 @@ const styles = `
   }
   .team-avatar {
     width: 100%;
-    aspect-ratio: 4/3;
+    height: 100%;
     object-fit: cover;
+    object-position: top center;
     display: block;
     filter: grayscale(0.3);
-    border-radius: 0;
   }
   .team-avatar-placeholder {
     width: 100%;
@@ -1115,6 +1119,7 @@ export default function TrivistaLabs() {
   const [activeSection, setActiveSection] = useState('home');
   const [loaded, setLoaded] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [legalPage, setLegalPage] = useState(null);
   const cursorDotRef = useRef(null);
   const cursorRingRef = useRef(null);
   const ringPos = useRef({ x: -100, y: -100 });
@@ -1208,9 +1213,9 @@ export default function TrivistaLabs() {
   };
 
   const teamMembers = [
-    { name: "Esala Gamage", role: "Chief Executive & Engineer (CEO)", initials: "EG" },
-    { name: "Umesh Isuranga", role: "Lead Systems Architect (CTO)", initials: "UI" },
-    { name: "Dulaj Yuthsara", role: "Hardware Operations Lead (COO)", initials: "DY" },
+    { name: "Esala Gamage", role: "Chief Executive & Engineer (CEO)", initials: "EG", img: esalaImg },
+    { name: "Umesh Isuranga", role: "Lead Systems Architect (CTO)", initials: "UI", img: umeshImg },
+    { name: "Dulaj Yuthsara", role: "Hardware Operations Lead (COO)", initials: "DY", img: dulajImg },
   ];
 
   return (
@@ -1378,8 +1383,12 @@ export default function TrivistaLabs() {
           <div className="team-grid">
             {teamMembers.map((m, i) => (
               <div className="team-card" key={m.name}>
-                <div className="team-avatar-placeholder">
-                  <span className="team-avatar-initials">{m.initials}</span>
+                <div style={{ width: '100%', height: 280, overflow: 'hidden', background: '#0f0f0f' }}>
+                  <img
+                    src={m.img}
+                    alt={m.name}
+                    className="team-avatar"
+                  />
                 </div>
                 <div className="team-info">
                   <div className="team-name">{m.name}</div>
@@ -1411,21 +1420,64 @@ export default function TrivistaLabs() {
                 <span>Precision Center, Colombo, LK</span>
               </div>
             </div>
-            <div>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.target;
+              const submitBtn = form.querySelector('.btn-submit');
+              const statusEl = form.querySelector('.form-status');
+              const name = form.contactName.value.trim();
+              const email = form.contactEmail.value.trim();
+              const message = form.contactMessage.value.trim();
+
+              if (!name || !email || !message) {
+                statusEl.textContent = 'Please fill in all fields.';
+                statusEl.style.color = '#FF6B6B';
+                return;
+              }
+
+              submitBtn.disabled = true;
+              submitBtn.textContent = 'SENDING...';
+              statusEl.textContent = '';
+
+              try {
+                const res = await fetch('http://localhost:5000/api/contact', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name, email, message }),
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                  statusEl.textContent = '✓ ' + data.message;
+                  statusEl.style.color = TEAL;
+                  form.reset();
+                } else {
+                  statusEl.textContent = data.error || 'Something went wrong.';
+                  statusEl.style.color = '#FF6B6B';
+                }
+              } catch (err) {
+                statusEl.textContent = 'Network error. Please try again later.';
+                statusEl.style.color = '#FF6B6B';
+              } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'SEND MESSAGE';
+              }
+            }}>
               <div className="form-group">
                 <label className="form-label">Full Name</label>
-                <input className="form-input" type="text" placeholder="Your Name" />
+                <input className="form-input" type="text" name="contactName" placeholder="Your Name" required />
               </div>
               <div className="form-group">
                 <label className="form-label">Email Address</label>
-                <input className="form-input" type="email" placeholder="Your Email" />
+                <input className="form-input" type="email" name="contactEmail" placeholder="Your Email" required />
               </div>
               <div className="form-group">
                 <label className="form-label">Project Inquiry</label>
-                <textarea className="form-input" rows={5} placeholder="Describe your technical challenge…" />
+                <textarea className="form-input" rows={5} name="contactMessage" placeholder="Describe your technical challenge…" required />
               </div>
-              <button className="btn-submit">SEND MESSAGE</button>
-            </div>
+              <button type="submit" className="btn-submit">SEND MESSAGE</button>
+              <div className="form-status" style={{ marginTop: 12, fontSize: 13, fontFamily: "'DM Sans', sans-serif", minHeight: 20, transition: 'all 0.3s' }}></div>
+            </form>
           </div>
         </div>
       </section>
@@ -1457,7 +1509,8 @@ export default function TrivistaLabs() {
             </div>
             <div>
               <div className="footer-col-title">LEGAL</div>
-              {['Privacy Policy', 'Terms'].map(l => <a key={l} href="#" className="footer-link">{l}</a>)}
+              <a href="#" className="footer-link" onClick={e => { e.preventDefault(); setLegalPage('privacy'); }}>Privacy Policy</a>
+              <a href="#" className="footer-link" onClick={e => { e.preventDefault(); setLegalPage('terms'); }}>Terms & Conditions</a>
             </div>
           </div>
           <div className="footer-bottom">
@@ -1465,6 +1518,9 @@ export default function TrivistaLabs() {
           </div>
         </div>
       </footer>
+
+      {/* LEGAL PAGES */}
+      {legalPage && <LegalPage type={legalPage} onClose={() => setLegalPage(null)} />}
     </>
   );
 }

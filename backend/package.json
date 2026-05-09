@@ -1,13 +1,21 @@
 {
-  "name": "backend",
+  "name": "trivista-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Trivista Labs contact form backend",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Trivista Labs",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "nodemailer": "^6.9.0",
+    "dotenv": "^16.4.0",
+    "express-rate-limit": "^7.4.0"
+  }
 }
