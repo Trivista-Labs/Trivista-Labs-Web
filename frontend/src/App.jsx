@@ -1436,7 +1436,7 @@ export default function TrivistaLabs() {
             </div>
           </div>
           <div className="footer-bottom">
-            © 2024 Trivista Labs. All rights reserved. Precision Engineering.
+            © 2026 Trivista Labs. All rights reserved. Precision Engineering.
           </div>
         </div>
       </footer>
