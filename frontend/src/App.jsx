@@ -650,11 +650,41 @@ const styles = `
   .page-transition {
     position: fixed;
     inset: 0;
-    background: ${TEAL};
+    background: ${BG};
     z-index: 9998;
     transform: scaleY(0);
     transform-origin: bottom;
     pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .page-transition .transition-logo {
+    width: 144px;
+    height: 144px;
+    object-fit: contain;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 250ms ease, transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 0 20px rgba(0,209,178,0.35));
+  }
+  .page-transition.show-logo .transition-logo {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .page-transition .transition-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.4);
+    opacity: 0;
+    transition: opacity 250ms ease 80ms;
+  }
+  .page-transition.show-logo .transition-brand {
+    opacity: 1;
   }
 
   /* DIVIDER */
@@ -947,16 +977,24 @@ export default function TrivistaLabs() {
       if (el) el.scrollIntoView({ behavior: 'smooth' });
       return;
     }
+    // Phase 1: Slide overlay in from bottom
+    overlay.classList.remove('show-logo');
     overlay.style.transformOrigin = 'bottom';
     overlay.style.transform = 'scaleY(1)';
-    overlay.style.transition = 'transform 380ms ease-in';
+    overlay.style.transition = 'transform 350ms cubic-bezier(0.4, 0, 0.2, 1)';
+    // Phase 2: Show logo once overlay is fully visible
+    setTimeout(() => {
+      overlay.classList.add('show-logo');
+    }, 10);
+    // Phase 3: Scroll to target while logo is showing, then slide out
     setTimeout(() => {
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: 'instant' });
+      overlay.classList.remove('show-logo');
       overlay.style.transformOrigin = 'top';
       overlay.style.transform = 'scaleY(0)';
-      overlay.style.transition = 'transform 380ms ease-out';
-    }, 380);
+      overlay.style.transition = 'transform 350ms cubic-bezier(0.4, 0, 0.2, 1)';
+    }, 750);
   };
 
   const teamMembers = [
@@ -977,7 +1015,10 @@ export default function TrivistaLabs() {
       {!loaded && <LoadingScreen onComplete={handleLoadComplete} />}
 
       {/* PAGE TRANSITION OVERLAY */}
-      <div className="page-transition" ref={transitionRef} />
+      <div className="page-transition" ref={transitionRef}>
+        <img src={trivistaLogo} alt="" className="transition-logo" />
+        <span className="transition-brand">TRIVISTA LABS</span>
+      </div>
 
       {/* NAVBAR */}
       <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
