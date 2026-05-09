@@ -694,23 +694,210 @@ const styles = `
     margin: 0 48px;
   }
 
+  /* MOBILE MENU */
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: 1px solid rgba(107,107,107,0.4);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    z-index: 1002;
+  }
+  .hamburger-line {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: ${TEXT_BODY};
+    border-radius: 2px;
+    transition: transform 300ms ease, opacity 200ms ease;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .hamburger-line:nth-child(1) { top: 12px; }
+  .hamburger-line:nth-child(2) { top: 19px; }
+  .hamburger-line:nth-child(3) { top: 26px; }
+  .mobile-menu-btn.open .hamburger-line:nth-child(1) {
+    top: 19px;
+    transform: translateX(-50%) rotate(45deg);
+  }
+  .mobile-menu-btn.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile-menu-btn.open .hamburger-line:nth-child(3) {
+    top: 19px;
+    transform: translateX(-50%) rotate(-45deg);
+  }
+
+  .mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(10,10,10,0.97);
+    backdrop-filter: blur(24px) saturate(160%);
+    z-index: 1001;
+    padding: 100px 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transform: translateX(100%);
+    transition: transform 380ms cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 1px solid rgba(0,209,178,0.12);
+  }
+  .mobile-drawer.open {
+    transform: translateX(0);
+  }
+  .mobile-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+  .mobile-drawer-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .mobile-nav-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    color: ${TEXT_SUBTLE};
+    text-decoration: none;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(107,107,107,0.15);
+    transition: color 0.2s, padding-left 0.2s;
+    display: block;
+  }
+  .mobile-nav-link:hover, .mobile-nav-link.active {
+    color: ${TEAL};
+    padding-left: 8px;
+  }
+  .mobile-drawer .btn-primary {
+    margin-top: 24px;
+    text-align: center;
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  /* ====== TABLET (max-width: 1024px) ====== */
   @media (max-width: 1024px) {
-    .services-grid { grid-template-columns: 1fr; }
-    .team-grid { grid-template-columns: 1fr; }
-    .about-section { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .team-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .about-section { grid-template-columns: 1fr; gap: 48px; }
     .team-header { grid-template-columns: 1fr; }
-    .contact-card { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .contact-card { grid-template-columns: 1fr 1fr; gap: 40px; padding: 48px; }
+    .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+    .navbar { padding: 0 32px; }
+    .hero-headline { font-size: clamp(42px, 7vw, 80px); }
   }
+
+  /* ====== MOBILE LANDSCAPE / SMALL TABLET (max-width: 768px) ====== */
   @media (max-width: 768px) {
-    .navbar { padding: 0 24px; }
+    .navbar { padding: 0 20px; height: 64px; }
     .nav-links { display: none; }
-    .hero { padding: 100px 24px 60px; }
-    .about-section, .services-section, .team-section, .contact-section { padding: 80px 24px; }
-    .footer { padding: 40px 24px; }
-    .footer-grid { grid-template-columns: 1fr; }
-    .contact-card { padding: 32px 24px; }
+    .navbar .btn-primary { display: none; }
+    .mobile-menu-btn { display: flex; }
+    .hero { padding: 80px 20px 48px; min-height: auto; min-height: 100dvh; }
+    .hero-headline { font-size: clamp(32px, 8.5vw, 48px); margin-bottom: 20px; overflow-wrap: break-word; }
+    .hero-sub { font-size: 14px; margin-bottom: 32px; max-width: 90%; padding: 0 8px; }
+    .hero-btns { flex-direction: column; width: 100%; max-width: 300px; }
+    .btn-teal-filled, .btn-outline { width: 100%; text-align: center; padding: 14px 24px; font-size: 14px; }
+    .about-section { padding: 64px 20px; gap: 40px; }
+    .about-stats { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .services-section { padding: 64px 20px; }
+    .services-header { margin-bottom: 40px; }
+    .services-grid { grid-template-columns: 1fr; gap: 16px; }
+    .service-card { padding: 28px 24px; }
+    .service-title { font-size: 20px; }
+    .service-body { font-size: 14px; }
+    .team-section { padding: 64px 20px; }
+    .team-grid { grid-template-columns: 1fr; gap: 20px; max-width: 400px; margin: 0 auto; }
+    .team-header { gap: 16px; margin-bottom: 40px; }
+    .team-name { font-size: 20px; }
+    .contact-section { padding: 48px 20px 80px; }
+    .contact-card { grid-template-columns: 1fr; gap: 40px; padding: 28px 20px; border-radius: 16px; }
+    .section-title { font-size: clamp(24px, 5.5vw, 36px); }
+    .section-label { font-size: 10px; margin-bottom: 16px; }
+    .section-body { font-size: 14px; line-height: 1.6; }
+    .footer { padding: 40px 20px 24px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+    .section-divider { margin: 0 20px; }
+    .page-transition .transition-logo { width: 100px; height: 100px; }
+    .page-transition .transition-brand { font-size: 20px; }
+    .stat-card { padding: 24px 20px; }
+    .stat-value { font-size: 30px; }
+    .stat-label { font-size: 10px; }
+    .about-pill { padding: 10px 14px; }
+    .about-pill-text { font-size: 14px; }
+    .hero-badge { font-size: 10px; padding: 5px 12px; }
+    .contact-info-row { font-size: 14px; }
   }
+
+  /* ====== SMALL MOBILE (max-width: 480px) ====== */
+  @media (max-width: 480px) {
+    .navbar { padding: 0 14px; height: 52px; }
+    .nav-logo { font-size: 15px; gap: 8px; }
+    .nav-logo-icon { width: 28px; height: 28px; }
+    .nav-logo-icon img { width: 18px !important; height: 18px !important; }
+    .hero { padding: 64px 14px 36px; }
+    .hero-headline { font-size: clamp(28px, 8vw, 38px); line-height: 1.05; }
+    .hero-sub { font-size: 13px; line-height: 1.55; padding: 0 4px; }
+    .hero-badge { font-size: 8px; padding: 4px 10px; gap: 5px; letter-spacing: 0.08em; }
+    .hero-btns { max-width: 280px; }
+    .btn-teal-filled, .btn-outline { padding: 12px 20px; font-size: 13px; }
+    .about-section { padding: 40px 14px; }
+    .about-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card { padding: 18px 14px; border-radius: 12px; }
+    .stat-value { font-size: 26px; }
+    .stat-label { font-size: 8px; letter-spacing: 0.08em; }
+    .services-section, .team-section { padding: 40px 14px; }
+    .services-header { margin-bottom: 32px; }
+    .service-card { padding: 22px 18px; border-radius: 12px; }
+    .service-title { font-size: 18px; }
+    .service-body { font-size: 13px; line-height: 1.55; }
+    .service-tag { font-size: 10px; }
+    .service-icon-bg { width: 40px; height: 40px; border-radius: 10px; }
+    .service-icon-secondary { font-size: 22px; }
+    .contact-section { padding: 36px 14px 56px; }
+    .contact-card { padding: 22px 14px; border-radius: 14px; gap: 32px; }
+    .section-title { font-size: clamp(22px, 6vw, 32px); margin-bottom: 14px; }
+    .section-body { font-size: 13px; line-height: 1.55; }
+    .section-label { font-size: 9px; }
+    .about-pill-text { font-size: 13px; }
+    .about-pill-icon { width: 32px; height: 32px; font-size: 14px; }
+    .team-name { font-size: 18px; }
+    .team-role { font-size: 10px; }
+    .team-info { padding: 20px 20px 24px; }
+    .footer { padding: 28px 14px 16px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    .footer-brand-desc { font-size: 12px; }
+    .footer-col-title { font-size: 10px; margin-bottom: 14px; }
+    .footer-link { font-size: 13px; margin-bottom: 10px; }
+    .footer-bottom { font-size: 10px; padding-top: 16px; }
+    .section-divider { margin: 0 14px; }
+    .mobile-drawer { width: 240px; padding: 80px 20px 28px; }
+    .mobile-nav-link { font-size: 16px; padding: 14px 0; }
+    .mobile-drawer .btn-primary { font-size: 13px; padding: 12px 20px; }
+    .page-transition .transition-logo { width: 72px; height: 72px; }
+    .page-transition .transition-brand { font-size: 14px; }
+    .team-card:nth-child(1), .team-card:nth-child(2), .team-card:nth-child(3) { animation: none; }
+    .btn-submit { padding: 14px; font-size: 11px; letter-spacing: 0.1em; }
+    .form-label { font-size: 10px; }
+    .form-input { padding: 12px 12px; font-size: 14px; }
+    .contact-info-row { font-size: 13px; gap: 10px; }
+  }
+
   @media (hover: none), (pointer: coarse) {
     body { cursor: auto !important; }
     .cursor-dot, .cursor-ring { display: none !important; }
@@ -905,6 +1092,7 @@ export default function TrivistaLabs() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [loaded, setLoaded] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cursorDotRef = useRef(null);
   const cursorRingRef = useRef(null);
   const ringPos = useRef({ x: -100, y: -100 });
@@ -1039,7 +1227,25 @@ export default function TrivistaLabs() {
           ))}
         </ul>
         <button className="btn-primary" onClick={() => scrollTo('contact')}>Get in Touch</button>
+        {/* MOBILE HAMBURGER */}
+        <button className={`mobile-menu-btn${mobileMenuOpen ? ' open' : ''}`} onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menu">
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+        </button>
       </nav>
+
+      {/* MOBILE DRAWER OVERLAY */}
+      <div className={`mobile-drawer-overlay${mobileMenuOpen ? ' open' : ''}`} onClick={() => setMobileMenuOpen(false)} />
+      <div className={`mobile-drawer${mobileMenuOpen ? ' open' : ''}`}>
+        {['home', 'about', 'services', 'team', 'contact'].map(s => (
+          <a key={s} className={`mobile-nav-link${activeSection === s ? ' active' : ''}`} href={`#${s}`}
+            onClick={e => { e.preventDefault(); setMobileMenuOpen(false); setTimeout(() => { scrollTo(s); setActiveSection(s); }, 300); }}>
+            {s.charAt(0).toUpperCase() + s.slice(1)}
+          </a>
+        ))}
+        <button className="btn-primary" onClick={() => { setMobileMenuOpen(false); setTimeout(() => scrollTo('contact'), 300); }}>Get in Touch</button>
+      </div>
 
       {/* HERO */}
       <section id="home" className="hero">
