@@ -644,6 +644,8 @@ const styles = `
     font-size: 13px;
     color: rgba(107,107,107,0.7);
     font-family: 'JetBrains Mono', monospace;
+    text-align: center;
+    padding-bottom: 24px;
   }
 
   /* PAGE TRANSITION OVERLAY */
