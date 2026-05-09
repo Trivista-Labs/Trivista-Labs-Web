@@ -101,9 +101,6 @@ const styles = `
   .nav-logo-icon {
     width: 32px;
     height: 32px;
-    background: ${CARD};
-    border: 1px solid ${BORDER};
-    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1207,7 +1204,7 @@ export default function TrivistaLabs() {
       {/* PAGE TRANSITION OVERLAY */}
       <div className="page-transition" ref={transitionRef}>
         <img src={trivistaLogo} alt="" className="transition-logo" />
-        <span className="transition-brand">TRIVISTA LABS</span>
+
       </div>
 
       {/* NAVBAR */}
