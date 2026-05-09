@@ -959,9 +959,9 @@ export default function TrivistaLabs() {
   };
 
   const teamMembers = [
-    { name: "Esala Gamage", role: "Chief Executive & Engineer", initials: "EG" },
-    { name: "Umesh Isuranga", role: "Lead Systems Architect", initials: "UI" },
-    { name: "Dulaj Yuthsara", role: "Hardware Operations Lead", initials: "DY" },
+    { name: "Esala Gamage", role: "Chief Executive & Engineer (CEO)", initials: "EG" },
+    { name: "Umesh Isuranga", role: "Lead Systems Architect (CTO)", initials: "UI" },
+    { name: "Dulaj Yuthsara", role: "Hardware Operations Lead (COO)", initials: "DY" },
   ];
 
   return (
