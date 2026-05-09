@@ -58,8 +58,8 @@ export default function LoadingScreen({ onComplete }) {
         src={trivistaLogo}
         alt="Trivista Labs"
         style={{
-          width: 90,
-          height: 90,
+          width: 200,
+          height: 200,
           objectFit: 'contain',
           marginBottom: 32,
           opacity: phase >= 1 ? 1 : 0,
@@ -69,38 +69,7 @@ export default function LoadingScreen({ onComplete }) {
         }}
       />
 
-      {/* Text */}
-      <div style={{ display: 'flex', gap: 0, fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
-        {trivistaLetters.map((letter, i) => (
-          <span
-            key={`t-${i}`}
-            style={{
-              fontSize: 32,
-              color: '#FFFFFF',
-              opacity: phase >= 2 ? 1 : 0,
-              transition: `opacity 200ms ease ${i * 60}ms`,
-              display: 'inline-block',
-            }}
-          >
-            {letter}
-          </span>
-        ))}
-        <span style={{ width: 12 }} />
-        {labsLetters.map((letter, i) => (
-          <span
-            key={`l-${i}`}
-            style={{
-              fontSize: 32,
-              color: TEAL,
-              opacity: phase >= 2 ? 1 : 0,
-              transition: `opacity 200ms ease ${(trivistaLetters.length * 60 + 200) + i * 60}ms`,
-              display: 'inline-block',
-            }}
-          >
-            {letter}
-          </span>
-        ))}
-      </div>
+
 
       {/* Loading bar */}
       <div
