@@ -1264,7 +1264,7 @@ export default function TrivistaLabs() {
             Impact
           </h1>
           <p className="hero-sub">
-            Architecting the intersection of sophisticated hardware and elite software solutions. We build the stable foundations for future innovation.
+            We design and build integrated hardware and software systems — reliable, scalable, and built to last. Engineering the foundation your business grows on.
           </p>
           <div className="hero-btns">
             <button className="btn-teal-filled" onClick={() => scrollTo('services')}>Explore Our Work</button>
@@ -1281,17 +1281,17 @@ export default function TrivistaLabs() {
         <div className="about-section">
           <div>
             <div className="section-label">OUR MISSION</div>
-            <h2 className="section-title">Built on Technical Rigor and Mathematical Precision.</h2>
+            <h2 className="section-title">Principled engineering. Measurable results.</h2>
             <p className="section-body">
-              At Trivista Labs, we don't just develop; we engineer. Every line of code and every hardware integration is treated as a component of a larger, high-performance architecture. We solve the complex problems that sit at the edge of possibility.
+              At Trivista Labs, we approach every project as a system — not just a task. From individual lines of code to full hardware integrations, each decision is made with the broader architecture in mind. We specialise in solving challenging, high-stakes problems where precision and reliability are non-negotiable.
             </p>
             <div className="about-pill">
               <div className="about-pill-icon"><DiamondIcon size={16} /></div>
-              <span className="about-pill-text">Architectural Stability First</span>
+              <span className="about-pill-text">Stability by design</span>
             </div>
             <div className="about-pill" style={{ marginTop: 12 }}>
               <div className="about-pill-icon">⚡</div>
-              <span className="about-pill-text">Elite Performance Tuning</span>
+              <span className="about-pill-text">Performance optimisation</span>
             </div>
           </div>
           <div className="about-stats">
@@ -1310,28 +1310,28 @@ export default function TrivistaLabs() {
         <div className="services-section">
           <div className="services-header">
             <div className="section-label">OUR CAPABILITIES</div>
-            <h2 className="section-title">Precision Managed Services</h2>
+            <h2 className="section-title">Our services</h2>
           </div>
           <div className="services-grid">
             <ServiceCard
               icon={<DiamondIcon size={20} />}
               iconSecondary={<CodeIcon size={28} />}
               title="Full-Stack Development"
-              body="Building robust, scalable web and mobile ecosystems with a focus on atomic design and architectural integrity."
+              body="We build web and mobile applications designed to scale — structured for long-term maintainability and performance from day one."
               tags={['SYSTEM_ARCHITECTURE', 'SCALE_OPTIMIZATION']}
             />
             <ServiceCard
               icon={<ChipIcon size={20} />}
               iconSecondary={<ChipIcon size={28} />}
               title="HW-SW Integration"
-              body="Bridging the gap between physical components and digital control layers. Specialized IoT and custom firmware development."
+              body="We connect physical hardware with the software that controls it — including IoT solutions and custom firmware tailored to your specific requirements."
               tags={['EMBEDDED_LOGIC', 'PROTOCOL_DESIGN']}
             />
             <ServiceCard
               icon={<ServerIcon size={20} />}
               iconSecondary={<ServerIcon size={28} />}
               title="Enterprise IT"
-              body="Deployment and management of high-availability enterprise infrastructure and secure data management systems."
+              body="We deploy and manage enterprise infrastructure built for continuous uptime, with secure, compliant data handling at every layer."
               tags={['CLOUD_MANAGEMENT', 'DATA_SOVEREIGNTY']}
             />
           </div>
@@ -1346,10 +1346,10 @@ export default function TrivistaLabs() {
           <div className="team-header">
             <div>
               <div className="section-label">THE ARCHITECTS</div>
-              <h2 className="section-title">Meet the Founding Trio</h2>
+              <h2 className="section-title">Meet the founders</h2>
             </div>
             <p className="section-body" style={{ maxWidth: 340 }}>
-              A collaborative force of engineering specialists dedicated to technical excellence.
+              Three specialists with complementary expertise, working together to deliver technically rigorous solutions.
             </p>
           </div>
           <div className="team-grid">
@@ -1375,10 +1375,9 @@ export default function TrivistaLabs() {
         <div className="contact-section">
           <div className="contact-card">
             <div>
-              <div className="section-label">INITIALIZATION</div>
-              <h2 className="section-title">Ready to start your next technical evolution?</h2>
+              <h2 className="section-title">Start a project with us</h2>
               <p className="section-body">
-                We are currently accepting high-impact projects. Drop us a message with your system requirements, and our engineering team will get back to you within 24 hours.
+                We're currently taking on new projects. Tell us about what you're building, and a member of our team will follow up within 24 hours.
               </p>
               <div className="contact-info-row">
                 <MailIcon size={16} />
@@ -1417,7 +1416,7 @@ export default function TrivistaLabs() {
                 <div className="nav-logo-icon"><img src={trivistaLogo} alt="Trivista Labs" style={{ width: 22, height: 22, objectFit: 'contain' }} /></div>
                 Trivista Labs
               </a>
-              <p className="footer-brand-desc">Pioneering technical excellence through hardware-software convergence. Built for the high-end technical frontier.</p>
+              <p className="footer-brand-desc">Delivering integrated hardware and software solutions for technically demanding problems.</p>
               <div className="footer-social-icons">
                 <div className="footer-social-icon"><MailIcon size={14} /></div>
                 <div className="footer-social-icon"><GlobeIcon size={14} /></div>
