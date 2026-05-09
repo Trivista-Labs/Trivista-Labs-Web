@@ -996,6 +996,29 @@ const ShareIcon = ({ size = 16 }) => (
   </svg>
 );
 
+const LinkedInIcon = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect width="4" height="12" x="2" y="9" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
+
+const InstagramIcon = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <circle cx="12" cy="12" r="5" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
+
+const FacebookIcon = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+);
+
+
 function useCountUp(target, duration = 2000, started = false) {
   const [count, setCount] = useState(0);
   const [glowing, setGlowing] = useState(false);
@@ -1419,9 +1442,10 @@ export default function TrivistaLabs() {
               </a>
               <p className="footer-brand-desc">Pioneering technical excellence through hardware-software convergence. Built for the high-end technical frontier.</p>
               <div className="footer-social-icons">
-                <div className="footer-social-icon"><MailIcon size={14} /></div>
-                <div className="footer-social-icon"><GlobeIcon size={14} /></div>
-                <div className="footer-social-icon"><ShareIcon size={14} /></div>
+                <a href="mailto:hello@trivistalabs.com" className="footer-social-icon" aria-label="Email"><MailIcon size={14} /></a>
+                <a href="https://www.linkedin.com/company/trivista-labs" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="LinkedIn"><LinkedInIcon size={14} /></a>
+                <a href="https://www.instagram.com/trivistalabs" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="Instagram"><InstagramIcon size={14} /></a>
+                <a href="https://www.facebook.com/trivistalabs" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="Facebook"><FacebookIcon size={14} /></a>
               </div>
             </div>
             <div>
