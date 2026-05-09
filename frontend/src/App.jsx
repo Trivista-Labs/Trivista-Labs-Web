@@ -710,72 +710,72 @@ const styles = `
 // SVG Icons as components
 const DiamondIcon = ({ size = 20, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2L22 9l-10 13L2 9z"/>
+    <path d="M12 2L22 9l-10 13L2 9z" />
   </svg>
 );
 
 const CodeIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+    <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
   </svg>
 );
 
 const ChipIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <rect x="7" y="7" width="10" height="10" rx="1"/>
-    <path d="M4 10v1M4 14v1M20 10v1M20 14v1M10 4h1M14 4h1M10 20h1M14 20h1"/>
+    <rect x="7" y="7" width="10" height="10" rx="1" />
+    <path d="M4 10v1M4 14v1M20 10v1M20 14v1M10 4h1M14 4h1M10 20h1M14 20h1" />
   </svg>
 );
 
 const ServerIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <rect x="2" y="3" width="20" height="5" rx="1"/>
-    <rect x="2" y="10" width="20" height="5" rx="1"/>
-    <rect x="2" y="17" width="20" height="5" rx="1"/>
-    <circle cx="6" cy="5.5" r="0.8" fill="currentColor"/>
-    <circle cx="6" cy="12.5" r="0.8" fill="currentColor"/>
+    <rect x="2" y="3" width="20" height="5" rx="1" />
+    <rect x="2" y="10" width="20" height="5" rx="1" />
+    <rect x="2" y="17" width="20" height="5" rx="1" />
+    <circle cx="6" cy="5.5" r="0.8" fill="currentColor" />
+    <circle cx="6" cy="12.5" r="0.8" fill="currentColor" />
   </svg>
 );
 
 const MailIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <rect x="2" y="4" width="20" height="16" rx="2"/>
-    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
   </svg>
 );
 
 const LocationIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-    <circle cx="12" cy="10" r="3"/>
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+    <circle cx="12" cy="10" r="3" />
   </svg>
 );
 
 const CheckCircleIcon = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-    <polyline points="22 4 12 14.01 9 11.01"/>
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
   </svg>
 );
 
 const TerminalIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>
+    <polyline points="4 17 10 11 4 5" /><line x1="12" x2="20" y1="19" y2="19" />
   </svg>
 );
 
 const GlobeIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
 const ShareIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
   </svg>
 );
 
@@ -987,7 +987,7 @@ export default function TrivistaLabs() {
           Trivista Labs
         </a>
         <ul className="nav-links">
-          {['home','about','services','team','contact'].map(s => (
+          {['home', 'about', 'services', 'team', 'contact'].map(s => (
             <li key={s}>
               <a className={`nav-link${activeSection === s ? ' active' : ''}`} href={`#${s}`}
                 onClick={e => { e.preventDefault(); scrollTo(s); setActiveSection(s); }}>
@@ -1145,11 +1145,11 @@ export default function TrivistaLabs() {
             <div>
               <div className="form-group">
                 <label className="form-label">Full Name</label>
-                <input className="form-input" type="text" placeholder="John Doe" />
+                <input className="form-input" type="text" placeholder="Your Name" />
               </div>
               <div className="form-group">
                 <label className="form-label">Email Address</label>
-                <input className="form-input" type="email" placeholder="john@company.com" />
+                <input className="form-input" type="email" placeholder="Your Email" />
               </div>
               <div className="form-group">
                 <label className="form-label">Project Inquiry</label>
@@ -1179,15 +1179,15 @@ export default function TrivistaLabs() {
             </div>
             <div>
               <div className="footer-col-title">NAVIGATE</div>
-              {['Home','About','Services'].map(l => <a key={l} href="#" className="footer-link" onClick={e => { e.preventDefault(); scrollTo(l.toLowerCase()); }}>{l}</a>)}
+              {['Home', 'About', 'Services'].map(l => <a key={l} href="#" className="footer-link" onClick={e => { e.preventDefault(); scrollTo(l.toLowerCase()); }}>{l}</a>)}
             </div>
             <div>
               <div className="footer-col-title">CONNECT</div>
-              {['Team','Contact'].map(l => <a key={l} href="#" className="footer-link" onClick={e => { e.preventDefault(); scrollTo(l.toLowerCase()); }}>{l}</a>)}
+              {['Team', 'Contact'].map(l => <a key={l} href="#" className="footer-link" onClick={e => { e.preventDefault(); scrollTo(l.toLowerCase()); }}>{l}</a>)}
             </div>
             <div>
               <div className="footer-col-title">LEGAL</div>
-              {['Privacy Policy','Terms'].map(l => <a key={l} href="#" className="footer-link">{l}</a>)}
+              {['Privacy Policy', 'Terms'].map(l => <a key={l} href="#" className="footer-link">{l}</a>)}
             </div>
           </div>
           <div className="footer-bottom">
