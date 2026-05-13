@@ -1413,7 +1413,7 @@ export default function TrivistaLabs() {
               </p>
               <div className="contact-info-row">
                 <MailIcon size={16} />
-                <span>hello@trivistalabs.com</span>
+                <span>contact@trivistalabs.lk</span>
               </div>
               <div className="contact-info-row">
                 <LocationIcon size={16} />
@@ -1456,21 +1456,24 @@ export default function TrivistaLabs() {
                   statusEl.style.color = '#FF6B6B';
                 }
               } catch (err) {
-                statusEl.textContent = 'Network error. Please try again later.';
+                statusEl.textContent = 'Network error. Is the backend server running?';
                 statusEl.style.color = '#FF6B6B';
               } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'SEND MESSAGE';
               }
             }}>
+              {/* name → sent in email subject & body */}
               <div className="form-group">
                 <label className="form-label">Full Name</label>
                 <input className="form-input" type="text" name="contactName" placeholder="Your Name" required />
               </div>
+              {/* email → set as replyTo so you reply directly to the user */}
               <div className="form-group">
                 <label className="form-label">Email Address</label>
                 <input className="form-input" type="email" name="contactEmail" placeholder="Your Email" required />
               </div>
+              {/* message → displayed in the email body */}
               <div className="form-group">
                 <label className="form-label">Project Inquiry</label>
                 <textarea className="form-input" rows={5} name="contactMessage" placeholder="Describe your technical challenge…" required />
