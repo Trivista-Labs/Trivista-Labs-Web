@@ -13,6 +13,8 @@ app.use(cors({
     "http://localhost:4173",
     "https://trivistalabs.lk",
     "https://www.trivistalabs.lk",
+    "https://trivistalabs.io",
+    "https://www.trivistalabs.io",
     "https://trivista-labs-web.vercel.app",
   ],
   methods: ["GET", "POST"],
