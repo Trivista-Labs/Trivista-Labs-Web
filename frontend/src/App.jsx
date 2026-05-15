@@ -5,9 +5,9 @@ import LegalPage from "./components/LegalPage";
 import BackgroundLayers from "./components/BackgroundLayers";
 import { useScrollAnimations, useActiveSection } from "./hooks/useAnimations";
 import trivistaLogo from "./assets/logo.png";
-import esalaImg from "./assets/esala.png";
-import umeshImg from "./assets/Umesh.png";
-import dulajImg from "./assets/Dulaj.png";
+import esalaImg from "./assets/esala.jpeg";
+import umeshImg from "./assets/Umesh.jpeg";
+import dulajImg from "./assets/Dulaj.jpeg";
 
 const TEAL = "#00D1B2";
 const BG = "#0A0A0A";
