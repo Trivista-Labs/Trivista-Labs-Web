@@ -1417,7 +1417,7 @@ export default function TrivistaLabs() {
               </div>
               <div className="contact-info-row">
                 <LocationIcon size={16} />
-                <span>Precision Center, Colombo, LK</span>
+                <span>Carlton Residencies, Colombo, LK</span>
               </div>
             </div>
             <form onSubmit={async (e) => {
