@@ -1215,7 +1215,7 @@ export default function TrivistaLabs() {
   const teamMembers = [
     { name: "Esala Gamage", role: "Chief Executive & Engineer (CEO)", initials: "EG", img: esalaImg },
     { name: "Umesh Isuranga", role: "Lead Systems Architect (CTO)", initials: "UI", img: umeshImg },
-    { name: "Dulaj Yuthsara", role: "Hardware Operations Lead (COO)", initials: "DY", img: dulajImg },
+    { name: "Dulaj Yuthsara", role: "Operations Lead (COO)", initials: "DY", img: dulajImg },
   ];
 
   return (
