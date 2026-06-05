@@ -1499,7 +1499,7 @@ export default function TrivistaLabs() {
                 <a href="mailto:hello@trivistalabs.com" className="footer-social-icon" aria-label="Email"><MailIcon size={14} /></a>
                 <a href="https://www.linkedin.com/company/trivistalabs/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_companies%3BI7yyspUETKOBIcQyMMyiMg%3D%3D" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="LinkedIn"><LinkedInIcon size={14} /></a>
                 <a href="https://www.instagram.com/trivista_labs/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="Instagram"><InstagramIcon size={14} /></a>
-                <a href="https://www.facebook.com/profile.php?id=61589707928506" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="Facebook"><FacebookIcon size={14} /></a>
+                <a href="https://www.facebook.com/share/1915hgWcBM/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="footer-social-icon" aria-label="Facebook"><FacebookIcon size={14} /></a>
               </div>
             </div>
             <div>
