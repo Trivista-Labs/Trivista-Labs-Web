@@ -825,9 +825,25 @@ const styles = `
     .service-title { font-size: 20px; }
     .service-body { font-size: 14px; }
     .team-section { padding: 64px 20px; }
-    .team-grid { grid-template-columns: 1fr; gap: 20px; max-width: 400px; margin: 0 auto; }
+    .team-grid {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      max-width: none;
+      margin: 0;
+      padding-bottom: 8px;
+    }
+    .team-card {
+      flex: 0 0 180px;
+      scroll-snap-align: start;
+    }
+    .team-avatar-container { height: 110px; }
+    .team-name { font-size: 16px; }
+    .team-role { font-size: 9px; }
+    .team-info { padding: 14px 14px 16px; }
     .team-header { gap: 16px; margin-bottom: 40px; }
-    .team-name { font-size: 20px; }
     .contact-section { padding: 48px 20px 80px; }
     .contact-card { grid-template-columns: 1fr; gap: 40px; padding: 28px 20px; border-radius: 16px; }
     .section-title { font-size: clamp(24px, 5.5vw, 36px); }
@@ -865,6 +881,11 @@ const styles = `
     .stat-value { font-size: 26px; }
     .stat-label { font-size: 8px; letter-spacing: 0.08em; }
     .services-section, .team-section { padding: 40px 14px; }
+    .team-card { flex: 0 0 150px; }
+    .team-avatar-container { height: 90px; }
+    .team-name { font-size: 13px; }
+    .team-role { font-size: 7px; }
+    .team-info { padding: 10px 8px 12px; }
     .services-header { margin-bottom: 32px; }
     .service-card { padding: 22px 18px; border-radius: 12px; }
     .service-title { font-size: 18px; }
@@ -879,9 +900,6 @@ const styles = `
     .section-label { font-size: 9px; }
     .about-pill-text { font-size: 13px; }
     .about-pill-icon { width: 32px; height: 32px; font-size: 14px; }
-    .team-name { font-size: 18px; }
-    .team-role { font-size: 10px; }
-    .team-info { padding: 20px 20px 24px; }
     .footer { padding: 28px 14px 16px; }
     .footer-grid { grid-template-columns: 1fr; gap: 24px; }
     .footer-brand-desc { font-size: 12px; }
@@ -1213,9 +1231,9 @@ export default function TrivistaLabs() {
   };
 
   const teamMembers = [
-    { name: "Esala Gamage", role: "Chief Executive & Engineer (CEO)", initials: "EG", img: esalaImg },
-    { name: "Umesh Isuranga", role: "Lead Systems Architect (CTO)", initials: "UI", img: umeshImg },
-    { name: "Dulaj Yuthsara", role: "Operations Lead (COO)", initials: "DY", img: dulajImg },
+    { name: "Esala Gamage", role: "Chief Executive & Engineer (CEO) ", initials: "EG", img: esalaImg },
+    { name: "Umesh Isuranga", role: "Lead Systems Architect (CTO) ", initials: "UI", img: umeshImg },
+    { name: "Dulaj Yuthsara", role: "Hardware & Operations Lead (COO) ", initials: "DY", img: dulajImg },
   ];
 
   return (
