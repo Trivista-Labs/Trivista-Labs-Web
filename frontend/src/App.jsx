@@ -443,6 +443,7 @@ const styles = `
   .team-header-desc {
     margin-top: 40px;
     max-width: 340px;
+    margin-left: auto;
   }
   .team-grid {
     display: grid;
@@ -803,7 +804,7 @@ const styles = `
     .team-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .about-section { grid-template-columns: 1fr; gap: 48px; }
     .team-header { grid-template-columns: 1fr; gap: 16px; }
-    .team-header-desc { margin-top: 0; }
+    .team-header-desc { margin-top: 0; margin-left: 0; }
     .contact-card { grid-template-columns: 1fr 1fr; gap: 40px; padding: 48px; }
     .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
     .navbar { padding: 0 32px; }
