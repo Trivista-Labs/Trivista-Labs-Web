@@ -1300,10 +1300,6 @@ export default function TrivistaLabs() {
         <Hero3D />
         <div className="hero-glow" />
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div className="hero-badge">
-            <TerminalIcon size={12} />
-            PRECISION ENGINEERING LAB
-          </div>
           <h1 className="hero-headline">
             Engineering<br />
             <span className="line-teal">Tomorrow's</span><br />
