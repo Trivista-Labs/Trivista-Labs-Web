@@ -1325,7 +1325,7 @@ export default function TrivistaLabs() {
             <div className="section-label">OUR MISSION</div>
             <h2 className="section-title">Principled engineering. Measurable results.</h2>
             <p className="section-body">
-              At Trivista Labs, we approach every project as a system, not just a task. From individual lines of code to full hardware integrations, each decision is made with the broader architecture in mind. We specialise in solving challenging, high-stakes problems where precision and reliability are non-negotiable.
+              At Trivista Labs, we approach every project as a system, not just a task. From individual lines of code to full hardware integrations, each decision is made with the broader architecture in mind. We specialise in solving challenging, high stakes problems where precision and reliability are non-negotiable.
             </p>
             <div className="about-pill">
               <div className="about-pill-icon"><DiamondIcon size={16} /></div>
