@@ -1306,7 +1306,7 @@ export default function TrivistaLabs() {
             Impact
           </h1>
           <p className="hero-sub">
-            We design and build integrated hardware and software systems — reliable, scalable, and built to last. Engineering the foundation your business grows on.
+            We design and build integrated hardware and software systems that are reliable, scalable, and built to last. Engineering the foundation your business grows on.
           </p>
           <div className="hero-btns">
             <button className="btn-teal-filled" onClick={() => scrollTo('services')}>Explore Our Work</button>
@@ -1325,7 +1325,7 @@ export default function TrivistaLabs() {
             <div className="section-label">OUR MISSION</div>
             <h2 className="section-title">Principled engineering. Measurable results.</h2>
             <p className="section-body">
-              At Trivista Labs, we approach every project as a system — not just a task. From individual lines of code to full hardware integrations, each decision is made with the broader architecture in mind. We specialise in solving challenging, high-stakes problems where precision and reliability are non-negotiable.
+              At Trivista Labs, we approach every project as a system, not just a task. From individual lines of code to full hardware integrations, each decision is made with the broader architecture in mind. We specialise in solving challenging, high-stakes problems where precision and reliability are non-negotiable.
             </p>
             <div className="about-pill">
               <div className="about-pill-icon"><DiamondIcon size={16} /></div>
@@ -1359,14 +1359,14 @@ export default function TrivistaLabs() {
               icon={<DiamondIcon size={20} />}
               iconSecondary={<CodeIcon size={28} />}
               title="Full-Stack Development"
-              body="We build web and mobile applications designed to scale — structured for long-term maintainability and performance from day one."
+              body="We build web and mobile applications designed to scale, structured for long-term maintainability and performance from day one."
               tags={['SYSTEM_ARCHITECTURE', 'SCALE_OPTIMIZATION']}
             />
             <ServiceCard
               icon={<ChipIcon size={20} />}
               iconSecondary={<ChipIcon size={28} />}
               title="HW-SW Integration"
-              body="We connect physical hardware with the software that controls it — including IoT solutions and custom firmware tailored to your specific requirements."
+              body="We connect physical hardware with the software that controls it, including IoT solutions and custom firmware tailored to your specific requirements."
               tags={['EMBEDDED_LOGIC', 'PROTOCOL_DESIGN']}
             />
             <ServiceCard
