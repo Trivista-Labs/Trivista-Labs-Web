@@ -436,9 +436,13 @@ const styles = `
   .team-header {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: end;
+    gap: 80px;
+    align-items: start;
     margin-bottom: 64px;
+  }
+  .team-header-desc {
+    margin-top: 40px;
+    max-width: 340px;
   }
   .team-grid {
     display: grid;
@@ -798,7 +802,8 @@ const styles = `
     .services-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
     .team-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .about-section { grid-template-columns: 1fr; gap: 48px; }
-    .team-header { grid-template-columns: 1fr; }
+    .team-header { grid-template-columns: 1fr; gap: 16px; }
+    .team-header-desc { margin-top: 0; }
     .contact-card { grid-template-columns: 1fr 1fr; gap: 40px; padding: 48px; }
     .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
     .navbar { padding: 0 32px; }
@@ -1390,7 +1395,7 @@ export default function TrivistaLabs() {
               <div className="section-label">THE ARCHITECTS</div>
               <h2 className="section-title">Meet the founders</h2>
             </div>
-            <p className="section-body" style={{ maxWidth: 340 }}>
+            <p className="section-body team-header-desc">
               Three specialists with complementary expertise, working together to deliver technically rigorous solutions.
             </p>
           </div>
