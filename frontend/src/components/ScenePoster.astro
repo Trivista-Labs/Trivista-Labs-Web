@@ -1,0 +1,33 @@
+---
+import { render } from "../lib/scene";
+import { LIGHT_PALETTE, SCENES, toSvgMarkup, type SceneName } from "../lib/scenes";
+
+interface Props {
+  scene: SceneName;
+  /** Size of the drawing, in the same units the browser redraws it in. */
+  width: number;
+  height: number;
+  /** Fit, as in SVG: "xMidYMid meet" keeps it whole, "... slice" fills and crops. */
+  fit?: string;
+  class?: string;
+}
+
+// The still frame of a scene, drawn at build time. It is what people see without JavaScript,
+// with reduced motion or on low-power devices; src/scripts/scene.ts replaces it with a live canvas.
+const { scene, width, height, fit = "xMidYMid meet", class: className } = Astro.props;
+const { model, pose } = SCENES[scene];
+const { primitives } = render(model, pose.frame, { width, height, ...pose.view }, LIGHT_PALETTE);
+const markup = toSvgMarkup(primitives);
+---
+
+<div class:list={["scene", className]} data-scene={scene}>
+  <svg
+    class="scene__poster"
+    data-scene-poster
+    viewBox={`0 0 ${width} ${height}`}
+    preserveAspectRatio={fit}
+    aria-hidden="true"
+    focusable="false"
+    set:html={markup}
+  />
+</div>

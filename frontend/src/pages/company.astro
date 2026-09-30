@@ -35,7 +35,7 @@ const linkedin = social.find((link) => link.label === "LinkedIn");
     <div class="container">
       <SectionHeading eyebrow="Founders" title="Each founder leads one part of the company." id="founders-title" />
       {showDrafts && <DraftNotice label="Founder bios are not written yet." missing={founderDetailsMissing} />}
-      <div class="founder-grid">
+      <div class="founder-grid" data-reveal-group>
         {founders.map((founder) => <FounderCard founder={founder} />)}
       </div>
     </div>

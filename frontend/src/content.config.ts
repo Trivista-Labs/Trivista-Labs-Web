@@ -19,6 +19,9 @@ const work = defineCollection({
       url: z.httpUrl().optional(),
       cover: image().optional(),
       coverAlt: z.string().optional(),
+      /** A phone-sized screenshot, shown in front of the cover. */
+      screen: image().optional(),
+      screenAlt: z.string().optional(),
       stack: z.array(z.string()).default([]),
       /** True when the entry has a full case-study page. */
       caseStudy: z.boolean().default(false),
@@ -30,6 +33,10 @@ const work = defineCollection({
     .refine((entry) => !entry.cover || Boolean(entry.coverAlt), {
       error: "Describe the cover image in coverAlt, for people using screen readers.",
       path: ["coverAlt"],
+    })
+    .refine((entry) => !entry.screen || Boolean(entry.screenAlt), {
+      error: "Describe the phone screenshot in screenAlt, for people using screen readers.",
+      path: ["screenAlt"],
     }),
 });
 

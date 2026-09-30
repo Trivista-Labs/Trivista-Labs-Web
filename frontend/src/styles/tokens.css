@@ -65,9 +65,29 @@
   /* Shape */
   --radius-sm: 2px;
   --radius: 4px;
+  --radius-lg: 8px;
+
+  /* Depth. Light comes from above: shadows are warm, soft and fall downwards.
+     Dark surfaces step up from graphite; teal is the only light source in them. */
+  --graphite: #0e1012;
+  --graphite-2: #1a1d20;
+  --graphite-3: #24282c;
+  --line-dark: rgb(255 255 255 / 0.08);
+  --line-dark-strong: rgb(255 255 255 / 0.14);
+  --grid-light: rgb(22 24 26 / 0.05);
+  --grid-dark: rgb(255 255 255 / 0.045);
+  --teal-glow: rgb(0 209 178 / 0.28);
+  --teal-haze: rgb(0 209 178 / 0.1);
+  --shadow-1: 0 1px 1px rgb(22 24 26 / 0.04), 0 2px 6px -2px rgb(22 24 26 / 0.08);
+  --shadow-2: 0 1px 2px rgb(22 24 26 / 0.05), 0 10px 24px -10px rgb(22 24 26 / 0.2), 0 24px 40px -24px rgb(22 24 26 / 0.18);
+  --shadow-3: 0 2px 4px rgb(22 24 26 / 0.06), 0 20px 36px -16px rgb(22 24 26 / 0.3), 0 40px 64px -32px rgb(22 24 26 / 0.3);
+  --edge-light: inset 0 1px 0 rgb(255 255 255 / 0.65);
+  --edge-light-dark: inset 0 1px 0 rgb(255 255 255 / 0.09);
 
   /* Motion */
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 140ms;
   --duration: 220ms;
+  --duration-slow: 900ms;
 }

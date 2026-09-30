@@ -1,4 +1,5 @@
 ---
+import CapabilityGlyph from "../components/CapabilityGlyph.astro";
 import CtaBand from "../components/CtaBand.astro";
 import PageHero from "../components/PageHero.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -38,18 +39,24 @@ const work = await getWork();
   </PageHero>
 
   {
-    capabilities.map((capability) => {
+    capabilities.map((capability, index) => {
       const related = work.filter((entry) => entry.data.capability === capability.id);
       return (
         <section class="capability" id={capability.id} aria-labelledby={`${capability.id}-title`}>
           <div class="container capability__grid">
-            <div class="capability__intro">
+            <div class="capability__intro" data-reveal>
               <p class="eyebrow">{capability.label}</p>
               <h2 class="capability__title" id={`${capability.id}-title`}>
                 {capability.title}
               </h2>
+              <div class="capability__visual">
+                <span class="capability__layer" aria-hidden="true">
+                  Layer {String(index + 1).padStart(2, "0")} of {String(capabilities.length).padStart(2, "0")}
+                </span>
+                <CapabilityGlyph layer={index} />
+              </div>
             </div>
-            <div class="capability__body">
+            <div class="capability__body" data-reveal>
               <p class="capability__problem">{capability.problem}</p>
               <p class="capability__summary">{capability.summary}</p>
               <h3 class="capability__subhead">What we deliver</h3>
@@ -129,6 +136,32 @@ const work = await getWork();
     line-height: 1.06;
     letter-spacing: var(--tracking-display);
   }
+  /* The layer's plate from the home page stack, on a small lit stage. */
+  .capability__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    max-width: 22rem;
+    margin-top: var(--space-md);
+    padding: var(--space-xl) var(--space-lg) var(--space-md);
+    border: 1px solid rgb(22 24 26 / 0.08);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(60% 70% at 50% 60%, rgb(0 209 178 / 0.1), transparent 70%),
+      linear-gradient(var(--grid-light) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(90deg, var(--grid-light) 1px, transparent 1px) 0 0 / 28px 28px,
+      #f3f1ea;
+    box-shadow: var(--edge-light), var(--shadow-1);
+  }
+  .capability__layer {
+    position: absolute;
+    top: var(--space-sm);
+    left: var(--space-md);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
   .capability__body {
     display: grid;
     gap: var(--space-lg);
@@ -192,7 +225,7 @@ const work = await getWork();
     }
     .capability__intro {
       position: sticky;
-      top: var(--space-xl);
+      top: 6.5rem;
       align-self: start;
     }
   }

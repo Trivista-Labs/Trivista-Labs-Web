@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/depth.css";
 import BaseHead from "../components/BaseHead.astro";
 import JsonLdScript from "../components/JsonLd.astro";
 import SiteFooter from "../components/SiteFooter.astro";
@@ -33,6 +34,10 @@ const { schema = [], ...head } = Astro.props;
     <SiteFooter />
     <script>
       import "../scripts/site";
+      import "../scripts/motion";
+
+      // The 3D renderer loads only on pages that have a scene.
+      if (document.querySelector("[data-scene]")) void import("../scripts/scene");
     </script>
   </body>
 </html>

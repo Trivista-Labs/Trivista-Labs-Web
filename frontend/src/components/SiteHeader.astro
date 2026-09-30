@@ -77,11 +77,21 @@ const onContact = isCurrent("/contact/");
 </header>
 
 <style>
+  /* The header stays with the reader: translucent ivory over the page, lifting once it scrolls. */
   .site-header {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 20;
     border-bottom: 1px solid var(--rule);
-    background: var(--ivory);
+    /* Nearly opaque rather than blurred: a backdrop blur over the animated hero repaints every frame. */
+    background: rgb(246 244 238 / 0.94);
+    transition:
+      box-shadow 0.4s ease,
+      border-color 0.4s ease;
+  }
+  .site-header:global(.is-scrolled) {
+    border-color: rgb(22 24 26 / 0.08);
+    box-shadow: 0 10px 30px -18px rgb(22 24 26 / 0.35);
   }
   .site-header__bar {
     display: flex;
@@ -108,25 +118,41 @@ const onContact = isCurrent("/contact/");
     display: flex;
     gap: var(--space-xl);
   }
+  /* The underline draws in from the left; the current page keeps a teal one. */
   .site-nav__link {
+    position: relative;
     display: inline-block;
     padding-block: 0.35rem;
-    border-bottom: 1px solid transparent;
     color: var(--ink-2);
     font-size: var(--text-sm);
     font-weight: 500;
     text-decoration: none;
-    transition:
-      color var(--duration-fast) ease,
-      border-color var(--duration-fast) ease;
+    transition: color var(--duration-fast) ease;
+  }
+  .site-nav__link::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-out-expo);
   }
   .site-nav__link:hover {
-    border-color: var(--rule-strong);
     color: var(--ink);
   }
+  .site-nav__link:hover::after {
+    transform: scaleX(1);
+  }
   .site-nav__link[aria-current="page"] {
-    border-color: var(--teal-ink);
     color: var(--ink);
+  }
+  .site-nav__link[aria-current="page"]::after {
+    background: var(--teal-ink);
+    transform: scaleX(1);
   }
   .menu-toggle {
     display: inline-flex;

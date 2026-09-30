@@ -90,7 +90,7 @@ test.describe("pages", () => {
     }
   });
 
-  test("the home page ships under 1 KB of compressed JavaScript, as it claims", async ({ page }) => {
+  test("the home page ships under 10 KB of compressed JavaScript, as it claims", async ({ page }) => {
     const bodies: Promise<Buffer>[] = [];
     page.on("response", (response) => {
       if (response.request().resourceType() === "script") bodies.push(response.body());
@@ -99,7 +99,7 @@ test.describe("pages", () => {
     const scripts = await Promise.all(bodies);
     const compressed = scripts.reduce((total, body) => total + gzipSync(body).length, 0);
     expect(scripts.length).toBeGreaterThan(0);
-    expect(compressed).toBeLessThan(1024);
+    expect(compressed).toBeLessThan(10 * 1024);
   });
 
   test("robots.txt points to the sitemap", async ({ request }) => {
@@ -108,6 +108,46 @@ test.describe("pages", () => {
     expect(await robots.text()).toContain("Sitemap: https://trivistalabs.io/sitemap-index.xml");
     const sitemap = await request.get("/sitemap-0.xml");
     expect(await sitemap.text()).toContain("<loc>https://trivistalabs.io/capabilities/</loc>");
+  });
+});
+
+test.describe("3D scenes", () => {
+  test("the hero drawing comes to life on a canvas", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("[data-scene-surface].is-live > canvas.scene-canvas")).toHaveCount(1);
+  });
+
+  test("a device too slow to animate keeps a still frame instead", async ({ page }) => {
+    // Simulate a slow device: the clock moves 20 ms on every reading, so each frame appears to take
+    // at least that long. CPU throttling would do the same, but its effect depends on the machine.
+    await page.addInitScript(() => {
+      const now = performance.now.bind(performance);
+      let skew = 0;
+      performance.now = () => now() + (skew += 20);
+    });
+    await page.goto("/");
+    await expect(page.locator(".system")).toHaveAttribute("data-scene-motion", "paused");
+    await expect(page.locator(".system canvas.scene-canvas")).toHaveCount(1);
+  });
+
+  test("pages without a scene never download the 3D code", async ({ page }) => {
+    const scripts: string[] = [];
+    page.on("request", (request) => {
+      if (request.resourceType() === "script") scripts.push(request.url());
+    });
+    await page.goto("/privacy/", { waitUntil: "networkidle" });
+    expect(scripts.length).toBeGreaterThan(0);
+    expect(scripts.filter((url) => /\/scene\.[\w-]+\.js$/.test(url))).toEqual([]);
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("the still drawing stays, and no canvas is started", async ({ page }) => {
+      await page.goto("/", { waitUntil: "networkidle" });
+      await expect(page.locator("[data-scene-poster]").first()).toBeVisible();
+      await expect(page.locator("canvas.scene-canvas")).toHaveCount(0);
+    });
   });
 });
 
@@ -150,6 +190,12 @@ test.describe("navigation", () => {
       await expect(menu).toHaveAttribute("href", "#site-footer-nav");
       await menu.click();
       await expect(page.locator("#site-footer-nav")).toBeInViewport();
+    });
+
+    test("the hero shows its 3D drawing as a still image", async ({ page }) => {
+      await page.goto("/");
+      await expect(page.locator(".hero [data-scene-poster]")).toBeVisible();
+      await expect(page.locator("canvas")).toHaveCount(0);
     });
 
     test("the contact page offers email instead of a form that cannot send", async ({ page }) => {

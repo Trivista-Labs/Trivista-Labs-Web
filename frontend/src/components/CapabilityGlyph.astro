@@ -1,0 +1,53 @@
+---
+import { render, type SceneModel } from "../lib/scene";
+import { LIGHT_PALETTE, STACK_SCENE, toSvgMarkup } from "../lib/scenes";
+
+interface Props {
+  /** Which layer of the hero stack to draw: 0 products, 1 operations, 2 devices, 3 infrastructure. */
+  layer: number;
+  class?: string;
+}
+
+// One plate of the hero's 3D stack, drawn on its own at build time, so each capability
+// carries the same object it has in the hero. No JavaScript.
+const { layer, class: className } = Astro.props;
+const WIDTH = 280;
+const HEIGHT = 190;
+
+const model: SceneModel = {
+  ...STACK_SCENE,
+  labels: false,
+  risers: [],
+  pulses: [],
+  plates: [STACK_SCENE.plates[layer]],
+  traces: STACK_SCENE.traces.filter((trace) => trace.plate === layer).map((trace) => ({ ...trace, plate: 0 })),
+};
+const { primitives } = render(
+  model,
+  { time: 0, yaw: Math.PI / 4, pitch: 0.58, spread: 0, light: [0.7, -1], pulses: false },
+  { width: WIDTH, height: HEIGHT, zoom: 3.1, distance: 12, offsetY: 0.08 },
+  LIGHT_PALETTE
+);
+---
+
+<svg
+  class:list={["glyph", className]}
+  viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+  aria-hidden="true"
+  focusable="false"
+  set:html={toSvgMarkup(primitives)}
+/>
+
+<style>
+  .glyph {
+    display: block;
+    width: 100%;
+    max-width: 17.5rem;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 14px 18px rgb(22 24 26 / 0.12));
+    transition:
+      transform 0.8s var(--ease-out-expo),
+      filter 0.8s var(--ease-out-expo);
+  }
+</style>

@@ -1,4 +1,5 @@
 ---
+import PenroseMark from "./PenroseMark.astro";
 import { site } from "../data/site";
 
 interface Props {
@@ -7,43 +8,70 @@ interface Props {
 }
 
 const { location } = Astro.props;
+// The closing band is dark and runs straight into the footer, with the Trivista mark as its object.
 ---
 
-<section class="cta" aria-labelledby="cta-title">
+<section class="cta surface-dark" aria-labelledby="cta-title">
   <div class="container cta__inner">
-    <div class="cta__heading">
-      <p class="eyebrow">Start a project</p>
-      <h2 class="cta__title" id="cta-title">Tell us what you’re building.</h2>
-    </div>
-    <div class="cta__body">
-      <p class="cta__text">
-        Share a few details about your project, and a member of our team will reply {site.responseTime}.
-      </p>
-      <div class="cta__actions">
-        <a
-          class="button button--primary"
-          href="/contact/"
-          data-track="Start a project clicked"
-          data-track-location={location}
-        >
-          Start a project
-        </a>
-        <p class="cta__email">
-          or email <a class="link" href={`mailto:${site.email}`} data-track="Email clicked" data-track-location={location}
-            >{site.email}</a
-          >
+    <div class="cta__content" data-reveal>
+      <div class="cta__heading">
+        <p class="eyebrow">Start a project</p>
+        <h2 class="cta__title" id="cta-title">Tell us what you’re building.</h2>
+      </div>
+      <div class="cta__body">
+        <p class="cta__text">
+          Share a few details about your project, and a member of our team will reply {site.responseTime}.
         </p>
+        <div class="cta__actions">
+          <a
+            class="button button--primary"
+            href="/contact/"
+            data-track="Start a project clicked"
+            data-track-location={location}
+          >
+            Start a project
+          </a>
+          <p class="cta__email">
+            or email <a class="link" href={`mailto:${site.email}`} data-track="Email clicked" data-track-location={location}
+              >{site.email}</a
+            >
+          </p>
+        </div>
       </div>
     </div>
+    <PenroseMark class="cta__mark" />
   </div>
 </section>
 
 <style>
   .cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     padding-block: var(--section);
-    border-top: 1px solid var(--rule);
+    background:
+      radial-gradient(42rem 30rem at 80% 45%, rgb(0 209 178 / 0.14), transparent 65%),
+      linear-gradient(180deg, var(--graphite) 0%, var(--charcoal) 100%);
+  }
+  /* The grid recedes towards the footer. */
+  .cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(var(--grid-dark) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-dark) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 55% 70% at 78% 45%, #000 15%, transparent 75%);
+    mask-image: radial-gradient(ellipse 55% 70% at 78% 45%, #000 15%, transparent 75%);
   }
   .cta__inner {
+    display: grid;
+    align-items: center;
+    gap: var(--space-2xl);
+  }
+  .cta__content {
     display: grid;
     gap: var(--space-xl);
   }
@@ -63,7 +91,7 @@ const { location } = Astro.props;
   }
   .cta__text {
     max-width: 40ch;
-    color: var(--ink-2);
+    color: var(--on-dark-2);
     font-size: var(--text-lg);
   }
   .cta__actions {
@@ -73,15 +101,22 @@ const { location } = Astro.props;
     gap: var(--space-md) var(--space-lg);
   }
   .cta__email {
-    color: var(--ink-2);
+    color: var(--on-dark-2);
     font-size: var(--text-sm);
     overflow-wrap: anywhere;
+  }
+  /* :global because the element belongs to PenroseMark, which scoped styles here can't reach. */
+  .cta :global(.cta__mark) {
+    width: min(15rem, 62vw);
+    justify-self: center;
   }
   @media (min-width: 60em) {
     .cta__inner {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      align-items: end;
       column-gap: var(--space-3xl);
+    }
+    .cta :global(.cta__mark) {
+      width: min(100%, 21rem);
     }
   }
 </style>

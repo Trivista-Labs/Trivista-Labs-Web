@@ -1,0 +1,82 @@
+---
+import { PENROSE_BANDS, PENROSE_FACES, PENROSE_VIEWBOX } from "../data/brand";
+
+interface Props {
+  class?: string;
+}
+
+// The Trivista mark as a dimensional object. Its three bands sit at different depths: they shift
+// apart with the pointer (motion.ts sets --px and --py) and slide together the first time the mark
+// scrolls into view. Still and whole without JavaScript or with reduced motion.
+const { class: className } = Astro.props;
+const { width, height } = PENROSE_VIEWBOX;
+const toPoints = (points: readonly (readonly [number, number])[]) => points.map(([x, y]) => `${x},${y}`).join(" ");
+---
+
+<div class:list={["penrose", className]} data-parallax data-inview aria-hidden="true">
+  <svg viewBox={`-4 -4 ${width + 8} ${height + 8}`} focusable="false">
+    {
+      PENROSE_BANDS.map((band) => (
+        <g class={`penrose__band penrose__band--${band}`}>
+          {PENROSE_FACES.filter((face) => face.band === band).map((face) => (
+            <polygon
+              points={toPoints(face.points)}
+              fill={face.fill}
+              stroke={face.fill}
+              stroke-width="0.3"
+              stroke-linejoin="round"
+            />
+          ))}
+        </g>
+      ))
+    }
+  </svg>
+</div>
+
+<style>
+  .penrose {
+    --px: 0;
+    --py: 0;
+    filter: drop-shadow(0 36px 44px rgb(0 0 0 / 0.5)) drop-shadow(0 0 48px rgb(0 209 178 / 0.14));
+  }
+  .penrose svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .penrose__band {
+    transition:
+      transform 1.2s var(--ease-out-expo),
+      opacity 0.9s ease;
+  }
+  /* Nearer bands move further: light in front, dark in the middle, teal behind. */
+  .penrose__band--light {
+    transform: translate(calc(var(--px) * 2.4px), calc(var(--py) * 1.8px));
+  }
+  .penrose__band--dark {
+    transform: translate(calc(var(--px) * 0.8px), calc(var(--py) * 0.6px));
+  }
+  .penrose__band--teal {
+    transform: translate(calc(var(--px) * -1.6px), calc(var(--py) * -1.2px));
+  }
+  /* Before it assembles, each band waits a little way off along its own axis. */
+  .penrose.is-pending:not(.is-inview) .penrose__band {
+    opacity: 0;
+  }
+  .penrose.is-pending:not(.is-inview) .penrose__band--light {
+    transform: translate(-7px, -11px);
+  }
+  .penrose.is-pending:not(.is-inview) .penrose__band--dark {
+    transform: translate(12px, 5px);
+  }
+  .penrose.is-pending:not(.is-inview) .penrose__band--teal {
+    transform: translate(-9px, 10px);
+  }
+  .penrose.is-pending.is-inview .penrose__band--dark {
+    transition-delay: 0.12s;
+  }
+  .penrose.is-pending.is-inview .penrose__band--light {
+    transition-delay: 0.24s;
+  }
+</style>

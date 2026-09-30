@@ -1,12 +1,17 @@
 ---
 import { principles, siteFacts } from "../data/principles";
+// The evidence panel is an instrument readout: fixed facts about the site, then live figures
+// that motion.ts measures in the visitor's own browser (hidden until it has them).
 ---
 
 <div class="principles">
-  <ul class="principles__list" role="list">
+  <ul class="principles__list" role="list" data-reveal-group>
     {
-      principles.map((principle) => (
+      principles.map((principle, index) => (
         <li class="principle">
+          <span class="principle__index" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
           <h3 class="principle__title">{principle.title}</h3>
           <p class="principle__text">{principle.text}</p>
         </li>
@@ -14,8 +19,11 @@ import { principles, siteFacts } from "../data/principles";
     }
   </ul>
 
-  <aside class="evidence" aria-labelledby="evidence-title">
-    <p class="mono-label">Evidence</p>
+  <aside class="evidence surface-dark" aria-labelledby="evidence-title" data-reveal>
+    <p class="mono-label evidence__label">
+      <span class="evidence__signal" aria-hidden="true"></span>
+      Evidence
+    </p>
     <h3 class="evidence__title" id="evidence-title">This website is built to the same standard.</h3>
     <dl class="evidence__facts">
       {
@@ -27,6 +35,23 @@ import { principles, siteFacts } from "../data/principles";
         ))
       }
     </dl>
+    <div class="evidence__live" data-measure hidden>
+      <p class="evidence__live-title">Measured in your browser, just now</p>
+      <dl class="evidence__readings">
+        <div class="evidence__reading">
+          <dt>This page</dt>
+          <dd><span data-measure-value="total">–</span></dd>
+        </div>
+        <div class="evidence__reading">
+          <dt>Files</dt>
+          <dd><span data-measure-value="files">–</span></dd>
+        </div>
+        <div class="evidence__reading">
+          <dt>Scripts</dt>
+          <dd><span data-measure-value="scripts">–</span></dd>
+        </div>
+      </dl>
+    </div>
     <p class="evidence__note">You can check each of these in your browser’s developer tools.</p>
   </aside>
 </div>
@@ -41,11 +66,33 @@ import { principles, siteFacts } from "../data/principles";
     border-top: 1px solid var(--rule);
   }
   .principle {
+    position: relative;
     display: grid;
     align-content: start;
     gap: var(--space-xs);
     padding-block: var(--space-lg);
     border-bottom: 1px solid var(--rule);
+  }
+  /* A teal rule draws in along the top when the principle is hovered. */
+  .principle::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--teal-ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .principle:hover::before {
+    transform: scaleX(1);
+  }
+  .principle__index {
+    color: var(--teal-ink);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
   }
   .principle__title {
     font-size: var(--text-lg);
@@ -53,18 +100,52 @@ import { principles, siteFacts } from "../data/principles";
   .principle__text {
     color: var(--ink-2);
   }
+
   .evidence {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: grid;
     gap: var(--space-md);
-    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    background: var(--paper);
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(90% 60% at 100% 0%, rgb(0 209 178 / 0.16), transparent 60%),
+      linear-gradient(165deg, var(--graphite-2) 0%, var(--graphite) 100%);
+    box-shadow: var(--edge-light-dark), 0 0 0 1px var(--line-dark), var(--shadow-3);
+    color: var(--on-dark);
+  }
+  .evidence::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(var(--grid-dark) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-dark) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 60%);
+    mask-image: linear-gradient(200deg, #000 0%, transparent 60%);
+  }
+  .evidence__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--teal);
+  }
+  /* A steady status light: the panel is reporting. */
+  .evidence__signal {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 3px rgb(0 209 178 / 0.18), 0 0 12px var(--teal-glow);
   }
   .evidence__title {
     font-size: var(--text-lg);
   }
-  .evidence__facts {
+  .evidence__facts,
+  .evidence__readings {
     display: grid;
   }
   .evidence__fact {
@@ -72,20 +153,49 @@ import { principles, siteFacts } from "../data/principles";
     grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
     gap: var(--space-md);
     padding-block: 0.7rem;
-    border-top: 1px solid var(--rule);
+    border-top: 1px solid var(--line-dark);
     font-size: var(--text-sm);
   }
-  .evidence__fact dt {
+  .evidence__fact dt,
+  .evidence__reading dt {
     padding-top: 0.15rem;
-    color: var(--muted);
+    color: var(--on-dark-2);
     font-family: var(--font-mono);
     font-size: 0.75rem;
   }
-  .evidence__fact dd {
+  .evidence__fact dd,
+  .evidence__reading dd {
     margin: 0;
   }
+  .evidence__live {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    border: 1px solid rgb(0 209 178 / 0.3);
+    border-radius: var(--radius);
+    background: rgb(0 209 178 / 0.06);
+  }
+  .evidence__live-title {
+    color: var(--teal);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .evidence__readings {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-sm);
+  }
+  .evidence__reading {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .evidence__reading dd {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
   .evidence__note {
-    color: var(--muted);
+    color: var(--on-dark-2);
     font-size: var(--text-sm);
   }
   @media (min-width: 40em) {

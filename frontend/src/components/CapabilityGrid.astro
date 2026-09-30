@@ -1,25 +1,35 @@
 ---
 import ArrowIcon from "./ArrowIcon.astro";
+import CapabilityGlyph from "./CapabilityGlyph.astro";
 import { capabilities } from "../data/capabilities";
+// Wide and narrow panels alternate, so the four capabilities read as a composition, not a grid of cards.
 ---
 
-<ul class="capabilities" role="list">
+<ul class="capabilities" role="list" data-reveal-group>
   {
-    capabilities.map((capability) => (
-      <li class="capability">
-        <p class="eyebrow">{capability.label}</p>
-        <h3 class="capability__title">
-          <a href={`/capabilities/#${capability.id}`}>
-            {capability.title}
-            <ArrowIcon />
-          </a>
-        </h3>
-        <p class="capability__problem">{capability.problem}</p>
-        <ul class="capability__list" role="list">
-          {capability.deliverables.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
+    capabilities.map((capability, index) => (
+      <li class="capability panel" data-spotlight>
+        <div class="capability__visual">
+          <span class="capability__index" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <CapabilityGlyph layer={index} class="capability__glyph" />
+        </div>
+        <div class="capability__text">
+          <p class="eyebrow">{capability.label}</p>
+          <h3 class="capability__title">
+            <a href={`/capabilities/#${capability.id}`}>
+              {capability.title}
+              <ArrowIcon />
+            </a>
+          </h3>
+          <p class="capability__problem">{capability.problem}</p>
+          <ul class="capability__list" role="list">
+            {capability.deliverables.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
       </li>
     ))
   }
@@ -28,14 +38,44 @@ import { capabilities } from "../data/capabilities";
 <style>
   .capabilities {
     display: grid;
-    border-top: 1px solid var(--rule);
+    gap: var(--space-md);
   }
   .capability {
     display: grid;
     align-content: start;
+    overflow: hidden;
+  }
+  /* The drawing sits on its own lit stage at the top of the panel. */
+  .capability__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 11rem;
+    padding: var(--space-lg) var(--space-lg) var(--space-sm);
+    border-bottom: 1px solid rgb(22 24 26 / 0.07);
+    background:
+      radial-gradient(60% 70% at 50% 60%, rgb(0 209 178 / 0.09), transparent 70%),
+      linear-gradient(var(--grid-light) 1px, transparent 1px) 0 0 / 28px 28px,
+      linear-gradient(90deg, var(--grid-light) 1px, transparent 1px) 0 0 / 28px 28px,
+      #f3f1ea;
+  }
+  .capability__index {
+    position: absolute;
+    top: var(--space-md);
+    left: var(--space-lg);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .capability:hover :global(.capability__glyph) {
+    transform: translateY(-6px);
+    filter: drop-shadow(0 22px 22px rgb(22 24 26 / 0.16));
+  }
+  .capability__text {
+    display: grid;
+    align-content: start;
     gap: var(--space-md);
-    padding-block: var(--space-xl);
-    border-bottom: 1px solid var(--rule);
+    padding: var(--space-xl) var(--space-lg);
   }
   .capability__title {
     font-size: var(--text-xl);
@@ -46,6 +86,13 @@ import { capabilities } from "../data/capabilities";
     gap: 0.5rem;
     text-decoration: none;
   }
+  /* The whole panel follows the link. */
+  .capability__title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
   .capability__title a :global(svg) {
     flex: none;
     width: 0.8em;
@@ -53,12 +100,12 @@ import { capabilities } from "../data/capabilities";
     color: var(--teal-ink);
     transition: transform var(--duration) var(--ease-out);
   }
-  .capability__title a:hover {
+  .capability:hover .capability__title a {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.18em;
   }
-  .capability__title a:hover :global(svg) {
+  .capability:hover .capability__title a :global(svg) {
     transform: translateX(3px);
   }
   .capability__problem {
@@ -68,27 +115,50 @@ import { capabilities } from "../data/capabilities";
   .capability__list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
   .capability__list li {
-    padding: 0.3rem 0.6rem;
+    padding: 0.28rem 0.6rem;
     border: 1px solid var(--rule);
     border-radius: var(--radius-sm);
-    background: var(--paper);
+    background: rgb(255 255 255 / 0.6);
     color: var(--ink-2);
     font-family: var(--font-mono);
     font-size: 0.75rem;
   }
   @media (min-width: 48em) {
     .capabilities {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-lg);
     }
-    .capability:nth-child(odd) {
-      padding-right: var(--space-2xl);
-      border-right: 1px solid var(--rule);
+    .capability:nth-child(4n + 1),
+    .capability:nth-child(4n + 4) {
+      grid-column: span 7;
     }
-    .capability:nth-child(even) {
-      padding-left: var(--space-2xl);
+    .capability:nth-child(4n + 2),
+    .capability:nth-child(4n + 3) {
+      grid-column: span 5;
+    }
+  }
+  /* In the wide panels, the drawing moves beside the text. */
+  @media (min-width: 64em) {
+    .capability:nth-child(4n + 1),
+    .capability:nth-child(4n + 4) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      grid-template-rows: 1fr;
+      align-content: stretch;
+    }
+    .capability:nth-child(4n + 1) .capability__visual,
+    .capability:nth-child(4n + 4) .capability__visual {
+      grid-column: 2;
+      grid-row: 1;
+      border-bottom: 0;
+      border-left: 1px solid rgb(22 24 26 / 0.07);
+    }
+    .capability:nth-child(4n + 1) .capability__text,
+    .capability:nth-child(4n + 4) .capability__text {
+      grid-column: 1;
+      grid-row: 1;
     }
   }
 </style>

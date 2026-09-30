@@ -1,21 +1,27 @@
 ---
 import ArrowIcon from "./ArrowIcon.astro";
+import ScenePoster from "./ScenePoster.astro";
 import { capabilities } from "../data/capabilities";
-// The four capability layers, drawn as the stack they form inside a business.
+// The four capability layers as a 3D stack: each plate is one layer, and data rises through them.
+// The links are the real content; the drawing and its callout lines are decoration.
 ---
 
-<figure class="stack">
-  <figcaption class="stack__caption">
+<figure class="system" data-scene-surface>
+  <figcaption class="system__caption">
     <span class="mono-label">Where we work</span>
-    <span class="stack__caption-text">From the products your customers use to the infrastructure underneath.</span>
+    <span class="system__caption-text">From the products your customers use to the infrastructure underneath.</span>
   </figcaption>
-  <ol class="stack__layers" role="list">
+  <ScenePoster scene="stack" width={600} height={640} class="system__stage" />
+  <ol class="system__layers" role="list">
     {
-      capabilities.map((capability) => (
-        <li class="stack__item">
-          <a class="stack__layer" href={`/capabilities/#${capability.id}`}>
-            <span class="stack__name">{capability.layer}</span>
-            <span class="stack__detail">{capability.layerDetail}</span>
+      capabilities.map((capability, index) => (
+        <li>
+          <a class="system__layer" href={`/capabilities/#${capability.id}`} data-callout>
+            <span class="system__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span class="system__name">{capability.layer}</span>
+            <span class="system__detail">{capability.layerDetail}</span>
             <ArrowIcon />
           </a>
         </li>
@@ -25,128 +31,121 @@ import { capabilities } from "../data/capabilities";
 </figure>
 
 <style>
-  .stack {
+  .system {
+    position: relative;
     display: grid;
     gap: var(--space-lg);
-    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    background: var(--paper);
   }
-  .stack__caption {
+  /* A soft pool of light under the drawing, so it sits in space rather than on the page. */
+  .system::before {
+    content: "";
+    position: absolute;
+    inset: 8% 10% 12%;
+    z-index: -1;
+    background:
+      radial-gradient(closest-side, rgb(0 209 178 / 0.12), transparent 75%),
+      radial-gradient(closest-side at 50% 70%, rgb(22 24 26 / 0.06), transparent 85%);
+  }
+  /* Content sits above the canvas that scene.ts adds to this figure. */
+  .system__caption,
+  .system__layers {
+    position: relative;
+    z-index: 1;
+  }
+  .system__caption {
     display: grid;
     gap: 0.35rem;
   }
-  .stack__caption-text {
+  .system__caption-text {
     max-width: 34ch;
     color: var(--ink-2);
     font-size: var(--text-sm);
   }
-  .stack__layers {
+  /* :global because the element belongs to ScenePoster. */
+  .system :global(.system__stage) {
+    width: min(100%, 30rem);
+    justify-self: center;
+    aspect-ratio: 600 / 640;
+  }
+  .system__layers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 0.5rem;
+  }
+  .system__layer {
     position: relative;
     display: grid;
-    gap: 0.625rem;
-    padding-left: 1.5rem;
-  }
-  /* The spine connecting the layers. */
-  .stack__layers::before {
-    content: "";
-    position: absolute;
-    top: 1.4rem;
-    bottom: 1.4rem;
-    left: 0.3rem;
-    width: 1px;
-    background: var(--rule-strong);
-  }
-  .stack__item {
-    position: relative;
-  }
-  .stack__item::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -1.45rem;
-    z-index: 1;
-    width: 0.55rem;
-    height: 0.55rem;
-    border: 1px solid var(--teal-ink);
-    background: var(--paper);
-    transform: translateY(-50%);
-    transition: background-color var(--duration) var(--ease-out);
-  }
-  .stack__item::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -0.9rem;
-    width: 0.9rem;
-    height: 1px;
-    background: var(--rule-strong);
-  }
-  .stack__item:nth-child(2)::after {
-    width: 1.5rem;
-  }
-  .stack__item:nth-child(3)::after {
-    width: 2.1rem;
-  }
-  .stack__item:nth-child(4)::after {
-    width: 2.7rem;
-  }
-  .stack__item:nth-child(2) .stack__layer {
-    margin-left: 0.6rem;
-  }
-  .stack__item:nth-child(3) .stack__layer {
-    margin-left: 1.2rem;
-  }
-  .stack__item:nth-child(4) .stack__layer {
-    margin-left: 1.8rem;
-  }
-  .stack__item:hover::before,
-  .stack__item:focus-within::before {
-    background: var(--teal);
-  }
-  .stack__layer {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.15rem var(--space-md);
-    padding: 0.85rem 1rem;
+    gap: 0.1rem 0.75rem;
+    padding: 0.7rem 0.85rem;
     border: 1px solid var(--rule);
-    border-radius: var(--radius-sm);
-    background: var(--ivory);
+    border-radius: var(--radius);
+    background: rgb(252 251 248 / 0.9);
+    box-shadow: var(--shadow-1);
     text-decoration: none;
     transition:
       border-color var(--duration) var(--ease-out),
-      background-color var(--duration) var(--ease-out);
+      box-shadow var(--duration) var(--ease-out),
+      transform var(--duration) var(--ease-out);
   }
-  .stack__name {
+  .system__index {
+    grid-row: span 2;
     color: var(--teal-ink);
     font-family: var(--font-mono);
     font-size: 0.75rem;
+  }
+  .system__name {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
   }
-  .stack__detail {
-    grid-column: 1;
-    font-weight: 500;
-  }
-  .stack__layer :global(svg) {
+  .system__detail {
     grid-column: 2;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .system__layer :global(svg) {
+    grid-column: 3;
     grid-row: 1 / span 2;
-    width: 1rem;
-    height: 1rem;
+    width: 0.95rem;
+    height: 0.95rem;
     color: var(--muted);
     transition:
       transform var(--duration) var(--ease-out),
       color var(--duration) var(--ease-out);
   }
-  .stack__layer:hover {
-    border-color: var(--ink-2);
-    background: var(--paper);
-  }
-  .stack__layer:hover :global(svg) {
-    color: var(--ink);
+  .system__layer:hover,
+  .system__layer:focus-visible {
+    border-color: var(--teal-ink);
+    box-shadow: var(--shadow-2);
     transform: translateX(3px);
+  }
+  .system__layer:hover :global(svg) {
+    color: var(--teal-ink);
+    transform: translateX(3px);
+  }
+
+  /* From here the labels sit beside the drawing, joined to their plates by callout lines. */
+  @media (min-width: 40em) {
+    .system {
+      grid-template-columns: minmax(0, 1fr) minmax(11rem, 13.5rem);
+      column-gap: var(--space-lg);
+    }
+    .system__caption {
+      grid-column: 1 / -1;
+    }
+    .system :global(.system__stage) {
+      width: 100%;
+    }
+    .system__layers {
+      grid-template-columns: minmax(0, 1fr);
+      align-content: center;
+      gap: clamp(0.75rem, 2vw, 1.6rem);
+      padding-block: 8% 12%;
+    }
   }
 </style>
