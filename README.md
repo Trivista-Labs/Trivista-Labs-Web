@@ -56,6 +56,8 @@ status: live                   # live, in-development, internal or completed
 url: https://example.com       # optional public link
 cover: ./images/project.png    # optional screenshot, kept next to the file
 coverAlt: The booking calendar for a single branch
+screen: ./images/project-phone.png  # optional phone screenshot, shown in front of the cover
+screenAlt: The booking screen on a phone
 caseStudy: true                # true gives the project its own page under /work/
 draft: false                   # drafts never reach the live site
 ---
@@ -68,13 +70,22 @@ Only publish verified facts, and name clients only with their permission. Draft 
 
 ### Design system
 
-Colours, type scale, spacing, radii and motion are CSS custom properties in `frontend/src/styles/tokens.css`. Components use the tokens instead of fixed values. The palette is warm ivory with charcoal and Trivista teal. Bright teal (`--teal`) is for graphics and dark sections; text links on light backgrounds use `--teal-ink`, because bright teal on ivory is too low in contrast to read.
+Colours, type scale, spacing, radii, depth and motion are CSS custom properties in `frontend/src/styles/tokens.css`. Components use the tokens instead of fixed values. The palette is warm ivory with charcoal and Trivista teal. Bright teal (`--teal`) is for graphics and dark sections; text links on light backgrounds use `--teal-ink`, because bright teal on ivory is too low in contrast to read.
+
+`frontend/src/styles/depth.css` holds the shared depth language: raised panels (`.panel`), dark surfaces (`.surface-dark`), technical grids (`.tech-grid`), button lighting, and the reveal animation. Teal is used as light, not decoration.
+
+#### 3D and motion
+
+- **The 3D scenes** (the capability stack in the home hero, the site plan behind inner page headers) are drawn by a small renderer in `frontend/src/lib/scene.ts`, with the scenes defined in `frontend/src/lib/scenes.ts`. The same code draws a still SVG at build time, which is what people see without JavaScript, with reduced motion, with Save-Data on, or on low-memory devices. `frontend/src/scripts/scene.ts` replaces it with a live canvas. That script loads only on pages with a scene, pauses when the scene is off screen, and stops animating on devices that can't draw a frame within budget, keeping a still frame that follows the scroll.
+- **The capability drawings** reuse the hero's plates, so the same objects appear in the hero, the home page and the Capabilities page.
+- **The Trivista mark** in `frontend/src/data/brand.ts` is traced from the original artwork as vector faces. `PenroseMark.astro` separates its three bands in depth.
+- **Motion** lives in `frontend/src/scripts/motion.ts`: reveals, the pointer-lit panels and tilts, and the live measurements in the "Evidence" panel. None of it runs with reduced motion, and content is never hidden unless it starts off screen.
 
 ### Keeping the site's claims true
 
 The home page lists facts about this website, such as how much JavaScript it ships, in `frontend/src/data/principles.ts`. Visitors can check them in their browser, so they must stay accurate:
 
-- A browser test in `tests/e2e/site.spec.ts` fails if the home page ships 1 KB or more of compressed JavaScript.
+- A browser test in `tests/e2e/site.spec.ts` fails if the home page ships 10 KB or more of compressed JavaScript. The 3D drawing is most of it, and loads only on pages that have one.
 - If you add analytics, cookies or third-party scripts, update those facts, the Privacy Policy and the Content-Security-Policy together.
 - Capability, project and founder copy should only state what the founders have confirmed.
 
