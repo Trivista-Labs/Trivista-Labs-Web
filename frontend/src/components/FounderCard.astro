@@ -1,0 +1,79 @@
+---
+import { Picture } from "astro:assets";
+import type { Founder } from "../data/founders";
+
+interface Props {
+  founder: Founder;
+}
+
+const { founder } = Astro.props;
+---
+
+<article class="founder">
+  <Picture
+    src={founder.photo}
+    alt={`Portrait of ${founder.name}`}
+    formats={["avif", "webp"]}
+    widths={[208, 320, 480, 640, 960]}
+    sizes="(min-width: 64em) 24rem, (min-width: 40em) 45vw, 6.5rem"
+  />
+  <div class="founder__body">
+    <p class="mono-label founder__role">{founder.role}</p>
+    <h3 class="founder__name">{founder.name}</h3>
+    <p class="founder__title">{founder.title}</p>
+    <p class="founder__focus">{founder.focus}</p>
+    {
+      founder.linkedin && (
+        <a class="link founder__link" href={founder.linkedin} target="_blank" rel="noopener noreferrer">
+          LinkedIn
+          <span class="visually-hidden"> profile of {founder.name} (opens in a new tab)</span>
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .founder {
+    display: grid;
+    grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr);
+    align-content: start;
+    align-items: start;
+    gap: var(--space-md);
+  }
+  .founder :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--rule);
+  }
+  .founder__body {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .founder__role {
+    color: var(--teal-ink);
+  }
+  .founder__name {
+    margin-top: 0.15rem;
+    font-size: var(--text-xl);
+  }
+  .founder__title {
+    font-weight: 500;
+  }
+  .founder__focus {
+    margin-top: 0.35rem;
+    color: var(--ink-2);
+  }
+  .founder__link {
+    margin-top: 0.35rem;
+    justify-self: start;
+  }
+  @media (min-width: 40em) {
+    .founder {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

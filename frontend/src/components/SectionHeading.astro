@@ -1,0 +1,59 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  id: string;
+}
+
+const { eyebrow, title, id } = Astro.props;
+const hasAside = Astro.slots.has("default");
+---
+
+<div class:list={["section-heading", { "section-heading--split": hasAside }]}>
+  <div class="section-heading__main">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h2 class="section-heading__title" id={id}>{title}</h2>
+  </div>
+  {
+    hasAside && (
+      <div class="section-heading__aside">
+        <slot />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .section-heading {
+    display: grid;
+    gap: var(--space-lg);
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .section-heading__main {
+    display: grid;
+    gap: var(--space-md);
+  }
+  .section-heading__title {
+    max-width: 20ch;
+    font-size: var(--text-3xl);
+    line-height: 1.06;
+    letter-spacing: var(--tracking-display);
+  }
+  .section-heading__aside {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-md);
+    max-width: 42ch;
+    color: var(--ink-2);
+  }
+  :global(.section--dark) .section-heading__aside {
+    color: var(--on-dark-2);
+  }
+  @media (min-width: 60em) {
+    .section-heading--split {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+      column-gap: var(--space-3xl);
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+interface Props {
+  missing: readonly string[];
+  label?: string;
+}
+
+const { missing, label = "This page is a draft and is not published." } = Astro.props;
+// Only rendered in draft previews. Never reaches the production build.
+---
+
+<aside class="draft-notice" aria-label="Draft notice">
+  <p class="draft-notice__title">{label}</p>
+  {
+    missing.length > 0 && (
+      <>
+        <p>Before it can go live, the team needs to provide:</p>
+        <ul>
+          {missing.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</aside>
+
+<style>
+  .draft-notice {
+    display: grid;
+    gap: var(--space-xs);
+    max-width: 48rem;
+    margin-bottom: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    border: 1px dashed var(--teal-ink);
+    border-radius: var(--radius);
+    background: var(--teal-tint);
+    font-size: var(--text-sm);
+  }
+  .draft-notice__title {
+    font-weight: 600;
+  }
+  .draft-notice ul {
+    display: grid;
+    gap: 0.2rem;
+    padding-left: 1.2rem;
+  }
+</style>

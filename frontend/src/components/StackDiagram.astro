@@ -1,0 +1,152 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+import { capabilities } from "../data/capabilities";
+// The four capability layers, drawn as the stack they form inside a business.
+---
+
+<figure class="stack">
+  <figcaption class="stack__caption">
+    <span class="mono-label">Where we work</span>
+    <span class="stack__caption-text">From the products your customers use to the infrastructure underneath.</span>
+  </figcaption>
+  <ol class="stack__layers" role="list">
+    {
+      capabilities.map((capability) => (
+        <li class="stack__item">
+          <a class="stack__layer" href={`/capabilities/#${capability.id}`}>
+            <span class="stack__name">{capability.layer}</span>
+            <span class="stack__detail">{capability.layerDetail}</span>
+            <ArrowIcon />
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</figure>
+
+<style>
+  .stack {
+    display: grid;
+    gap: var(--space-lg);
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .stack__caption {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .stack__caption-text {
+    max-width: 34ch;
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+  }
+  .stack__layers {
+    position: relative;
+    display: grid;
+    gap: 0.625rem;
+    padding-left: 1.5rem;
+  }
+  /* The spine connecting the layers. */
+  .stack__layers::before {
+    content: "";
+    position: absolute;
+    top: 1.4rem;
+    bottom: 1.4rem;
+    left: 0.3rem;
+    width: 1px;
+    background: var(--rule-strong);
+  }
+  .stack__item {
+    position: relative;
+  }
+  .stack__item::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -1.45rem;
+    z-index: 1;
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 1px solid var(--teal-ink);
+    background: var(--paper);
+    transform: translateY(-50%);
+    transition: background-color var(--duration) var(--ease-out);
+  }
+  .stack__item::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -0.9rem;
+    width: 0.9rem;
+    height: 1px;
+    background: var(--rule-strong);
+  }
+  .stack__item:nth-child(2)::after {
+    width: 1.5rem;
+  }
+  .stack__item:nth-child(3)::after {
+    width: 2.1rem;
+  }
+  .stack__item:nth-child(4)::after {
+    width: 2.7rem;
+  }
+  .stack__item:nth-child(2) .stack__layer {
+    margin-left: 0.6rem;
+  }
+  .stack__item:nth-child(3) .stack__layer {
+    margin-left: 1.2rem;
+  }
+  .stack__item:nth-child(4) .stack__layer {
+    margin-left: 1.8rem;
+  }
+  .stack__item:hover::before,
+  .stack__item:focus-within::before {
+    background: var(--teal);
+  }
+  .stack__layer {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.15rem var(--space-md);
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    background: var(--ivory);
+    text-decoration: none;
+    transition:
+      border-color var(--duration) var(--ease-out),
+      background-color var(--duration) var(--ease-out);
+  }
+  .stack__name {
+    color: var(--teal-ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .stack__detail {
+    grid-column: 1;
+    font-weight: 500;
+  }
+  .stack__layer :global(svg) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 1rem;
+    height: 1rem;
+    color: var(--muted);
+    transition:
+      transform var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+  .stack__layer:hover {
+    border-color: var(--ink-2);
+    background: var(--paper);
+  }
+  .stack__layer:hover :global(svg) {
+    color: var(--ink);
+    transform: translateX(3px);
+  }
+</style>

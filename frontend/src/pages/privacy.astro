@@ -1,0 +1,69 @@
+---
+import PageHero from "../components/PageHero.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site";
+// Plain-language policy that matches what the site does today. Have it reviewed before launch.
+---
+
+<BaseLayout
+  title="Privacy Policy | Trivista Labs"
+  description="How Trivista Labs handles the information you send through this website."
+>
+  <PageHero eyebrow="Legal" title="Privacy Policy">
+    <p class="mono-label">Last updated <time datetime={site.legalUpdated.iso}>{site.legalUpdated.display}</time></p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="prose">
+        <p>
+          This policy explains what information {site.legalName} (&ldquo;Trivista Labs&rdquo;, &ldquo;we&rdquo;)
+          collects through trivistalabs.io, and how we use it.
+        </p>
+
+        <h2>What we collect</h2>
+        <p>We only collect what you choose to send us through the contact form:</p>
+        <ul>
+          <li>your name and email address</li>
+          <li>your company name, if you give it</li>
+          <li>the type of project and the timeline you choose</li>
+          <li>your message</li>
+        </ul>
+        <p>This website does not use cookies, advertising tools or tracking scripts.</p>
+
+        <h2>How we use it</h2>
+        <p>
+          We use your details only to reply to your enquiry and to discuss the project you asked about. We do not sell
+          your information or share it with anyone for marketing.
+        </p>
+
+        <h2>How it is handled</h2>
+        <p>
+          When you send the form, your message goes to our server, which is hosted by Render, and is delivered to our
+          team’s inbox by email through Google. This website is hosted on GitHub Pages. Like most hosting providers,
+          these services may keep technical logs, such as IP addresses, to run and protect their systems.
+        </p>
+
+        <h2>How long we keep it</h2>
+        <p>
+          We keep enquiry emails for as long as we need them to respond to you and to keep a record of our business
+          conversations. You can ask us to delete them at any time.
+        </p>
+
+        <h2>Your choices</h2>
+        <p>
+          You can ask us to show you, correct or delete the personal information we hold about you. Email
+          <a href={`mailto:${site.email}`}>{site.email}</a> and we will respond as soon as we can.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>If we change how we handle information, we will update this page and the date at the top.</p>
+
+        <h2>Contact</h2>
+        <p>
+          {site.legalName}, {site.locality}, {site.country}. Email: <a href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

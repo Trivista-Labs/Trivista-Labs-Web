@@ -1,0 +1,150 @@
+---
+import ArrowIcon from "../components/ArrowIcon.astro";
+import CapabilityGrid from "../components/CapabilityGrid.astro";
+import CtaBand from "../components/CtaBand.astro";
+import FounderCard from "../components/FounderCard.astro";
+import Principles from "../components/Principles.astro";
+import ProcessSteps from "../components/ProcessSteps.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import StackDiagram from "../components/StackDiagram.astro";
+import WorkCard from "../components/WorkCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { founders } from "../data/founders";
+import { site } from "../data/site";
+import { organizationSchema, websiteSchema } from "../lib/seo";
+import { getWork } from "../lib/work";
+
+const work = (await getWork()).slice(0, 4);
+---
+
+<BaseLayout
+  title="Trivista Labs | Software engineering company in Sri Lanka"
+  description={site.description}
+  schema={[organizationSchema(), websiteSchema()]}
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow">Trivista Labs &middot; {site.locality}, {site.country}</p>
+        <h1 class="hero__title" id="hero-title">We design and build the software your business runs on.</h1>
+        <p class="lede">
+          Trivista Labs is an engineering company in {site.locality}. We build web and mobile products, business
+          systems such as ERP and booking platforms, connected hardware, and the infrastructure that keeps them
+          running.
+        </p>
+        <div class="hero__actions">
+          <a
+            class="button button--primary"
+            href="/contact/"
+            data-track="Start a project clicked"
+            data-track-location="hero"
+          >
+            Start a project
+          </a>
+          <a class="link-arrow" href="/capabilities/">See what we build<ArrowIcon /></a>
+        </div>
+      </div>
+      <StackDiagram />
+    </div>
+  </section>
+
+  <section class="section section--rule" aria-labelledby="build-title">
+    <div class="container">
+      <SectionHeading eyebrow="What we build" title="Four kinds of systems, one team." id="build-title">
+        <p>Most businesses need more than one of these. They work best when they are designed together.</p>
+      </SectionHeading>
+      <CapabilityGrid />
+    </div>
+  </section>
+
+  {
+    work.length > 0 && (
+      <section class="section section--rule" aria-labelledby="work-title">
+        <div class="container">
+          <SectionHeading eyebrow="Selected work" title="Products and systems we have built." id="work-title">
+            <a class="link-arrow" href="/work/">
+              All work
+              <ArrowIcon />
+            </a>
+          </SectionHeading>
+          <div class="work-grid">
+            {work.map((entry) => (
+              <WorkCard entry={entry} featured={work.length === 1} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section section--dark" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading eyebrow="How we build" title="From the first conversation to a system in use." id="process-title">
+        <p>
+          The stages we take a project through, from understanding the problem to improving the system once people
+          are using it.
+        </p>
+      </SectionHeading>
+      <ProcessSteps />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="principles-title">
+    <div class="container">
+      <SectionHeading eyebrow="Engineering" title="What we hold our work to." id="principles-title" />
+      <Principles />
+    </div>
+  </section>
+
+  <section class="section section--rule" aria-labelledby="founders-title">
+    <div class="container">
+      <SectionHeading eyebrow="Company" title="Led by its three founders." id="founders-title">
+        <p>Trivista Labs is run by the people who design and build its systems.</p>
+        <a class="link-arrow" href="/company/">
+          About the company
+          <ArrowIcon />
+        </a>
+      </SectionHeading>
+      <div class="founder-grid">
+        {founders.map((founder) => <FounderCard founder={founder} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand location="home" />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem) clamp(3.5rem, 2rem + 6vw, 7.5rem);
+  }
+  .hero__grid {
+    display: grid;
+    align-items: center;
+    gap: var(--space-2xl);
+  }
+  .hero__text {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-lg);
+  }
+  .hero__title {
+    max-width: 18ch;
+    font-size: clamp(2.375rem, 1.5rem + 3.4vw, 4.25rem);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-display);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-xl);
+    margin-top: var(--space-xs);
+  }
+  @media (min-width: 60em) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--space-3xl);
+    }
+  }
+</style>

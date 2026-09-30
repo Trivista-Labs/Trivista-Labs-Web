@@ -1,0 +1,36 @@
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+import { CAPABILITY_IDS } from "./data/capabilities";
+
+// Projects and case studies. A project is public only when `draft: false`.
+// Draft entries appear in `astro dev` and in builds made with PUBLIC_SHOW_DRAFTS=true.
+const work = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/work" }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      summary: z.string().max(200),
+      category: z.string(),
+      capability: z.enum(CAPABILITY_IDS),
+      status: z.enum(["live", "in-development", "internal", "completed"]).optional(),
+      client: z.string().optional(),
+      year: z.number().int().optional(),
+      url: z.httpUrl().optional(),
+      cover: image().optional(),
+      coverAlt: z.string().optional(),
+      stack: z.array(z.string()).default([]),
+      /** True when the entry has a full case-study page. */
+      caseStudy: z.boolean().default(false),
+      draft: z.boolean().default(true),
+      order: z.number().default(100),
+      /** Details the founders still need to provide. Shown on draft previews only. */
+      missing: z.array(z.string()).default([]),
+    })
+    .refine((entry) => !entry.cover || Boolean(entry.coverAlt), {
+      error: "Describe the cover image in coverAlt, for people using screen readers.",
+      path: ["coverAlt"],
+    }),
+});
+
+export const collections = { work };

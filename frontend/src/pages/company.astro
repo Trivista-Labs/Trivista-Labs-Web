@@ -1,0 +1,117 @@
+---
+import CtaBand from "../components/CtaBand.astro";
+import DraftNotice from "../components/DraftNotice.astro";
+import FounderCard from "../components/FounderCard.astro";
+import PageHero from "../components/PageHero.astro";
+import ProcessSteps from "../components/ProcessSteps.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { founderDetailsMissing, founders } from "../data/founders";
+import { site, social } from "../data/site";
+import { breadcrumbSchema, organizationSchema } from "../lib/seo";
+import { showDrafts } from "../lib/work";
+
+const linkedin = social.find((link) => link.label === "LinkedIn");
+---
+
+<BaseLayout
+  title="Company | Trivista Labs"
+  description="Trivista Labs (Pvt) Ltd is a technology company in Colombo, Sri Lanka, led by its founders Esala Gamage, Umesh Isuranga and Dulaj Yuthsara."
+  schema={[
+    organizationSchema(),
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Company", path: "/company/" },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Company"
+    title="Founded and run by the people who build the systems."
+    lede={`${site.legalName} is a technology company in ${site.locality}, ${site.country}. It is led by its three founders, who between them cover the business, its software architecture, and its hardware and operations.`}
+  />
+
+  <section class="section" aria-labelledby="founders-title">
+    <div class="container">
+      <SectionHeading eyebrow="Founders" title="Each founder leads one part of the company." id="founders-title" />
+      {showDrafts && <DraftNotice label="Founder bios are not written yet." missing={founderDetailsMissing} />}
+      <div class="founder-grid">
+        {founders.map((founder) => <FounderCard founder={founder} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" aria-labelledby="process-title">
+    <div class="container">
+      <SectionHeading eyebrow="How we work" title="Six stages, from the problem to a system in use." id="process-title" />
+      <ProcessSteps detailed />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="details-title">
+    <div class="container">
+      <SectionHeading eyebrow="Details" title="Company details" id="details-title" />
+      <dl class="details">
+        <div class="details__row">
+          <dt>Registered name</dt>
+          <dd>{site.legalName}</dd>
+        </div>
+        <div class="details__row">
+          <dt>Based in</dt>
+          <dd>{site.locality}, {site.country}</dd>
+        </div>
+        <div class="details__row">
+          <dt>Email</dt>
+          <dd><a class="link" href={`mailto:${site.email}`}>{site.email}</a></dd>
+        </div>
+        {
+          linkedin && (
+            <div class="details__row">
+              <dt>LinkedIn</dt>
+              <dd>
+                <a class="link" href={linkedin.href} target="_blank" rel="noopener noreferrer">
+                  Trivista Labs on LinkedIn
+                  <span class="visually-hidden"> (opens in a new tab)</span>
+                </a>
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </div>
+  </section>
+
+  <CtaBand location="company" />
+</BaseLayout>
+
+<style>
+  .details {
+    display: grid;
+    max-width: 48rem;
+    border-top: 1px solid var(--rule);
+  }
+  .details__row {
+    display: grid;
+    gap: 0.2rem var(--space-xl);
+    padding-block: var(--space-md);
+    border-bottom: 1px solid var(--rule);
+  }
+  .details__row dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+  }
+  .details__row dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 40em) {
+    .details__row {
+      grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+    }
+    .details__row dt {
+      padding-top: 0.2rem;
+    }
+  }
+</style>

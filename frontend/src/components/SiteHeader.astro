@@ -1,0 +1,181 @@
+---
+import BrandMark from "./BrandMark.astro";
+import { navigation } from "../data/site";
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+const onContact = isCurrent("/contact/");
+---
+
+<header class="site-header" data-site-header>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="container site-header__bar">
+    <a class="brand" href="/" aria-label="Trivista Labs home">
+      <BrandMark />
+      <span class="brand__name">Trivista Labs</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Main">
+      <ul class="site-nav__list" role="list">
+        {
+          navigation.map((item) => (
+            <li>
+              <a class="site-nav__link" href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        class="button button--primary"
+        href="/contact/"
+        aria-current={onContact ? "page" : undefined}
+        data-track="Start a project clicked"
+        data-track-location="header"
+      >
+        Start a project
+      </a>
+    </nav>
+
+    <a class="menu-toggle" href="#site-footer-nav" data-nav-fallback>Menu</a>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-nav-toggle
+      hidden
+    >
+      <span data-nav-label>Menu</span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-nav-menu hidden>
+    <nav class="container" aria-label="Main">
+      <ul class="mobile-menu__list" role="list">
+        {
+          navigation.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        class="button button--primary mobile-menu__cta"
+        href="/contact/"
+        data-track="Start a project clicked"
+        data-track-location="mobile-menu"
+      >
+        Start a project
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 20;
+    border-bottom: 1px solid var(--rule);
+    background: var(--ivory);
+  }
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    min-height: 4.5rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .site-nav {
+    display: none;
+    align-items: center;
+    gap: var(--space-xl);
+  }
+  .site-nav__list {
+    display: flex;
+    gap: var(--space-xl);
+  }
+  .site-nav__link {
+    display: inline-block;
+    padding-block: 0.35rem;
+    border-bottom: 1px solid transparent;
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+  .site-nav__link:hover {
+    border-color: var(--rule-strong);
+    color: var(--ink);
+  }
+  .site-nav__link[aria-current="page"] {
+    border-color: var(--teal-ink);
+    color: var(--ink);
+  }
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.75rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: transparent;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .mobile-menu {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    padding-block: var(--space-xs) var(--space-xl);
+    border-bottom: 1px solid var(--rule);
+    background: var(--ivory);
+    box-shadow: 0 24px 32px -28px rgb(22 24 26 / 0.45);
+  }
+  .mobile-menu__list a {
+    display: block;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .mobile-menu__list a[aria-current="page"] {
+    color: var(--teal-ink);
+  }
+  .mobile-menu__cta {
+    width: 100%;
+    margin-top: var(--space-lg);
+  }
+  /* Must match DESKTOP in src/scripts/site.ts. */
+  @media (min-width: 60em) {
+    .site-nav {
+      display: flex;
+    }
+    .menu-toggle,
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+</style>

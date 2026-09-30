@@ -1,0 +1,184 @@
+---
+import { Picture } from "astro:assets";
+import ArrowIcon from "./ArrowIcon.astro";
+import { STATUS_LABELS, workHref, type WorkEntry } from "../lib/work";
+
+interface Props {
+  entry: WorkEntry;
+  headingLevel?: 2 | 3;
+  /** Full-width layout, used when a single project is shown. */
+  featured?: boolean;
+}
+
+const { entry, headingLevel = 3, featured = false } = Astro.props;
+const { data } = entry;
+const href = workHref(entry);
+const isExternal = Boolean(href) && !data.caseStudy;
+const host = isExternal && href ? new URL(href).host.replace(/^www\./, "") : undefined;
+const Heading = headingLevel === 2 ? "h2" : "h3";
+---
+
+<article
+  class:list={[
+    "work-card",
+    {
+      "work-card--linked": Boolean(href),
+      "work-card--media": Boolean(data.cover),
+      "work-card--featured": featured,
+    },
+  ]}
+>
+  {
+    data.cover && (
+      <div class="work-card__media">
+        <Picture
+          src={data.cover}
+          alt={data.coverAlt ?? ""}
+          formats={["avif", "webp"]}
+          widths={[480, 720, 960, 1280]}
+          sizes={featured ? "(min-width: 60em) 46rem, 100vw" : "(min-width: 48em) 38rem, 100vw"}
+        />
+      </div>
+    )
+  }
+  <div class="work-card__body">
+    <div class="work-card__head">
+      <div class="work-card__meta">
+        <span class="eyebrow">{data.category}</span>
+        {data.status && <span class="work-card__status" data-status={data.status}>{STATUS_LABELS[data.status]}</span>}
+        {data.draft && <span class="work-card__draft">Draft</span>}
+      </div>
+      <Heading class="work-card__title">
+        {
+          href ? (
+            <a href={href}>
+              {data.title}
+              <ArrowIcon />
+            </a>
+          ) : (
+            data.title
+          )
+        }
+      </Heading>
+    </div>
+    <div class="work-card__text">
+      <p class="work-card__summary">{data.summary}</p>
+      {host && <p class="mono-label">{host}</p>}
+    </div>
+  </div>
+</article>
+
+<style>
+  .work-card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--ink);
+  }
+  .work-card--media {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .work-card__media {
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    background: var(--rule);
+  }
+  .work-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .work-card__body,
+  .work-card__head,
+  .work-card__text {
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+  }
+  .work-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+  .work-card__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-2);
+    font-size: var(--text-xs);
+  }
+  .work-card__status::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .work-card__status[data-status="live"]::before {
+    background: var(--teal-ink);
+  }
+  .work-card__draft {
+    padding: 0.1rem 0.45rem;
+    border: 1px dashed var(--rule-strong);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .work-card__title {
+    font-size: var(--text-2xl);
+    letter-spacing: var(--tracking-display);
+  }
+  .work-card__title a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  /* The whole card is the link target. */
+  .work-card__title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .work-card__title a :global(svg) {
+    flex: none;
+    width: 0.7em;
+    height: 0.7em;
+    color: var(--teal-ink);
+    transition: transform var(--duration) var(--ease-out);
+  }
+  .work-card--linked:hover .work-card__title a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+  .work-card--linked:hover .work-card__title a :global(svg) {
+    transform: translateX(3px);
+  }
+  .work-card__summary {
+    max-width: 52ch;
+    color: var(--ink-2);
+  }
+  /* The work grid has two columns from 48em, so a lone featured card spans both from there. */
+  @media (min-width: 48em) {
+    .work-card--featured {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 60em) {
+    .work-card--featured .work-card__body {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: var(--space-3xl);
+    }
+    .work-card--featured .work-card__summary {
+      font-size: var(--text-lg);
+    }
+  }
+</style>

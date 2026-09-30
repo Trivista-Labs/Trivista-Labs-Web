@@ -1,0 +1,172 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { gzipSync } from "node:zlib";
+import { expect, test } from "@playwright/test";
+
+const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/"];
+// The widths the redesign brief asks to check.
+const WIDTHS = [1440, 1280, 1024, 768, 390, 375];
+
+// Every work entry, read from the content files, so new drafts are covered automatically.
+const WORK_DIR = new URL("../../src/content/work/", import.meta.url);
+const WORK_ENTRIES = readdirSync(WORK_DIR)
+  .filter((file) => file.endsWith(".md"))
+  .map((file) => {
+    const frontmatter = readFileSync(new URL(file, WORK_DIR), "utf8").split("---")[1] ?? "";
+    const field = (name: string) => frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, "m"))?.[1].trim();
+    // Entries are drafts unless they say otherwise, matching the content schema.
+    return { slug: file.replace(/\.md$/, ""), title: field("title") ?? "", draft: field("draft") !== "false" };
+  });
+
+// Never call the production API from tests. The contact page wakes it on load.
+test.beforeEach(async ({ page }) => {
+  await page.route("https://trivista-labs-api.onrender.com/**", (route) =>
+    route.fulfill({ status: 200, json: { status: "ok" } })
+  );
+});
+
+test.describe("layout", () => {
+  for (const width of WIDTHS) {
+    test(`no page scrolls sideways at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      for (const path of PAGES) {
+        await page.goto(path);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+        );
+        expect(overflow, `${path} overflows by ${overflow}px`).toBeLessThanOrEqual(0);
+      }
+    });
+  }
+});
+
+test.describe("pages", () => {
+  for (const path of PAGES) {
+    test(`${path} has one h1, metadata, share tags, a CSP and no console errors`, async ({ page }) => {
+      const errors: string[] = [];
+      page.on("console", (message) => {
+        if (message.type() === "error") errors.push(message.text());
+      });
+      page.on("pageerror", (error) => errors.push(error.message));
+
+      const response = await page.goto(path);
+      expect(response?.status()).toBe(200);
+      await expect(page.locator("h1")).toHaveCount(1);
+      await expect(page).toHaveTitle(/Trivista Labs/);
+
+      const description = await page.locator('meta[name="description"]').getAttribute("content");
+      expect(description?.length ?? 0).toBeGreaterThan(50);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://trivistalabs.io${path}`);
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/default\.png$/);
+      await expect(page.locator('meta[http-equiv="content-security-policy"]')).toHaveCount(1);
+      expect(errors).toEqual([]);
+    });
+  }
+
+  test("the home page describes the organisation in structured data", async ({ page }) => {
+    await page.goto("/");
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const types = blocks.map((text) => (JSON.parse(text) as { "@type": string })["@type"]);
+    expect(types).toEqual(expect.arrayContaining(["Organization", "WebSite"]));
+  });
+
+  test("unknown addresses get the 404 page", async ({ page }) => {
+    const response = await page.goto("/does-not-exist/");
+    expect(response?.status()).toBe(404);
+    await expect(page.locator("h1")).toHaveText(/doesn’t exist/);
+  });
+
+  test("draft projects appear nowhere on the published site", async ({ page }) => {
+    const drafts = WORK_ENTRIES.filter((entry) => entry.draft);
+    for (const path of ["/", "/work/", "/capabilities/"]) {
+      await page.goto(path);
+      await expect(page.getByText("Draft", { exact: true })).toHaveCount(0);
+      for (const draft of drafts) {
+        await expect(page.getByText(draft.title, { exact: true }), `${draft.title} on ${path}`).toHaveCount(0);
+      }
+    }
+    for (const draft of drafts) {
+      const response = await page.goto(`/work/${draft.slug}/`);
+      expect(response?.status(), draft.slug).toBe(404);
+    }
+  });
+
+  test("the home page ships under 1 KB of compressed JavaScript, as it claims", async ({ page }) => {
+    const bodies: Promise<Buffer>[] = [];
+    page.on("response", (response) => {
+      if (response.request().resourceType() === "script") bodies.push(response.body());
+    });
+    await page.goto("/", { waitUntil: "networkidle" });
+    const scripts = await Promise.all(bodies);
+    const compressed = scripts.reduce((total, body) => total + gzipSync(body).length, 0);
+    expect(scripts.length).toBeGreaterThan(0);
+    expect(compressed).toBeLessThan(1024);
+  });
+
+  test("robots.txt points to the sitemap", async ({ request }) => {
+    const robots = await request.get("/robots.txt");
+    expect(robots.ok()).toBe(true);
+    expect(await robots.text()).toContain("Sitemap: https://trivistalabs.io/sitemap-index.xml");
+    const sitemap = await request.get("/sitemap-0.xml");
+    expect(await sitemap.text()).toContain("<loc>https://trivistalabs.io/capabilities/</loc>");
+  });
+});
+
+test.describe("navigation", () => {
+  test("the mobile menu opens, closes with Escape and navigates", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+
+    const toggle = page.getByRole("button", { name: "Menu" });
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await toggle.click();
+
+    const menu = page.locator("#mobile-menu");
+    await expect(menu).toBeVisible();
+    await expect(page.getByRole("button", { name: "Close" })).toHaveAttribute("aria-expanded", "true");
+
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+    await expect(page.getByRole("button", { name: "Menu" })).toBeFocused();
+
+    await page.getByRole("button", { name: "Menu" }).click();
+    await menu.getByRole("link", { name: "Capabilities" }).click();
+    await expect(page).toHaveURL(/\/capabilities\/$/);
+  });
+
+  test("the desktop navigation marks the current page", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/company/");
+    const nav = page.getByRole("navigation", { name: "Main" });
+    await expect(nav.getByRole("link", { name: "Company" })).toHaveAttribute("aria-current", "page");
+  });
+
+  test.describe("without JavaScript", () => {
+    test.use({ javaScriptEnabled: false });
+
+    test("the menu link leads to the footer navigation", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto("/");
+      const menu = page.getByRole("link", { name: "Menu", exact: true });
+      await expect(menu).toHaveAttribute("href", "#site-footer-nav");
+      await menu.click();
+      await expect(page.locator("#site-footer-nav")).toBeInViewport();
+    });
+
+    test("the contact page offers email instead of a form that cannot send", async ({ page }) => {
+      await page.goto("/contact/");
+      // Chromium still parses <noscript> as if scripts ran when tests switch JavaScript
+      // off, so check that the fallback is in the page rather than that it renders.
+      expect(await page.locator("noscript").first().textContent()).toContain("This form needs JavaScript");
+      await expect(page.getByRole("button", { name: "Send message" })).toBeDisabled();
+      await expect(page.getByRole("link", { name: "contact@trivistalabs.lk" }).first()).toBeVisible();
+    });
+  });
+
+  test("the skip link moves focus to the main content", async ({ page }) => {
+    await page.goto("/");
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("main")).toBeFocused();
+  });
+});

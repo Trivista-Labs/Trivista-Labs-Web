@@ -1,0 +1,199 @@
+---
+import CtaBand from "../components/CtaBand.astro";
+import PageHero from "../components/PageHero.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { capabilities } from "../data/capabilities";
+import { breadcrumbSchema } from "../lib/seo";
+import { getWork, workHref } from "../lib/work";
+
+const work = await getWork();
+---
+
+<BaseLayout
+  title="Capabilities | Trivista Labs"
+  description="Web and mobile apps, business systems, hardware and IoT, and enterprise IT: what Trivista Labs builds, and the problem each one solves."
+  schema={[
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Capabilities", path: "/capabilities/" },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Capabilities"
+    title="What we build, and the problems it solves."
+    lede="Trivista Labs designs, builds and runs four kinds of systems. Each one starts with a business problem."
+  >
+    <nav class="jump" aria-label="Capabilities on this page">
+      <ul role="list">
+        {
+          capabilities.map((capability) => (
+            <li>
+              <a href={`#${capability.id}`}>{capability.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </PageHero>
+
+  {
+    capabilities.map((capability) => {
+      const related = work.filter((entry) => entry.data.capability === capability.id);
+      return (
+        <section class="capability" id={capability.id} aria-labelledby={`${capability.id}-title`}>
+          <div class="container capability__grid">
+            <div class="capability__intro">
+              <p class="eyebrow">{capability.label}</p>
+              <h2 class="capability__title" id={`${capability.id}-title`}>
+                {capability.title}
+              </h2>
+            </div>
+            <div class="capability__body">
+              <p class="capability__problem">{capability.problem}</p>
+              <p class="capability__summary">{capability.summary}</p>
+              <h3 class="capability__subhead">What we deliver</h3>
+              <ul class="capability__deliverables" role="list">
+                {capability.deliverables.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              {related.length > 0 && (
+                <>
+                  <h3 class="capability__subhead">Related work</h3>
+                  <ul class="capability__work" role="list">
+                    {related.map((entry) => {
+                      const href = workHref(entry);
+                      return (
+                        <li>
+                          {href ? (
+                            <a class="capability__work-title" href={href}>
+                              {entry.data.title}
+                            </a>
+                          ) : (
+                            <span class="capability__work-title">{entry.data.title}</span>
+                          )}
+                          <span class="capability__work-summary">{entry.data.summary}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <CtaBand location="capabilities" />
+</BaseLayout>
+
+<style>
+  .jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: var(--space-xs);
+  }
+  .jump a {
+    display: inline-block;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .jump a:hover {
+    border-color: var(--ink);
+  }
+  .capability {
+    padding-block: var(--section);
+    border-bottom: 1px solid var(--rule);
+    scroll-margin-top: var(--space-md);
+  }
+  .capability__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .capability__intro {
+    display: grid;
+    align-content: start;
+    gap: var(--space-md);
+  }
+  .capability__title {
+    max-width: 14ch;
+    font-size: var(--text-3xl);
+    line-height: 1.06;
+    letter-spacing: var(--tracking-display);
+  }
+  .capability__body {
+    display: grid;
+    gap: var(--space-lg);
+    max-width: 40rem;
+  }
+  .capability__problem {
+    font-size: var(--text-xl);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .capability__summary {
+    color: var(--ink-2);
+  }
+  .capability__subhead {
+    margin-top: var(--space-md);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .capability__deliverables {
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+  .capability__deliverables li {
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 500;
+  }
+  .capability__work {
+    display: grid;
+    gap: var(--space-md);
+  }
+  .capability__work li {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .capability__work-title {
+    font-weight: 600;
+  }
+  a.capability__work-title {
+    color: var(--teal-ink);
+    text-underline-offset: 0.2em;
+  }
+  .capability__work-summary {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+  }
+  @media (min-width: 40em) {
+    .capability__deliverables {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-xl);
+    }
+  }
+  @media (min-width: 60em) {
+    .capability__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: var(--space-3xl);
+    }
+    .capability__intro {
+      position: sticky;
+      top: var(--space-xl);
+      align-self: start;
+    }
+  }
+</style>

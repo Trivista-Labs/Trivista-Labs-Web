@@ -1,0 +1,38 @@
+---
+import ArrowIcon from "../components/ArrowIcon.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page not found | Trivista Labs" description="The page you were looking for does not exist." noindex>
+  <section class="section">
+    <div class="container not-found">
+      <p class="eyebrow">404</p>
+      <h1 class="not-found__title">This page doesn’t exist.</h1>
+      <p class="lede">The link may be broken, or the page may have moved.</p>
+      <ul class="not-found__links" role="list">
+        <li><a class="link-arrow" href="/">Home<ArrowIcon /></a></li>
+        <li><a class="link-arrow" href="/work/">Work<ArrowIcon /></a></li>
+        <li><a class="link-arrow" href="/contact/">Start a project<ArrowIcon /></a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-lg);
+    min-height: 50vh;
+    align-content: center;
+  }
+  .not-found__title {
+    font-size: var(--text-3xl);
+    letter-spacing: var(--tracking-display);
+  }
+  .not-found__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-xl);
+  }
+</style>

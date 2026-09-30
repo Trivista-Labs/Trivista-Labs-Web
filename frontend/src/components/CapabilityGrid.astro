@@ -1,0 +1,94 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+import { capabilities } from "../data/capabilities";
+---
+
+<ul class="capabilities" role="list">
+  {
+    capabilities.map((capability) => (
+      <li class="capability">
+        <p class="eyebrow">{capability.label}</p>
+        <h3 class="capability__title">
+          <a href={`/capabilities/#${capability.id}`}>
+            {capability.title}
+            <ArrowIcon />
+          </a>
+        </h3>
+        <p class="capability__problem">{capability.problem}</p>
+        <ul class="capability__list" role="list">
+          {capability.deliverables.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .capabilities {
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+  .capability {
+    display: grid;
+    align-content: start;
+    gap: var(--space-md);
+    padding-block: var(--space-xl);
+    border-bottom: 1px solid var(--rule);
+  }
+  .capability__title {
+    font-size: var(--text-xl);
+  }
+  .capability__title a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  .capability__title a :global(svg) {
+    flex: none;
+    width: 0.8em;
+    height: 0.8em;
+    color: var(--teal-ink);
+    transition: transform var(--duration) var(--ease-out);
+  }
+  .capability__title a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+  .capability__title a:hover :global(svg) {
+    transform: translateX(3px);
+  }
+  .capability__problem {
+    max-width: 46ch;
+    color: var(--ink-2);
+  }
+  .capability__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .capability__list li {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  @media (min-width: 48em) {
+    .capabilities {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .capability:nth-child(odd) {
+      padding-right: var(--space-2xl);
+      border-right: 1px solid var(--rule);
+    }
+    .capability:nth-child(even) {
+      padding-left: var(--space-2xl);
+    }
+  }
+</style>

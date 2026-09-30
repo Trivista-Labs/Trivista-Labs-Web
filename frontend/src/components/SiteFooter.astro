@@ -1,0 +1,152 @@
+---
+import BrandMark from "./BrandMark.astro";
+import { navigation, site, social } from "../data/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="site-footer__logo" href="/">
+        <BrandMark />
+        <span>Trivista Labs</span>
+      </a>
+      <p class="site-footer__about">
+        Software, business systems, connected hardware and infrastructure, designed and built in {site.locality}.
+      </p>
+    </div>
+
+    <nav class="site-footer__col" id="site-footer-nav" aria-labelledby="footer-site-heading">
+      <h2 class="site-footer__heading" id="footer-site-heading">Site</h2>
+      <ul role="list">
+        <li><a href="/">Home</a></li>
+        {
+          navigation.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Contact</h2>
+      <ul role="list">
+        <li>
+          <a href={`mailto:${site.email}`} data-track="Email clicked" data-track-location="footer">{site.email}</a>
+        </li>
+        <li>{site.locality}, {site.country}</li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Follow</h2>
+      <ul role="list">
+        {
+          social.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track={`${link.label} clicked`}
+                data-track-location="footer"
+              >
+                {link.label}
+                <span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Legal</h2>
+      <ul role="list">
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container site-footer__base">
+    <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    --focus: var(--teal);
+    padding-block: var(--space-3xl) var(--space-xl);
+    background: var(--charcoal);
+    color: var(--on-dark);
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2xl) var(--space-xl);
+  }
+  .site-footer__brand {
+    display: grid;
+    grid-column: 1 / -1;
+    align-content: start;
+    gap: var(--space-md);
+    max-width: 26rem;
+  }
+  .site-footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--on-dark);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .site-footer__about {
+    color: var(--on-dark-2);
+    font-size: var(--text-sm);
+  }
+  .site-footer__heading {
+    margin-bottom: var(--space-md);
+    color: var(--teal);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .site-footer__col ul {
+    display: grid;
+    gap: 0.55rem;
+    color: var(--on-dark-2);
+    font-size: var(--text-sm);
+  }
+  .site-footer__col a {
+    color: var(--on-dark-2);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .site-footer__col a:hover {
+    color: var(--on-dark);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .site-footer__base {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--rule-dark);
+    color: var(--on-dark-2);
+    font-size: var(--text-xs);
+  }
+  @media (min-width: 60em) {
+    .site-footer__grid {
+      grid-template-columns: minmax(0, 2fr) repeat(4, minmax(0, 1fr));
+    }
+    .site-footer__brand {
+      grid-column: auto;
+    }
+  }
+</style>

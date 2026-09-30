@@ -1,0 +1,174 @@
+---
+import { Picture } from "astro:assets";
+import { render } from "astro:content";
+import CtaBand from "../../components/CtaBand.astro";
+import DraftNotice from "../../components/DraftNotice.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { capabilityById } from "../../data/capabilities";
+import { breadcrumbSchema } from "../../lib/seo";
+import { STATUS_LABELS, getWork, type WorkEntry } from "../../lib/work";
+
+export async function getStaticPaths() {
+  const entries = await getWork();
+  return entries
+    .filter((entry) => entry.data.caseStudy)
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: WorkEntry;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const capability = capabilityById(data.capability);
+const path = `/work/${entry.id}/`;
+
+const facts = [
+  data.client ? { label: "Client", value: data.client } : undefined,
+  { label: "Capability", value: capability.label },
+  data.status ? { label: "Status", value: STATUS_LABELS[data.status] } : undefined,
+  data.year ? { label: "Year", value: String(data.year) } : undefined,
+  data.stack.length > 0 ? { label: "Technology", value: data.stack.join(", ") } : undefined,
+].filter((fact): fact is { label: string; value: string } => fact !== undefined);
+---
+
+<BaseLayout
+  title={`${data.title} | Work | Trivista Labs`}
+  description={data.summary}
+  type="article"
+  noindex={data.draft}
+  schema={[
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Work", path: "/work/" },
+      { name: data.title, path },
+    ]),
+  ]}
+>
+  <article>
+    <header class="case-hero">
+      <div class="container case-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol role="list">
+            <li><a href="/work/">Work</a></li>
+            <li aria-current="page">{data.title}</li>
+          </ol>
+        </nav>
+        {data.draft && <DraftNotice missing={data.missing} />}
+        <p class="eyebrow">{data.category}</p>
+        <h1 class="case-hero__title">{data.title}</h1>
+        <p class="lede">{data.summary}</p>
+        <dl class="case-facts">
+          {
+            facts.map((fact) => (
+              <div>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))
+          }
+          {
+            data.url && (
+              <div>
+                <dt>Website</dt>
+                <dd>
+                  <a class="link" href={data.url}>
+                    {new URL(data.url).host.replace(/^www\./, "")}
+                  </a>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </div>
+    </header>
+
+    {
+      data.cover && (
+        <div class="container case-cover">
+          <Picture
+            src={data.cover}
+            alt={data.coverAlt ?? ""}
+            formats={["avif", "webp"]}
+            widths={[640, 960, 1280, 1920]}
+            sizes="(min-width: 78rem) 78rem, 100vw"
+            priority
+          />
+        </div>
+      )
+    }
+
+    <div class="section">
+      <div class="container case-body">
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <CtaBand location="case-study" />
+</BaseLayout>
+
+<style>
+  .case-hero {
+    padding-block: clamp(2.5rem, 2rem + 3vw, 5rem) clamp(2.5rem, 1.5rem + 3vw, 4rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .case-hero__inner {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-lg);
+  }
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  .breadcrumb li + li::before {
+    content: "/";
+    margin-right: 0.4rem;
+    color: var(--rule-strong);
+  }
+  .breadcrumb a {
+    color: var(--ink-2);
+  }
+  .case-hero__title {
+    max-width: 18ch;
+    font-size: var(--text-display);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-display);
+  }
+  .case-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-md) var(--space-xl);
+    width: 100%;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--rule);
+  }
+  .case-facts dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .case-facts dd {
+    margin: 0.2rem 0 0;
+    font-weight: 500;
+  }
+  .case-cover {
+    margin-top: var(--space-2xl);
+  }
+  .case-cover :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .case-body {
+    display: grid;
+  }
+</style>

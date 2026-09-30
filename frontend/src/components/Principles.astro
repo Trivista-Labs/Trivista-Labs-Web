@@ -1,0 +1,104 @@
+---
+import { principles, siteFacts } from "../data/principles";
+---
+
+<div class="principles">
+  <ul class="principles__list" role="list">
+    {
+      principles.map((principle) => (
+        <li class="principle">
+          <h3 class="principle__title">{principle.title}</h3>
+          <p class="principle__text">{principle.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <aside class="evidence" aria-labelledby="evidence-title">
+    <p class="mono-label">Evidence</p>
+    <h3 class="evidence__title" id="evidence-title">This website is built to the same standard.</h3>
+    <dl class="evidence__facts">
+      {
+        siteFacts.map((fact) => (
+          <div class="evidence__fact">
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="evidence__note">You can check each of these in your browser’s developer tools.</p>
+  </aside>
+</div>
+
+<style>
+  .principles {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .principles__list {
+    display: grid;
+    border-top: 1px solid var(--rule);
+  }
+  .principle {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+    padding-block: var(--space-lg);
+    border-bottom: 1px solid var(--rule);
+  }
+  .principle__title {
+    font-size: var(--text-lg);
+  }
+  .principle__text {
+    color: var(--ink-2);
+  }
+  .evidence {
+    display: grid;
+    gap: var(--space-md);
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .evidence__title {
+    font-size: var(--text-lg);
+  }
+  .evidence__facts {
+    display: grid;
+  }
+  .evidence__fact {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    gap: var(--space-md);
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--rule);
+    font-size: var(--text-sm);
+  }
+  .evidence__fact dt {
+    padding-top: 0.15rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .evidence__fact dd {
+    margin: 0;
+  }
+  .evidence__note {
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  @media (min-width: 40em) {
+    .principles__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-xl);
+    }
+  }
+  @media (min-width: 60em) {
+    .principles {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: start;
+      column-gap: var(--space-3xl);
+    }
+  }
+</style>

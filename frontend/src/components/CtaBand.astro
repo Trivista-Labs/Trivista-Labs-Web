@@ -1,0 +1,87 @@
+---
+import { site } from "../data/site";
+
+interface Props {
+  /** Where the band sits, for analytics. */
+  location: string;
+}
+
+const { location } = Astro.props;
+---
+
+<section class="cta" aria-labelledby="cta-title">
+  <div class="container cta__inner">
+    <div class="cta__heading">
+      <p class="eyebrow">Start a project</p>
+      <h2 class="cta__title" id="cta-title">Tell us what you’re building.</h2>
+    </div>
+    <div class="cta__body">
+      <p class="cta__text">
+        Share a few details about your project, and a member of our team will reply {site.responseTime}.
+      </p>
+      <div class="cta__actions">
+        <a
+          class="button button--primary"
+          href="/contact/"
+          data-track="Start a project clicked"
+          data-track-location={location}
+        >
+          Start a project
+        </a>
+        <p class="cta__email">
+          or email <a class="link" href={`mailto:${site.email}`} data-track="Email clicked" data-track-location={location}
+            >{site.email}</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: var(--section);
+    border-top: 1px solid var(--rule);
+  }
+  .cta__inner {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .cta__heading {
+    display: grid;
+    gap: var(--space-md);
+  }
+  .cta__title {
+    max-width: 14ch;
+    font-size: var(--text-display);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-display);
+  }
+  .cta__body {
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .cta__text {
+    max-width: 40ch;
+    color: var(--ink-2);
+    font-size: var(--text-lg);
+  }
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-lg);
+  }
+  .cta__email {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 60em) {
+    .cta__inner {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+      column-gap: var(--space-3xl);
+    }
+  }
+</style>

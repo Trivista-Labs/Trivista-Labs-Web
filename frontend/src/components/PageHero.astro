@@ -1,0 +1,36 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+}
+
+const { eyebrow, title, lede } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container page-hero__inner">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="page-hero__title">{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem) clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .page-hero__inner {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-lg);
+  }
+  .page-hero__title {
+    max-width: 20ch;
+    font-size: var(--text-3xl);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
+  }
+</style>

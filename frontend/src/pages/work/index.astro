@@ -1,0 +1,59 @@
+---
+import CtaBand from "../../components/CtaBand.astro";
+import DraftNotice from "../../components/DraftNotice.astro";
+import PageHero from "../../components/PageHero.astro";
+import WorkCard from "../../components/WorkCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+import { breadcrumbSchema } from "../../lib/seo";
+import { getWork, showDrafts } from "../../lib/work";
+
+const work = await getWork();
+const hasDrafts = work.some((entry) => entry.data.draft);
+---
+
+<BaseLayout
+  title="Work | Trivista Labs"
+  description="Products and systems designed and built by Trivista Labs in Colombo, Sri Lanka."
+  schema={[
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Work", path: "/work/" },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Work"
+    title="Products and systems we have built."
+    lede="A selection of the products and business systems Trivista Labs has designed and built."
+  />
+
+  <section class="section" aria-label="Projects">
+    <div class="container">
+      {
+        showDrafts && hasDrafts && (
+          <DraftNotice label="Draft projects are visible in this preview only. Each one lists what it still needs on its own page." missing={[]} />
+        )
+      }
+      {
+        work.length > 0 ? (
+          <div class="work-grid">
+            {work.map((entry) => (
+              <WorkCard entry={entry} headingLevel={2} featured={work.length === 1} />
+            ))}
+          </div>
+        ) : (
+          <p class="lede">
+            Project write-ups are on their way. To hear about our work in the meantime, email{" "}
+            <a class="link" href={`mailto:${site.email}`}>
+              {site.email}
+            </a>
+            .
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand location="work" />
+</BaseLayout>

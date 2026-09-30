@@ -1,0 +1,147 @@
+---
+import ContactForm from "../components/ContactForm";
+import PageHero from "../components/PageHero.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site, social } from "../data/site";
+import { breadcrumbSchema } from "../lib/seo";
+---
+
+<BaseLayout
+  title="Start a project | Trivista Labs"
+  description={`Tell us what you’re building. A member of the Trivista Labs team will reply ${site.responseTime}.`}
+  schema={[
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Start a project", path: "/contact/" },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Start a project"
+    title="Tell us what you’re building."
+    lede={`Share a few details and a member of our team will reply ${site.responseTime}.`}
+  />
+
+  <section class="section contact" aria-label="Contact form and details">
+    <div class="container contact__grid">
+      <div class="contact__form">
+        <noscript>
+          <p class="contact__noscript">
+            This form needs JavaScript. You can email us at <a class="link" href={`mailto:${site.email}`}
+              >{site.email}</a
+            > instead.
+          </p>
+        </noscript>
+        <ContactForm
+          client:load
+          apiUrl={site.contactApiUrl}
+          email={site.email}
+          responseTime={site.responseTime}
+        />
+      </div>
+
+      <aside class="contact__aside" aria-labelledby="direct-title">
+        <div class="contact__block">
+          <h2 class="contact__heading" id="direct-title">Prefer email?</h2>
+          <p>
+            <a class="contact__email" href={`mailto:${site.email}`} data-track="Email clicked" data-track-location="contact"
+              >{site.email}</a
+            >
+          </p>
+        </div>
+        <div class="contact__block">
+          <h2 class="contact__heading">Where we are</h2>
+          <p>{site.locality}, {site.country}</p>
+        </div>
+        <div class="contact__block">
+          <h2 class="contact__heading">Elsewhere</h2>
+          <ul role="list" class="contact__links">
+            {
+              social.map((link) => (
+                <li>
+                  <a
+                    class="link"
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-track={`${link.label} clicked`}
+                    data-track-location="contact"
+                  >
+                    {link.label}
+                    <span class="visually-hidden"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="contact__block">
+          <h2 class="contact__heading">What happens next</h2>
+          <p>A member of our team reads your message and replies {site.responseTime}.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+  .contact__grid {
+    display: grid;
+    gap: var(--space-3xl);
+  }
+  .contact__form {
+    max-width: 40rem;
+  }
+  .contact__noscript {
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+  }
+  .contact__aside {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--rule);
+  }
+  .contact__block {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .contact__heading {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .contact__email {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+  .contact__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem var(--space-lg);
+  }
+  @media (min-width: 60em) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    }
+    .contact__aside {
+      padding-top: 0;
+      padding-left: var(--space-2xl);
+      border-top: 0;
+      border-left: 1px solid var(--rule);
+    }
+  }
+</style>

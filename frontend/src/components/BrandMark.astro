@@ -1,0 +1,25 @@
+---
+import { Image } from "astro:assets";
+import mark from "../assets/brand/trivista-mark.png";
+// The mark's light bands need a dark ground, so it always sits on a charcoal tile.
+---
+
+<span class="brand-mark" aria-hidden="true">
+  <Image src={mark} alt="" width={26} layout="fixed" loading="eager" />
+</span>
+
+<style>
+  .brand-mark {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius);
+    background: var(--charcoal);
+  }
+  .brand-mark :global(img) {
+    width: 1.625rem;
+    height: auto;
+  }
+</style>
