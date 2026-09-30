@@ -33,7 +33,7 @@ const linkedin = social.find((link) => link.label === "LinkedIn");
 
   <section class="section" aria-labelledby="founders-title">
     <div class="container">
-      <SectionHeading eyebrow="Founders" title="Each founder leads one part of the company." id="founders-title" />
+      <SectionHeading eyebrow="Founders" title="Each founder leads one part of the company." id="founders-title" index={1} />
       {showDrafts && <DraftNotice label="Founder bios are not written yet." missing={founderDetailsMissing} />}
       <div class="founder-grid" data-reveal-group>
         {founders.map((founder) => <FounderCard founder={founder} />)}
@@ -43,14 +43,14 @@ const linkedin = social.find((link) => link.label === "LinkedIn");
 
   <section class="section section--dark" aria-labelledby="process-title">
     <div class="container">
-      <SectionHeading eyebrow="How we work" title="Six stages, from the problem to a system in use." id="process-title" />
+      <SectionHeading eyebrow="How we work" title="Six stages, from the problem to a system in use." id="process-title" index={2} />
       <ProcessSteps detailed />
     </div>
   </section>
 
   <section class="section" aria-labelledby="details-title">
     <div class="container">
-      <SectionHeading eyebrow="Details" title="Company details" id="details-title" />
+      <SectionHeading eyebrow="Details" title="Company details" id="details-title" index={3} />
       <dl class="details">
         <div class="details__row">
           <dt>Registered name</dt>

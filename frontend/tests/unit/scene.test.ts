@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PENROSE_FACES, PENROSE_VIEWBOX } from "../../src/data/brand";
-import { plateHeights, pointAlong, projector, pulseState, render, viewTransform, type Frame } from "../../src/lib/scene";
+import { latticeSegments, plateHeights, pointAlong, projector, pulseState, render, viewTransform, type Frame } from "../../src/lib/scene";
 import { LIGHT_PALETTE, SCENES, STACK_SCENE, toSvgMarkup } from "../../src/lib/scenes";
 
 const VIEW = { width: 600, height: 600, zoom: 2.35, distance: 12 };
@@ -112,6 +112,29 @@ describe("render", () => {
     expect(svg).toContain("<polygon");
     expect(svg).toContain('class="scene-label">01</text>');
     expect(svg).not.toContain("NaN");
+  });
+});
+
+describe("latticeSegments", () => {
+  const segments = latticeSegments(2, 0.5);
+
+  it("stays inside the plate", () => {
+    for (const [a, b] of segments) {
+      for (const [x, z] of [a, b]) {
+        expect(Math.abs(x)).toBeLessThanOrEqual(1 + 1e-9);
+        expect(Math.abs(z)).toBeLessThanOrEqual(1 + 1e-9);
+      }
+    }
+  });
+
+  it("runs in three directions, 60 degrees apart", () => {
+    const angles = new Set(
+      segments.map(([[x1, z1], [x2, z2]]) => {
+        const degrees = (Math.atan2(z2 - z1, x2 - x1) * 180) / Math.PI;
+        return Math.round(((degrees % 180) + 180) % 180);
+      })
+    );
+    expect([...angles].sort((a, b) => a - b)).toEqual([0, 60, 120]);
   });
 });
 

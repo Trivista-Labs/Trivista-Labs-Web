@@ -21,7 +21,8 @@ interface Props {
 
 const { entry } = Astro.props;
 const { data } = entry;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const sections = headings.filter((heading) => heading.depth === 2);
 const capability = capabilityById(data.capability);
 const path = `/work/${entry.id}/`;
 
@@ -88,6 +89,7 @@ const facts = [
     {
       data.cover && (
         <div class="container case-cover">
+          <div class="tv-cut">
           <Picture
             src={data.cover}
             alt={data.coverAlt ?? ""}
@@ -96,13 +98,32 @@ const facts = [
             sizes="(min-width: 78rem) 78rem, 100vw"
             priority
           />
+          </div>
         </div>
       )
     }
 
     <div class="section">
       <div class="container case-body">
-        <div class="prose">
+        {
+          sections.length > 1 && (
+            <nav class="sheet-index" aria-label="Sections of this case study">
+              <ol role="list">
+                {sections.map((section, index) => (
+                  <li>
+                    <a href={`#${section.slug}`}>
+                      <span class="sheet-index__number" aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {section.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+        <div class="prose case-prose">
           <Content />
         </div>
       </div>
@@ -166,9 +187,61 @@ const facts = [
   .case-cover :global(img) {
     width: 100%;
     height: auto;
-    border-radius: var(--radius);
   }
+  /* An engineering story: numbered sections, like the sheets of a drawing set, with an index. */
   .case-body {
     display: grid;
+    gap: var(--space-2xl);
+  }
+  .case-prose {
+    counter-reset: sheet;
+  }
+  .case-prose :global(h2) {
+    counter-increment: sheet;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule);
+  }
+  .case-prose :global(h2)::before {
+    content: counter(sheet, decimal-leading-zero) / "";
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--teal-ink);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+  }
+  .sheet-index ol {
+    display: grid;
+    gap: 0.2rem;
+    padding-left: var(--space-md);
+    border-left: 1px solid var(--rule);
+  }
+  .sheet-index a {
+    display: flex;
+    gap: 0.75rem;
+    padding-block: 0.3rem;
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  .sheet-index a:hover {
+    color: var(--ink);
+  }
+  .sheet-index__number {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1.9;
+  }
+  @media (min-width: 60em) {
+    .case-body {
+      grid-template-columns: 13rem minmax(0, 1fr);
+      align-items: start;
+      column-gap: var(--space-3xl);
+    }
+    .sheet-index {
+      position: sticky;
+      top: 6.5rem;
+    }
   }
 </style>

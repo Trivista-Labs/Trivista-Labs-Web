@@ -62,10 +62,17 @@
   --container: 78rem;
   --measure: 62ch;
 
-  /* Shape */
-  --radius-sm: 2px;
-  --radius: 4px;
-  --radius-lg: 8px;
+  /* Shape. Corners are square; character comes from the 60-degree cut (.tv-frame, .tv-cut and the
+     button band in depth.css), not from rounding. A hint of radius only softens small controls. */
+  --radius-sm: 0;
+  --radius: 1px;
+  --radius-lg: 2px;
+
+  /* The isometric lattice: a triangular grid on the mark's 60-degree geometry. One tile is 56 by 97
+     pixels (56 × √3); horizontal lines sit on both tile edges so the seams add up to one pixel. */
+  --lattice: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M0 0H56M0 48.5H56M0 97H56M0 0L56 97M56 0L0 97' fill='none' stroke='%2316181a' stroke-opacity='.075'/%3E%3C/svg%3E");
+  --lattice-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M0 0H56M0 48.5H56M0 97H56M0 0L56 97M56 0L0 97' fill='none' stroke='%23ffffff' stroke-opacity='.06'/%3E%3C/svg%3E");
+  --lattice-size: 56px 97px;
 
   /* Depth. Light comes from above: shadows are warm, soft and fall downwards.
      Dark surfaces step up from graphite; teal is the only light source in them. */

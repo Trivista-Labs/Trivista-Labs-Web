@@ -73,17 +73,6 @@ function relativePointer(event: PointerEvent, element: Element) {
 function initPointerEffects(): void {
   if (reduceMotion || !finePointer) return;
 
-  for (const element of document.querySelectorAll<HTMLElement>("[data-spotlight]")) {
-    element.addEventListener(
-      "pointermove",
-      (event) => {
-        const p = relativePointer(event, element);
-        setVars(element, { "--mx": `${p.x}px`, "--my": `${p.y}px` });
-      },
-      { passive: true }
-    );
-  }
-
   // A card whose whole area is a link listens on the card ([data-tilt-area]), since the link covers it.
   for (const element of document.querySelectorAll<HTMLElement>("[data-tilt]")) {
     const area = element.closest<HTMLElement>("[data-tilt-area]") ?? element;

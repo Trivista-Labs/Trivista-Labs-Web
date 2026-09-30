@@ -148,6 +148,43 @@ export function plateHeights(model: SceneModel, spread: number): number[] {
   return model.plates.map((_, index) => (middle - index) * gap);
 }
 
+type Segment = readonly [readonly [number, number], readonly [number, number]];
+
+/**
+ * The isometric lattice on a square plate: lines in three directions 60 degrees apart, like the
+ * mark's grid, clipped to the plate. Returned as x/z segments centred on the plate.
+ */
+export function latticeSegments(size: number, spacing: number): Segment[] {
+  const half = size / 2;
+  const segments: Segment[] = [];
+  for (const angle of [0, Math.PI / 3, (2 * Math.PI) / 3]) {
+    const d = [Math.cos(angle), Math.sin(angle)];
+    const n = [-d[1], d[0]];
+    const reach = Math.ceil((half * Math.SQRT2) / spacing);
+    for (let k = -reach; k <= reach; k++) {
+      const c = k * spacing;
+      // Points on the line are n*c + d*t; keep the part of t inside the square.
+      let low = -Infinity;
+      let high = Infinity;
+      for (const axis of [0, 1]) {
+        const origin = n[axis] * c;
+        if (Math.abs(d[axis]) < 1e-9) {
+          if (Math.abs(origin) >= half) low = Infinity;
+          continue;
+        }
+        const a = (-half - origin) / d[axis];
+        const b = (half - origin) / d[axis];
+        low = Math.max(low, Math.min(a, b));
+        high = Math.min(high, Math.max(a, b));
+      }
+      if (high - low < spacing * 0.05) continue;
+      const at = (t: number) => [n[0] * c + d[0] * t, n[1] * c + d[1] * t] as const;
+      segments.push([at(low), at(high)]);
+    }
+  }
+  return segments;
+}
+
 /** Position of a pulse along its path (0 to 1), or how far through its arrival flash it is. */
 export function pulseState(pulse: Pulse, time: number): { travel?: number; flash?: number } {
   const u = ((((time * pulse.speed + pulse.phase) % 1) + 1) % 1) * PULSE_CYCLE;
@@ -250,11 +287,9 @@ function drawPlateSurface(ctx: Context, index: number, top: number, alpha: numbe
   const plate = model.plates[index];
   const s = plate.size / 2;
 
-  // Fine grid.
-  for (let g = 1; g < plate.grid; g++) {
-    const t = -s + (plate.size * g) / plate.grid;
-    out.push({ kind: "line", points: flat([project([t, top, -s]), project([t, top, s])]), stroke: palette.ink, width: 0.5, alpha: 0.09 * alpha });
-    out.push({ kind: "line", points: flat([project([-s, top, t]), project([s, top, t])]), stroke: palette.ink, width: 0.5, alpha: 0.09 * alpha });
+  // The isometric lattice, the same 60-degree grid as the page behind it.
+  for (const [[x1, z1], [x2, z2]] of latticeSegments(plate.size, plate.size / plate.grid)) {
+    out.push({ kind: "line", points: flat([project([x1, top, z1]), project([x2, top, z2])]), stroke: palette.ink, width: 0.5, alpha: 0.08 * alpha });
   }
 
   // Edges, lit teal where they face the light.

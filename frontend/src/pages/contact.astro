@@ -24,7 +24,7 @@ import { breadcrumbSchema } from "../lib/seo";
 
   <section class="section contact" aria-label="Contact form and details">
     <div class="container contact__grid">
-      <div class="contact__form">
+      <div class="contact__form tv-frame">
         <noscript>
           <p class="contact__noscript">
             This form needs JavaScript. You can email us at <a class="link" href={`mailto:${site.email}`}
@@ -95,11 +95,8 @@ import { breadcrumbSchema } from "../lib/seo";
   /* The form sits on a raised surface, lit along its top edge. */
   .contact__form {
     max-width: 42rem;
-    padding: clamp(1.25rem, 0.75rem + 2vw, 2.5rem);
-    border: 1px solid rgb(22 24 26 / 0.09);
-    border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, var(--paper) 0%, #f8f6f0 100%);
-    box-shadow: var(--edge-light), var(--shadow-2);
+    --cut: 18px;
+    padding: clamp(1.5rem, 0.75rem + 2vw, 2.75rem);
   }
   .contact__noscript {
     margin-bottom: var(--space-lg);

@@ -27,7 +27,7 @@ const work = (await getWork()).slice(0, 4);
       <div class="hero__text">
         <p class="eyebrow">Trivista Labs &middot; {site.locality}, {site.country}</p>
         <h1 class="hero__title" id="hero-title">
-          We design and build the software <span class="hero__title-accent">your business runs on.</span>
+          We design and build the software your business <span class="hero__title-accent">runs on.</span>
         </h1>
         <p class="lede">
           Trivista Labs is an engineering company in {site.locality}. We build web and mobile products, business
@@ -52,7 +52,7 @@ const work = (await getWork()).slice(0, 4);
 
   <section class="section section--rule" aria-labelledby="build-title">
     <div class="container">
-      <SectionHeading eyebrow="What we build" title="Four kinds of systems, one team." id="build-title">
+      <SectionHeading eyebrow="What we build" title="Four kinds of systems, one team." id="build-title" index={1}>
         <p>Most businesses need more than one of these. They work best when they are designed together.</p>
       </SectionHeading>
       <CapabilityGrid />
@@ -63,7 +63,7 @@ const work = (await getWork()).slice(0, 4);
     work.length > 0 && (
       <section class="section section--rule" aria-labelledby="work-title">
         <div class="container">
-          <SectionHeading eyebrow="Selected work" title="Products and systems we have built." id="work-title">
+          <SectionHeading eyebrow="Selected work" title="Products and systems we have built." id="work-title" index={2}>
             <a class="link-arrow" href="/work/">
               All work
               <ArrowIcon />
@@ -81,7 +81,7 @@ const work = (await getWork()).slice(0, 4);
 
   <section class="section section--dark" aria-labelledby="process-title">
     <div class="container">
-      <SectionHeading eyebrow="How we build" title="From the first conversation to a system in use." id="process-title">
+      <SectionHeading eyebrow="How we build" title="From the first conversation to a system in use." id="process-title" index={3}>
         <p>
           The stages we take a project through, from understanding the problem to improving the system once people
           are using it.
@@ -93,14 +93,14 @@ const work = (await getWork()).slice(0, 4);
 
   <section class="section" aria-labelledby="principles-title">
     <div class="container">
-      <SectionHeading eyebrow="Engineering" title="What we hold our work to." id="principles-title" />
+      <SectionHeading eyebrow="Engineering" title="What we hold our work to." id="principles-title" index={4} />
       <Principles />
     </div>
   </section>
 
   <section class="section section--rule" aria-labelledby="founders-title">
     <div class="container">
-      <SectionHeading eyebrow="Company" title="Led by its three founders." id="founders-title">
+      <SectionHeading eyebrow="Company" title="Led by its three founders." id="founders-title" index={5}>
         <p>Trivista Labs is run by the people who design and build its systems.</p>
         <a class="link-arrow" href="/company/">
           About the company
@@ -136,12 +136,9 @@ const work = (await getWork()).slice(0, 4);
     line-height: 0.98;
     letter-spacing: -0.042em;
   }
-  /* The last words carry the teal light, as the one accent in the headline. */
+  /* The last words carry the one accent in the headline. */
   .hero__title-accent {
-    background: linear-gradient(100deg, var(--ink) 15%, var(--teal-ink) 85%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--teal-ink);
   }
   .hero__actions {
     display: flex;

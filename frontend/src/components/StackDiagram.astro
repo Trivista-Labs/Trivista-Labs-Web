@@ -16,7 +16,7 @@ import { capabilities } from "../data/capabilities";
     {
       capabilities.map((capability, index) => (
         <li>
-          <a class="system__layer" href={`/capabilities/#${capability.id}`} data-callout>
+          <a class="system__layer tv-frame tv-frame--live" href={`/capabilities/#${capability.id}`} data-callout>
             <span class="system__index" aria-hidden="true">
               {String(index + 1).padStart(2, "0")}
             </span>
@@ -78,15 +78,12 @@ import { capabilities } from "../data/capabilities";
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.1rem 0.75rem;
+    --cut: 9px;
+    --frame-fill: rgb(252 251 248 / 0.92);
     padding: 0.7rem 0.85rem;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    background: rgb(252 251 248 / 0.9);
-    box-shadow: var(--shadow-1);
     text-decoration: none;
     transition:
-      border-color var(--duration) var(--ease-out),
-      box-shadow var(--duration) var(--ease-out),
+      --frame-edge 0.45s ease,
       transform var(--duration) var(--ease-out);
   }
   .system__index {
@@ -120,8 +117,6 @@ import { capabilities } from "../data/capabilities";
   }
   .system__layer:hover,
   .system__layer:focus-visible {
-    border-color: var(--teal-ink);
-    box-shadow: var(--shadow-2);
     transform: translateX(3px);
   }
   .system__layer:hover :global(svg) {

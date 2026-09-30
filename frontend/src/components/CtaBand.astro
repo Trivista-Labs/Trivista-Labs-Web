@@ -59,10 +59,7 @@ const { location } = Astro.props;
     position: absolute;
     inset: 0;
     z-index: -1;
-    background-image:
-      linear-gradient(var(--grid-dark) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-dark) 1px, transparent 1px);
-    background-size: 56px 56px;
+    background: var(--lattice-dark) center / var(--lattice-size);
     -webkit-mask-image: radial-gradient(ellipse 55% 70% at 78% 45%, #000 15%, transparent 75%);
     mask-image: radial-gradient(ellipse 55% 70% at 78% 45%, #000 15%, transparent 75%);
   }

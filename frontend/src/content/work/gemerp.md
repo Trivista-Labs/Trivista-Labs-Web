@@ -13,38 +13,26 @@ missing:
   - Screenshots with any client data removed
 ---
 
-## Context
+## Problem
 
-To be written. Who the system is for, and how the work was done before it.
+To be written. The situation before the system existed: who was affected, what it cost them, and the constraints.
 
-## Challenge
+## System
 
-To be written. The operational problem it had to solve.
+To be written. What was built, described as a system: its parts, and how information moves between them.
 
-## Our approach
+## Decisions
 
-To be written.
+To be written. The choices that shaped it, the options that were set aside, and why.
 
-## The system
+## Engineering
 
-To be written. The modules and what each one does.
-
-## Key capabilities
-
-To be written.
-
-## Architecture
-
-To be written. Data model, integrations and hosting, and why they were chosen.
+To be written. How it was built and tested: the technology, the architecture and the hard parts.
 
 ## Experience
 
-To be written.
+To be written. What using it is like, for each kind of person who does.
 
 ## Outcome
 
 To be written. Only results that can be verified.
-
-## Lessons
-
-To be written.

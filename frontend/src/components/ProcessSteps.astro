@@ -55,14 +55,14 @@ const { detailed = false } = Astro.props;
   /* A node where the track meets each stage, glowing once it is reached. */
   .step__node {
     position: absolute;
-    top: -4px;
-    left: 0;
-    width: 7px;
-    height: 7px;
+    top: -3px;
+    left: 2px;
+    width: 14px;
+    height: 6px;
     border: 1px solid var(--teal);
     background: var(--graphite);
     box-shadow: 0 0 12px 1px var(--teal-glow);
-    transform: rotate(45deg);
+    transform: skewX(-30deg);
     transition:
       background-color 0.5s ease,
       box-shadow 0.5s ease;

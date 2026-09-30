@@ -29,12 +29,20 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
       "work-card--featured": featured,
     },
   ]}
-  data-reveal
+  data-reveal="project"
   data-tilt-area
 >
   {
     data.cover && (
-      <div class="showcase">
+      <div class="showcase tv-frame tv-frame--dark">
+        {(data.coverLabel || data.screenLabel) && (
+          <p class="showcase__notes" aria-hidden="true">
+            {data.coverLabel && <span class="showcase__note">01 {data.coverLabel}</span>}
+            {data.screen && data.screenLabel && (
+              <span class="showcase__note showcase__note--screen">02 {data.screenLabel}</span>
+            )}
+          </p>
+        )}
         <div class="showcase__stage" data-tilt>
           <div class="showcase__browser">
             <div class="showcase__bar" aria-hidden="true">
@@ -73,7 +81,11 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     <div class="work-card__head">
       <div class="work-card__meta">
         <span class="eyebrow">{data.category}</span>
-        {data.status && <span class="work-card__status" data-status={data.status}>{STATUS_LABELS[data.status]}</span>}
+        {data.status && (
+          <span class="work-card__status tv-state" data-state={data.status}>
+            {STATUS_LABELS[data.status]}
+          </span>
+        )}
         {data.draft && <span class="work-card__draft">Draft</span>}
       </div>
       <Heading class="work-card__title">
@@ -113,28 +125,50 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
 
   /* The showcase: a dark stage lit in teal, with the product in perspective. */
   .showcase {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    padding: clamp(1.25rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 7vw, 5rem);
-    border-radius: var(--radius-lg);
-    background:
-      radial-gradient(80% 70% at 70% 15%, rgb(0 209 178 / 0.2), transparent 62%),
+    --cut: 22px;
+    --frame-fill:
+      radial-gradient(80% 70% at 70% 15%, rgb(0 209 178 / 0.18), transparent 62%),
+      var(--lattice-dark) center bottom / var(--lattice-size),
       linear-gradient(160deg, var(--graphite-2) 0%, var(--graphite) 100%);
-    box-shadow: var(--edge-light-dark), var(--shadow-2);
+    overflow: hidden;
+    padding: clamp(2.25rem, 5vw, 3.5rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 7vw, 5rem);
     perspective: 1800px;
   }
-  .showcase::before {
+  /* Callouts, as on a technical drawing: a label and a leader line cut at 60 degrees. */
+  .showcase__notes {
+    position: absolute;
+    top: 0.9rem;
+    right: clamp(1rem, 4vw, 3rem);
+    left: clamp(1rem, 4vw, 3rem);
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-md);
+    color: var(--on-dark-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+  .showcase__note {
+    position: relative;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--line-dark-strong);
+  }
+  .showcase__note::after {
     content: "";
     position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image:
-      linear-gradient(var(--grid-dark) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-dark) 1px, transparent 1px);
-    background-size: 40px 40px;
-    -webkit-mask-image: radial-gradient(ellipse at 50% 100%, #000 20%, transparent 75%);
-    mask-image: radial-gradient(ellipse at 50% 100%, #000 20%, transparent 75%);
+    top: 100%;
+    left: 0;
+    width: 1px;
+    height: 0.9rem;
+    background: var(--line-dark-strong);
+    transform: skewX(-30deg);
+    transform-origin: top;
+  }
+  .showcase__note--screen::after {
+    right: 0;
+    left: auto;
+    transform: skewX(30deg);
   }
   .showcase__stage {
     position: relative;
@@ -239,22 +273,9 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     gap: 0.5rem 1rem;
   }
   .work-card__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
     color: var(--ink-2);
+    font-family: var(--font-mono);
     font-size: var(--text-xs);
-  }
-  .work-card__status::before {
-    content: "";
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--muted);
-  }
-  .work-card__status[data-status="live"]::before {
-    background: var(--teal-ink);
-    box-shadow: 0 0 0 3px rgb(0 209 178 / 0.18);
   }
   .work-card__draft {
     padding: 0.1rem 0.45rem;

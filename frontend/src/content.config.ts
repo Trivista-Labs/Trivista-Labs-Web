@@ -22,6 +22,9 @@ const work = defineCollection({
       /** A phone-sized screenshot, shown in front of the cover. */
       screen: image().optional(),
       screenAlt: z.string().optional(),
+      /** Short annotations shown beside the screenshots, such as "Public site". */
+      coverLabel: z.string().max(40).optional(),
+      screenLabel: z.string().max(40).optional(),
       stack: z.array(z.string()).default([]),
       /** True when the entry has a full case-study page. */
       caseStudy: z.boolean().default(false),

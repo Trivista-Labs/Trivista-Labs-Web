@@ -122,6 +122,13 @@ main:focus {
   .founder-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  /* The portraits step down across the row, an engineered offset rather than a template grid. */
+  .founder-grid > :nth-child(3n + 2) {
+    margin-top: 3.5rem;
+  }
+  .founder-grid > :nth-child(3n + 3) {
+    margin-top: 7rem;
+  }
 }
 
 /* Type helpers */

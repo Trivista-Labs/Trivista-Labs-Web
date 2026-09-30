@@ -10,6 +10,8 @@ cover: ./images/menuqr-lanka-site.jpg
 coverAlt: "The MenuQR Lanka home page: “Turn every table into a QR menu”, beside a phone showing a sample menu."
 screen: ./images/menuqr-lanka-menu.jpg
 screenAlt: "MenuQR Lanka's live demo menu for a sample restaurant, with search, categories and featured dishes."
+coverLabel: Public site
+screenLabel: Guest menu, live demo
 caseStudy: false
 draft: false
 order: 1

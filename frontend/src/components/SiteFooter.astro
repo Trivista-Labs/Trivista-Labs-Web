@@ -75,6 +75,7 @@ const year = new Date().getFullYear();
 
   <div class="container site-footer__base">
     <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+    <p class="site-footer__coordinates">{site.locality} · 6.9271° N, 79.8612° E</p>
   </div>
 </footer>
 
@@ -140,6 +141,10 @@ const year = new Date().getFullYear();
     border-top: 1px solid var(--rule-dark);
     color: var(--on-dark-2);
     font-size: var(--text-xs);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-xs) var(--space-lg);
   }
   @media (min-width: 60em) {
     .site-footer__grid {
@@ -148,5 +153,10 @@ const year = new Date().getFullYear();
     .site-footer__brand {
       grid-column: auto;
     }
+  }
+  .site-footer__coordinates {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
   }
 </style>
