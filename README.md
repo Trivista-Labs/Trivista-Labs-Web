@@ -72,7 +72,7 @@ Only publish verified facts, and name clients only with their permission. Draft 
 
 Colours, type scale, spacing, radii, depth and motion are CSS custom properties in `frontend/src/styles/tokens.css`. Components use the tokens instead of fixed values. The palette is warm ivory with charcoal and Trivista teal. Bright teal (`--teal`) is for graphics and dark sections; text links on light backgrounds use `--teal-ink`, because bright teal on ivory is too low in contrast to read.
 
-`frontend/src/styles/depth.css` holds the shared depth language: raised panels (`.panel`), dark surfaces (`.surface-dark`), technical grids (`.tech-grid`), button lighting, and the reveal animation. Teal is used as light, not decoration.
+The visual language is written down in [`frontend/DESIGN.md`](frontend/DESIGN.md) ("Trivista UI DNA"): the 60-degree cut, the tri-band, the isometric lattice, band-shaped buttons and motion by purpose, all taken from the geometry of the mark. `frontend/src/styles/depth.css` implements it: cut frames (`.tv-frame`, `.tv-cut`), dark surfaces (`.surface-dark`), the lattice (`.tech-grid`), buttons and the reveal variants. Read it before adding a page or component.
 
 #### 3D and motion
 
