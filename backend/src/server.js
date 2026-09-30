@@ -1,37 +1,37 @@
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const contactRoutes = require("./routes/contact");
+const nodemailer = require("nodemailer");
+const { createApp } = require("./app");
+const { parseOrigins, parseTrustProxy } = require("./config");
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const REQUIRED_ENV = ["EMAIL_USER", "EMAIL_PASS"];
+const missing = REQUIRED_ENV.filter((name) => !process.env[name]);
+if (missing.length > 0) {
+  console.error(`Missing required environment variables: ${missing.join(", ")}. See backend/.env.example.`);
+  process.exit(1);
+}
 
-// Middleware
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:4173",
-    "https://trivistalabs.lk",
-    "https://www.trivistalabs.lk",
-    "https://trivistalabs.io",
-    "http://trivistalabs.io",
-    "https://www.trivistalabs.io",
-    "http://www.trivistalabs.io",
-    "https://trivista-labs-web.vercel.app",
-  ],
-  methods: ["GET", "POST"],
-}));
-app.use(express.json({ limit: "10kb" }));
-
-// Routes
-app.use("/api/contact", contactRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Trivista Labs backend running on http://localhost:${PORT}`);
+transporter
+  .verify()
+  .then(() => console.info("Email transport ready."))
+  .catch((error) => console.error("Email transport check failed:", error.message));
+
+const app = createApp({
+  sendMail: (mail) => transporter.sendMail(mail),
+  mailFrom: process.env.EMAIL_USER,
+  mailTo: process.env.CONTACT_TO || process.env.EMAIL_USER,
+  allowedOrigins: parseOrigins(process.env.CORS_ORIGINS),
+  trustProxyHops: parseTrustProxy(process.env.TRUST_PROXY_HOPS),
+});
+
+const port = Number(process.env.PORT) || 5000;
+app.listen(port, () => {
+  console.info(`Trivista Labs API listening on port ${port}.`);
 });
