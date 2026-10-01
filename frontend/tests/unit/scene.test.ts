@@ -101,7 +101,9 @@ describe("render", () => {
 
   it("culls hidden faces, so each box shows at most three", () => {
     const boxes = STACK_SCENE.plates.reduce((n, plate) => n + plate.boxes.length + 1, 0);
-    const faces = still.primitives.filter((p) => p.kind === "poly" && p.fill !== undefined && p.fill !== LIGHT_PALETTE.pulse).length;
+    const faces = still.primitives.filter(
+      (p) => p.kind === "poly" && p.fill !== undefined && p.fill !== LIGHT_PALETTE.pulse && p.fill !== LIGHT_PALETTE.shadow
+    ).length;
     expect(faces).toBeLessThanOrEqual(boxes * 3);
     expect(faces).toBeGreaterThanOrEqual(boxes * 2);
   });

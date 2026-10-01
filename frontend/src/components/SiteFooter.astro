@@ -32,7 +32,7 @@ const year = new Date().getFullYear();
       </ul>
     </nav>
 
-    <div class="site-footer__col">
+    <div class="site-footer__col site-footer__col--contact">
       <h2 class="site-footer__heading">Contact</h2>
       <ul role="list">
         <li>
@@ -80,11 +80,11 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
+  /* The page ends in the light it began in: a warm secondary tone, not a black band. */
   .site-footer {
-    --focus: var(--teal);
     padding-block: var(--space-3xl) var(--space-xl);
-    background: var(--charcoal);
-    color: var(--on-dark);
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
+    color: var(--ink);
   }
   .site-footer__grid {
     display: grid;
@@ -102,17 +102,17 @@ const year = new Date().getFullYear();
     display: inline-flex;
     align-items: center;
     gap: 0.7rem;
-    color: var(--on-dark);
+    color: var(--ink);
     font-weight: 600;
     text-decoration: none;
   }
   .site-footer__about {
-    color: var(--on-dark-2);
+    color: var(--ink-2);
     font-size: var(--text-sm);
   }
   .site-footer__heading {
     margin-bottom: var(--space-md);
-    color: var(--teal);
+    color: var(--teal-ink);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     font-weight: 500;
@@ -122,24 +122,24 @@ const year = new Date().getFullYear();
   .site-footer__col ul {
     display: grid;
     gap: 0.55rem;
-    color: var(--on-dark-2);
+    color: var(--ink-2);
     font-size: var(--text-sm);
   }
   .site-footer__col a {
-    color: var(--on-dark-2);
+    color: var(--ink-2);
     text-decoration: none;
     overflow-wrap: anywhere;
   }
   .site-footer__col a:hover {
-    color: var(--on-dark);
+    color: var(--ink);
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
   .site-footer__base {
     margin-top: var(--space-3xl);
     padding-top: var(--space-lg);
-    border-top: 1px solid var(--rule-dark);
-    color: var(--on-dark-2);
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
     font-size: var(--text-xs);
     display: flex;
     flex-wrap: wrap;
@@ -152,6 +152,12 @@ const year = new Date().getFullYear();
     }
     .site-footer__brand {
       grid-column: auto;
+    }
+  }
+  /* On narrow screens the contact column takes the full width, so the address stays whole. */
+  @media (max-width: 29.99em) {
+    .site-footer__col--contact {
+      grid-column: 1 / -1;
     }
   }
   .site-footer__coordinates {

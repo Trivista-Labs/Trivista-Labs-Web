@@ -19,6 +19,8 @@ export interface Palette {
   readonly ink: string;
   readonly muted: string;
   readonly pulse: string;
+  /** Colour of the soft shadow the object casts on the floor. */
+  readonly shadow: string;
 }
 
 export interface Box {
@@ -66,6 +68,8 @@ export interface SceneModel {
   /** Gap between plates when assembled (spread 0) and fully exploded (spread 1). */
   readonly gap: readonly [number, number];
   readonly labels: boolean;
+  /** Cast a soft shadow on the floor beneath the lowest plate. */
+  readonly floorShadow?: boolean;
 }
 
 export interface Frame {
@@ -100,6 +104,8 @@ export interface SceneOutput {
   readonly primitives: Primitive[];
   /** Screen position of each plate's right-hand corner, for callout lines. */
   readonly anchors: { x: number; y: number }[];
+  /** Screen position of each plate's left-hand corner, where its number sits (and, on phones, its hotspot). */
+  readonly markers: { x: number; y: number }[];
 }
 
 const PULSE_TRAVEL = 1;
@@ -386,6 +392,7 @@ export function render(model: SceneModel, frame: Frame, view: Viewport, palette:
   const heights = plateHeights(model, frame.spread);
   const half = model.thickness / 2;
   const anchors: { x: number; y: number }[] = [];
+  const markers: { x: number; y: number }[] = [];
   const flashes = collectFlashes(model, frame);
 
   // Nearer plates are drawn stronger, which reads as atmospheric depth.
@@ -393,6 +400,20 @@ export function render(model: SceneModel, frame: Frame, view: Viewport, palette:
   const near = Math.min(...depths);
   const far = Math.max(...depths) + model.plates[0].size;
   const fog = (depth: number) => mix(1, 0.5, clamp((depth - near) / Math.max(far - near, 0.001), 0, 1));
+
+  // A soft contact shadow on the floor, drawn first: rings of falling strength read as a blur.
+  if (model.floorShadow) {
+    const lowest = model.plates[model.plates.length - 1];
+    const floor = heights[heights.length - 1] - half - lowest.size * 0.14;
+    const reach = lowest.size * 0.62;
+    for (const [scale, strength] of [[1, 0.035], [0.82, 0.045], [0.64, 0.06]] as const) {
+      const ring = Array.from({ length: 28 }, (_, k) => {
+        const a = (k / 28) * Math.PI * 2;
+        return ctx.project([Math.cos(a) * reach * scale, floor, Math.sin(a) * reach * scale]);
+      });
+      ctx.out.push({ kind: "poly", points: flat(ring), fill: palette.shadow, alpha: strength });
+    }
+  }
 
   // The camera looks down, so plates are painted from the bottom up.
   for (let i = model.plates.length - 1; i >= 0; i--) {
@@ -402,13 +423,14 @@ export function render(model: SceneModel, frame: Frame, view: Viewport, palette:
     drawBox(ctx, [0, heights[i] - half, 0], [plate.size, model.thickness, plate.size], palette.tones.plate, palette.plateAlpha * alpha);
     const corners = drawPlateSurface(ctx, i, top, alpha);
     drawPlateContents(ctx, i, top, alpha, flashes);
+    const left = corners.reduce((a, b) => (b.x < a.x ? b : a));
+    markers[i] = { x: left.x, y: left.y };
     if (model.labels) {
-      const left = corners.reduce((a, b) => (b.x < a.x ? b : a));
       ctx.out.push({ kind: "text", x: left.x - 10, y: left.y + 4, text: String(i + 1).padStart(2, "0"), fill: palette.muted, alpha });
     }
     anchors[i] = corners.reduce((a, b) => (b.x > a.x ? b : a));
     drawRisers(ctx, i, heights, alpha, flashes);
   }
 
-  return { primitives: ctx.out, anchors };
+  return { primitives: ctx.out, anchors, markers };
 }

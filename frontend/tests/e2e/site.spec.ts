@@ -3,8 +3,8 @@ import { gzipSync } from "node:zlib";
 import { expect, test } from "@playwright/test";
 
 const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/"];
-// The widths the redesign brief asks to check.
-const WIDTHS = [1440, 1280, 1024, 768, 390, 375];
+// The widths the briefs ask to check: desktop and tablet, then the common phone widths.
+const WIDTHS = [1440, 1280, 1024, 768, 430, 412, 393, 390, 375, 360];
 
 // Every work entry, read from the content files, so new drafts are covered automatically.
 const WORK_DIR = new URL("../../src/content/work/", import.meta.url);
@@ -149,6 +149,63 @@ test.describe("3D scenes", () => {
       await expect(page.locator("canvas.scene-canvas")).toHaveCount(0);
     });
   });
+});
+
+test.describe("on a phone", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  test("the 3D stack is explained by tapping numbered hotspots on its plates", async ({ page }) => {
+    await page.goto("/");
+    const hotspots = page.locator("[data-layer-hotspot]");
+    const shown = page.locator("[data-layer-item]:not([hidden])");
+    await expect(hotspots).toHaveCount(4);
+    await expect(hotspots.first()).toBeVisible();
+    // On phones the panel replaces the list that the desktop callouts point to.
+    await expect(page.locator(".system__layers")).toBeHidden();
+    await expect(shown).toContainText("Web and mobile apps");
+
+    await hotspots.nth(2).tap();
+    await expect(hotspots.nth(2)).toHaveAttribute("aria-pressed", "true");
+    await expect(shown).toContainText("Hardware and IoT");
+
+    await page.getByRole("button", { name: "Next layer" }).tap();
+    await expect(shown).toContainText("Cloud and IT");
+    await expect(shown.getByRole("link", { name: "See this layer" })).toHaveAttribute("href", "/capabilities/#infrastructure");
+  });
+
+  test("hotspots are large enough to tap", async ({ page }) => {
+    await page.goto("/");
+    for (const box of await page.locator("[data-layer-hotspot]").evaluateAll((els) => els.map((el) => el.getBoundingClientRect().toJSON()))) {
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("the capability layers swipe sideways, and the pager follows", async ({ page }) => {
+    await page.goto("/");
+    const track = page.locator("[data-carousel]");
+    await track.scrollIntoViewIfNeeded();
+    await expect(page.locator("[data-carousel-current]")).toHaveText("01");
+    await track.evaluate((el) => el.scrollBy({ left: el.clientWidth, behavior: "instant" }));
+    await expect(page.locator("[data-carousel-current]")).toHaveText("02");
+  });
+
+  test("the open menu holds the page still and closes on a link", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Menu" }).tap();
+    await expect(page.locator("#mobile-menu")).toBeVisible();
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).toBe("hidden");
+    await page.locator("#mobile-menu").getByRole("link", { name: "Company" }).tap();
+    await expect(page).toHaveURL(/\/company\/$/);
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).not.toBe("hidden");
+  });
+});
+
+test("on wide screens the 3D stack keeps its labelled list and no hotspots", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  await expect(page.locator(".system__layers")).toBeVisible();
+  await expect(page.locator("[data-layer-hotspots]")).toBeHidden();
 });
 
 test.describe("navigation", () => {

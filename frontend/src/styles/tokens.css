@@ -28,6 +28,18 @@
   --success-tint: #e5f1e8;
   --focus: #006f60;
 
+  /* Surfaces. The site is light: warm ivory is the ground, with a warmer secondary tone, an
+     elevated tone for raised surfaces and a teal-tinted neutral for atmosphere. Charcoal and
+     graphite are kept for technical moments, set into the light page as cut panels. */
+  --bg: var(--ivory);
+  --bg-secondary: #eeebe3;
+  --bg-elevated: #fbfaf6;
+  --bg-tint: #eaf1ed;
+  --surface-dark: var(--charcoal);
+  --surface-technical: var(--graphite);
+  --light-warm: #fdf9f0;
+  --shadow-tint: 58 48 30;
+
   /* Type */
   --font-sans: var(--font-schibsted);
   --font-mono: var(--font-jetbrains);
@@ -85,9 +97,10 @@
   --grid-dark: rgb(255 255 255 / 0.045);
   --teal-glow: rgb(0 209 178 / 0.28);
   --teal-haze: rgb(0 209 178 / 0.1);
-  --shadow-1: 0 1px 1px rgb(22 24 26 / 0.04), 0 2px 6px -2px rgb(22 24 26 / 0.08);
-  --shadow-2: 0 1px 2px rgb(22 24 26 / 0.05), 0 10px 24px -10px rgb(22 24 26 / 0.2), 0 24px 40px -24px rgb(22 24 26 / 0.18);
-  --shadow-3: 0 2px 4px rgb(22 24 26 / 0.06), 0 20px 36px -16px rgb(22 24 26 / 0.3), 0 40px 64px -32px rgb(22 24 26 / 0.3);
+  /* Shadows are warm and diffuse, cast by the ivory light rather than by a black void. */
+  --shadow-1: 0 1px 1px rgb(var(--shadow-tint) / 0.05), 0 2px 6px -2px rgb(var(--shadow-tint) / 0.1);
+  --shadow-2: 0 1px 2px rgb(var(--shadow-tint) / 0.06), 0 10px 24px -10px rgb(var(--shadow-tint) / 0.2), 0 24px 40px -24px rgb(var(--shadow-tint) / 0.18);
+  --shadow-3: 0 2px 4px rgb(var(--shadow-tint) / 0.07), 0 20px 36px -16px rgb(var(--shadow-tint) / 0.26), 0 40px 64px -32px rgb(var(--shadow-tint) / 0.26);
   --edge-light: inset 0 1px 0 rgb(255 255 255 / 0.65);
   --edge-light-dark: inset 0 1px 0 rgb(255 255 255 / 0.09);
 

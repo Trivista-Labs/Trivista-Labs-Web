@@ -98,6 +98,9 @@ const work = await getWork();
 </BaseLayout>
 
 <style>
+  .capability:nth-of-type(even) {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-tint) 30%, var(--bg-tint) 70%, var(--bg) 100%);
+  }
   .jump ul {
     display: flex;
     flex-wrap: wrap;
@@ -118,7 +121,6 @@ const work = await getWork();
   }
   .capability {
     padding-block: var(--section);
-    border-bottom: 1px solid var(--rule);
     scroll-margin-top: var(--space-md);
   }
   .capability__grid {

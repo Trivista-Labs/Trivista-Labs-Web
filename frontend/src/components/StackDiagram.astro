@@ -2,23 +2,85 @@
 import ArrowIcon from "./ArrowIcon.astro";
 import ScenePoster from "./ScenePoster.astro";
 import { capabilities } from "../data/capabilities";
+import { render } from "../lib/scene";
+import { LIGHT_PALETTE, SCENES } from "../lib/scenes";
 // The four capability layers as a 3D stack: each plate is one layer, and data rises through them.
-// The links are the real content; the drawing and its callout lines are decoration.
+//
+// Wide screens: the labels sit beside the drawing, joined to their plates by callout lines.
+// Phones: numbered hotspots sit on the plates themselves; tapping one lights the plate and shows
+// that layer in the panel below (src/scripts/layers.ts). Without JavaScript, the list is shown.
+const WIDTH = 600;
+const HEIGHT = 640;
+const { model, pose } = SCENES.stack;
+// Where each plate's number sits in the still drawing, as percentages. scene.ts moves the
+// hotspots with the live drawing once it starts.
+const { markers } = render(model, pose.frame, { width: WIDTH, height: HEIGHT, ...pose.view }, LIGHT_PALETTE);
+const place = markers.map(({ x, y }) => ({ x: ((x / WIDTH) * 100).toFixed(2), y: ((y / HEIGHT) * 100).toFixed(2) }));
+const number = (index: number) => String(index + 1).padStart(2, "0");
 ---
 
-<figure class="system" data-scene-surface>
+<figure class="system" data-scene-surface data-layers>
   <figcaption class="system__caption">
     <span class="mono-label">Where we work</span>
     <span class="system__caption-text">From the products your customers use to the infrastructure underneath.</span>
   </figcaption>
-  <ScenePoster scene="stack" width={600} height={640} class="system__stage" />
+
+  <div class="system__viewport">
+    <ScenePoster scene="stack" width={WIDTH} height={HEIGHT} class="system__stage" />
+    <div class="system__hotspots" data-layer-hotspots hidden>
+      {
+        capabilities.map((capability, index) => (
+          <button
+            type="button"
+            class="system__hotspot"
+            data-layer-hotspot={index}
+            data-x={place[index].x}
+            data-y={place[index].y}
+            aria-pressed={index === 0 ? "true" : "false"}
+            aria-controls="layer-focus"
+          >
+            <span aria-hidden="true">{number(index)}</span>
+            <span class="visually-hidden">
+              Layer {index + 1}: {capability.layer}
+            </span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="system__focus tv-frame" id="layer-focus" data-layer-focus hidden>
+    <div class="system__focus-items" aria-live="polite">
+      {
+        capabilities.map((capability, index) => (
+          <div class="system__focus-item" data-layer-item={index} hidden={index !== 0}>
+            <p class="system__focus-meta">
+              <span class="system__focus-number">{number(index)}</span>
+              {capability.layer}
+            </p>
+            <p class="system__focus-title">{capability.layerDetail}</p>
+            <p class="system__focus-text">{capability.problem}</p>
+            <a class="link-arrow" href={`/capabilities/#${capability.id}`}>
+              See this layer
+              <ArrowIcon />
+            </a>
+          </div>
+        ))
+      }
+    </div>
+    <button type="button" class="system__next" data-layer-next>
+      Next layer
+      <ArrowIcon />
+    </button>
+  </div>
+
   <ol class="system__layers" role="list">
     {
       capabilities.map((capability, index) => (
         <li>
           <a class="system__layer tv-frame tv-frame--live" href={`/capabilities/#${capability.id}`} data-callout>
             <span class="system__index" aria-hidden="true">
-              {String(index + 1).padStart(2, "0")}
+              {number(index)}
             </span>
             <span class="system__name">{capability.layer}</span>
             <span class="system__detail">{capability.layerDetail}</span>
@@ -48,7 +110,8 @@ import { capabilities } from "../data/capabilities";
   }
   /* Content sits above the canvas that scene.ts adds to this figure. */
   .system__caption,
-  .system__layers {
+  .system__layers,
+  .system__focus {
     position: relative;
     z-index: 1;
   }
@@ -61,12 +124,126 @@ import { capabilities } from "../data/capabilities";
     color: var(--ink-2);
     font-size: var(--text-sm);
   }
-  /* :global because the element belongs to ScenePoster. */
-  .system :global(.system__stage) {
+  .system__viewport {
+    position: relative;
     width: min(100%, 30rem);
     justify-self: center;
     aspect-ratio: 600 / 640;
   }
+  /* :global because the element belongs to ScenePoster. */
+  .system__viewport :global(.system__stage) {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Phone hotspots: a numbered, cut marker on each plate's outer corner, with a 44px target. */
+  .system__hotspots {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+  .system__hotspot {
+    position: absolute;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .system__hotspot::before {
+    content: "";
+    position: absolute;
+    inset: 0.5rem;
+    z-index: -1;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--rule-strong);
+    clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 5px) 100%, 0 100%, 0 9px);
+    transition: background-color 0.3s ease;
+  }
+  .system__hotspot[aria-pressed="true"]::before {
+    background: var(--teal);
+    box-shadow: none;
+  }
+  .system__hotspot[aria-pressed="true"]::after {
+    content: "";
+    position: absolute;
+    inset: 0.15rem;
+    z-index: -2;
+    border: 1px solid rgb(0 209 178 / 0.45);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 8px) 100%, 0 100%, 0 14px);
+  }
+
+  /* Phone focus panel: the chosen layer, explained under the drawing. */
+  .system__focus {
+    --cut: 12px;
+    display: grid;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+  }
+  .system__focus-item {
+    display: grid;
+    justify-items: start;
+    gap: 0.45rem;
+  }
+  .system__focus-meta {
+    display: flex;
+    gap: 0.6rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .system__focus-number {
+    color: var(--teal-ink);
+  }
+  .system__focus-title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .system__focus-text {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+  }
+  .system__next {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.1rem;
+    border: 0;
+    border-top: 1px solid var(--rule);
+    background: none;
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .system__next :global(svg) {
+    width: 0.9rem;
+    height: 0.9rem;
+    color: var(--teal-ink);
+  }
+  /* With the phone switcher running, the panel replaces the list. */
+  .system:global(.is-switchable) .system__layers {
+    display: none;
+  }
+
   .system__layers {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
@@ -133,7 +310,7 @@ import { capabilities } from "../data/capabilities";
     .system__caption {
       grid-column: 1 / -1;
     }
-    .system :global(.system__stage) {
+    .system__viewport {
       width: 100%;
     }
     .system__layers {

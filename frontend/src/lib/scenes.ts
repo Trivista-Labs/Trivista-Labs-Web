@@ -13,6 +13,7 @@ export const LIGHT_PALETTE: Palette = {
   ink: "#16181a",
   muted: "#676a6c",
   pulse: "#00b89c",
+  shadow: "#3a301e",
 };
 
 /**
@@ -23,6 +24,7 @@ export const STACK_SCENE: SceneModel = {
   thickness: 0.07,
   gap: [0.56, 1.12],
   labels: true,
+  floorShadow: true,
   plates: [
     {
       size: 2.6,

@@ -118,6 +118,46 @@ main > section:not(:first-child) {
   mask-image: radial-gradient(ellipse 60% 70% at var(--grid-focus, 72% 40%), #000 10%, transparent 72%);
 }
 
+/* ---------- Light and tone ---------- */
+
+/* The site is light. Light sections take a tone that fades from ivory and back to it, so
+   neighbouring sections blend into one surface instead of stacking as blocks. */
+.tone-tint {
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-tint) 42%, var(--bg-tint) 62%, var(--bg) 100%);
+}
+.tone-warm {
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 40%, var(--bg-secondary) 64%, var(--bg) 100%);
+}
+/* Openings are lit: warm light from the upper left, a faint teal glow where the drawing sits. */
+.hero,
+.page-hero {
+  background:
+    radial-gradient(52rem 34rem at 76% 48%, rgb(0 209 178 / 0.075), transparent 62%),
+    radial-gradient(60rem 32rem at 0% 0%, var(--light-warm), transparent 70%),
+    var(--bg);
+}
+
+/* Dark moments are panels set into the light page, cut like every Trivista frame, rather than
+   full-width black bands. */
+:root {
+  --inset: clamp(0.5rem, 1.6vw, 1.5rem);
+  --panel-cut: clamp(14px, 2vw, 26px);
+}
+.section--dark,
+.tv-panel {
+  width: calc(100% - var(--inset) * 2);
+  max-width: calc(var(--container) + 10rem);
+  margin: var(--inset) auto;
+  clip-path: polygon(
+    var(--panel-cut) 0,
+    100% 0,
+    100% calc(100% - var(--panel-cut) * 1.732),
+    calc(100% - var(--panel-cut)) 100%,
+    0 100%,
+    0 calc(var(--panel-cut) * 1.732)
+  );
+}
+
 /* Dark sections: graphite lit by a single teal source, with the lattice faintly visible. */
 .section--dark {
   position: relative;

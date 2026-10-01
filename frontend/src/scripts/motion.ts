@@ -137,7 +137,63 @@ function initMeasurements(): void {
   else window.addEventListener("load", later, { once: true });
 }
 
+/**
+ * Touch screens have no pointer to follow, so layered artwork ([data-parallax]) shifts with its
+ * position on screen as the page scrolls instead: the touch equivalent of the desktop parallax.
+ */
+function initScrollParallax(): void {
+  if (reduceMotion || finePointer) return;
+  const layers = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
+  if (layers.length === 0) return;
+  let queued = false;
+  const update = () => {
+    queued = false;
+    for (const element of layers) {
+      const box = element.getBoundingClientRect();
+      if (box.bottom < 0 || box.top > window.innerHeight) continue;
+      // -1 as it enters at the bottom, 1 as it leaves at the top.
+      const progress = 1 - ((box.top + box.height / 2) / window.innerHeight) * 2;
+      setVars(element, { "--px": (progress * 0.6).toFixed(3), "--py": (progress * -1).toFixed(3) });
+    }
+  };
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    },
+    { passive: true }
+  );
+}
+
+/** Swipeable rows ([data-carousel]) report which card is in view to their pager. */
+function initCarousels(): void {
+  if (!("IntersectionObserver" in window)) return;
+  for (const track of document.querySelectorAll<HTMLElement>("[data-carousel]")) {
+    const pager = track.parentElement?.querySelector<HTMLElement>("[data-carousel-pager]");
+    if (!pager) continue;
+    const bars = Array.from(pager.querySelectorAll<HTMLElement>("[data-carousel-bar]"));
+    const current = pager.querySelector<HTMLElement>("[data-carousel-current]");
+    const slides = Array.from(track.children);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const index = slides.indexOf(entry.target);
+          bars.forEach((bar, i) => bar.classList.toggle("is-current", i === index));
+          if (current) current.textContent = String(index + 1).padStart(2, "0");
+        }
+      },
+      { root: track, threshold: 0.6 }
+    );
+    slides.forEach((slide) => observer.observe(slide));
+  }
+}
+
 initHeader();
 initReveals();
 initPointerEffects();
+initScrollParallax();
+initCarousels();
 initMeasurements();

@@ -71,11 +71,45 @@ Motion describes what an element is. Never apply one preset to everything.
 - The tri-band (`.eyebrow::before`) is the one recurring symbol: three slanted segments in the mark's colours. It marks labels, and as `.tv-state` it shows state, with the teal segment lit for live.
 - No stock icons: no globes, rockets, lightning bolts, shields or sparkles.
 
+## Colour and surfaces
+
+The site is **light, with dark technical moments**. Tokens live in `src/styles/tokens.css`; never hard-code a background.
+
+| Token | Use |
+| --- | --- |
+| `--bg` (warm ivory) | The ground everywhere |
+| `--bg-secondary` (warm grey-ivory) | Warm sections (`.tone-warm`), the footer |
+| `--bg-elevated` | Raised light surfaces |
+| `--bg-tint` (teal-tinted neutral) | Atmospheric sections (`.tone-tint`) |
+| `--surface-dark`, `--surface-technical` (charcoal, graphite) | Technical moments only |
+| `--teal` / `--teal-ink` | Energy: light, state, data. `--teal-ink` for text on light |
+| `--shadow-1..3` | Warm, diffuse shadows (`--shadow-tint`), never neutral black |
+
+- **Sections blend.** Light tones fade from ivory and back (`.tone-tint`, `.tone-warm`), so neighbouring sections never meet at a hard edge. Openings are lit: warm light from the upper left, faint teal where the drawing sits.
+- **Dark is a moment, not a band.** Dark sections and the closing band are inset panels with the 60-degree cut (`.section--dark`, `.tv-panel`), set into the light page. Use them for technical storytelling (process, evidence, contact), never for two neighbouring sections.
+- **Rhythm follows the story,** not an alternating pattern. Home: lit opening → teal-tinted capabilities → warm product studio → dark process → ivory engineering with a dark readout → warm founders → dark contact → light footer.
+- **Text** is charcoal (`--ink`) for headings, `--ink-2` for body and `--muted` for metadata, never pure black.
+- **3D on light** uses charcoal components, teal light and a soft floor shadow (`floorShadow` in `src/lib/scenes.ts`), so the object sits in the room. On dark it uses graphite and restrained teal.
+
 ## 9. Light and texture
 
 - **Teal is light, not paint.** It appears as edge light, pulses, the lit segment of a state, and a single soft source in dark sections. It is never a large fill on light surfaces.
 - **The isometric lattice** (`--lattice`, `--lattice-dark`) is the only texture. It is barely visible and fades out from a focal point. There is no noise, no glassmorphism and no cursor glow.
 - **Dark surfaces are graphite** (`--graphite*`) and step up in value, rather than getting darker shadows.
+
+## Phones
+
+A phone gets its own composition of the same ideas, not a shrunken desktop. Below 40em (640px):
+
+- **3D annotations become hotspots.** Wide screens join each label to its plate with callout lines. On phones each plate carries a numbered hotspot (44px target), and the chosen layer is explained in a panel under the drawing, with a "Next layer" control (`src/scripts/layers.ts`). The hotspots ride on the plates as the drawing moves, and the canvas lights the chosen plate. Without JavaScript, the full list is shown instead.
+- **Peer groups become swipeable rows,** each item led by its visual, with the next one peeking in and a tri-band pager (`data-carousel`). Example: "What we build".
+- **Products lead with the phone screenshot,** larger and less angled, because that is the product a phone visitor would use.
+- **Every hover has a touch equivalent.** Plate highlights come from tapping hotspots; the Penrose parallax follows scroll instead of the cursor; nothing is explained only on hover.
+- **The menu is a full-height graphite sheet** with numbered links, the band CTA and contact details. The page behind stays still while it is open.
+- **Metadata is at least 12px,** and touch targets are at least 44px.
+- **3D runs lighter:** 30fps at a lower resolution, with no cursor tracking, and it stops animating on devices that can't keep up.
+
+Landscape phones and tablets (40em and up) have room for the desktop composition, callout lines included. Layouts are checked for sideways scrolling at 360, 375, 390, 393, 412 and 430px, as well as tablet and desktop widths (`tests/e2e/site.spec.ts`).
 
 ## 10. Interaction principles
 

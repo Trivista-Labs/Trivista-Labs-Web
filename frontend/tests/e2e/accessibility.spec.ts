@@ -15,8 +15,10 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-async function violations(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
+/** WCAG violations on the page, or only inside the given selector. */
+async function violations(page: Page, within?: string) {
+  const builder = new AxeBuilder({ page }).withTags(WCAG_TAGS);
+  const results = await (within ? builder.include(within) : builder).analyze();
   return results.violations.map(
     (violation) => `${violation.id} (${violation.impact}): ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`
   );
@@ -50,5 +52,7 @@ test("the open mobile menu is accessible", async ({ page }) => {
   await page.getByRole("button", { name: "Menu" }).click();
   await expect(page.getByRole("button", { name: "Close" })).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("#mobile-menu")).toBeVisible();
-  expect(await violations(page)).toEqual([]);
+  // The menu and header only: the page underneath has its own scans, and checking the contrast of
+  // every covered element behind the sheet is slow.
+  expect(await violations(page, ".site-header")).toEqual([]);
 });

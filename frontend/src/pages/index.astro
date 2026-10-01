@@ -50,7 +50,7 @@ const work = (await getWork()).slice(0, 4);
     </div>
   </section>
 
-  <section class="section section--rule" aria-labelledby="build-title">
+  <section class="section tone-tint" aria-labelledby="build-title">
     <div class="container">
       <SectionHeading eyebrow="What we build" title="Four kinds of systems, one team." id="build-title" index={1}>
         <p>Most businesses need more than one of these. They work best when they are designed together.</p>
@@ -61,7 +61,7 @@ const work = (await getWork()).slice(0, 4);
 
   {
     work.length > 0 && (
-      <section class="section section--rule" aria-labelledby="work-title">
+      <section class="section tone-warm" aria-labelledby="work-title">
         <div class="container">
           <SectionHeading eyebrow="Selected work" title="Products and systems we have built." id="work-title" index={2}>
             <a class="link-arrow" href="/work/">
@@ -98,7 +98,7 @@ const work = (await getWork()).slice(0, 4);
     </div>
   </section>
 
-  <section class="section section--rule" aria-labelledby="founders-title">
+  <section class="section tone-warm" aria-labelledby="founders-title">
     <div class="container">
       <SectionHeading eyebrow="Company" title="Led by its three founders." id="founders-title" index={5}>
         <p>Trivista Labs is run by the people who design and build its systems.</p>
@@ -118,11 +118,13 @@ const work = (await getWork()).slice(0, 4);
 
 <style>
   .hero {
-    padding-block: clamp(3rem, 2rem + 5vw, 7rem) clamp(3.5rem, 2rem + 6vw, 7.5rem);
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(3.5rem, 2rem + 6vw, 7.5rem);
   }
+  /* Both columns start at the top, so the headline sits just under the header instead of being
+     centred against the taller drawing. */
   .hero__grid {
     display: grid;
-    align-items: center;
+    align-items: start;
     gap: var(--space-2xl);
   }
   .hero__text {

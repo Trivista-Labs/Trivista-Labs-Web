@@ -183,6 +183,18 @@ import { principles, siteFacts } from "../data/principles";
     color: var(--on-dark-2);
     font-size: var(--text-sm);
   }
+  /* Narrow screens: each fact reads label above value, and the panel drops its shadow filter. */
+  @media (max-width: 29.99em) {
+    .evidence__fact {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.15rem;
+    }
+  }
+  @media (max-width: 39.99em) {
+    .evidence {
+      filter: none;
+    }
+  }
   @media (min-width: 40em) {
     .principles__list {
       grid-template-columns: repeat(2, minmax(0, 1fr));

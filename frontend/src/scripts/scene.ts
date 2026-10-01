@@ -167,6 +167,9 @@ function mount(root: HTMLElement, tier: Tier): void {
 
   const { pose, model } = scene;
   const labels = Array.from(surface.querySelectorAll<HTMLElement>("[data-callout]"));
+  // Phone hotspots (layers.ts) ride on the plates they label.
+  const hotspots = Array.from(surface.querySelectorAll<HTMLElement>("[data-layer-hotspot]"));
+  const chosenLayer = () => (surface.dataset.activeLayer === undefined ? undefined : Number(surface.dataset.activeLayer));
   const active = trackActiveLabel(labels);
   const pointer = trackPointer(tier === "full");
   const mono = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim() || "monospace";
@@ -209,7 +212,7 @@ function mount(root: HTMLElement, tier: Tier): void {
       spread: pose.frame.spread + easeInOut(scrolled) * (1 - pose.frame.spread),
       light: [pointer.x * 0.9 + drift * 0.5, pointer.y * 0.8 - 0.35],
       pulses: !still,
-      highlight: active.current,
+      highlight: active.current >= 0 ? active.current : chosenLayer(),
     };
 
     const map = fit(poster, box, canvasBox);
@@ -218,6 +221,16 @@ function mount(root: HTMLElement, tier: Tier): void {
     ctx.clearRect(0, 0, width, height);
     ctx.setTransform(ratio * map.scale, 0, 0, ratio * map.scale, ratio * map.x, ratio * map.y);
     paint(ctx, out.primitives, labelFont);
+    if (hotspots.length && surface.dataset.activeLayer !== undefined) {
+      const originX = box.left - canvasBox.left;
+      const originY = box.top - canvasBox.top;
+      out.markers.forEach((marker, i) => {
+        const hotspot = hotspots[i];
+        if (!hotspot) return;
+        hotspot.style.left = `${((map.x + marker.x * map.scale - originX) / box.width) * 100}%`;
+        hotspot.style.top = `${((map.y + marker.y * map.scale - originY) / box.height) * 100}%`;
+      });
+    }
     if (labels.length) {
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       const anchors = out.anchors.map((a) => ({ x: map.x + a.x * map.scale, y: map.y + a.y * map.scale }));
@@ -268,6 +281,7 @@ function mount(root: HTMLElement, tier: Tier): void {
   window.addEventListener("scroll", redraw, { passive: true });
   window.addEventListener("resize", redraw, { passive: true });
   active.onChange = redraw;
+  surface.addEventListener("layerchange", redraw);
 
   new IntersectionObserver(
     ([entry]) => {

@@ -34,7 +34,7 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
 >
   {
     data.cover && (
-      <div class="showcase tv-frame tv-frame--dark">
+      <div class="showcase tv-frame">
         {(data.coverLabel || data.screenLabel) && (
           <p class="showcase__notes" aria-hidden="true">
             {data.coverLabel && <span class="showcase__note">01 {data.coverLabel}</span>}
@@ -115,7 +115,7 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     align-content: start;
     gap: var(--space-lg);
     padding-top: var(--space-lg);
-    border-top: 1px solid var(--ink);
+    border-top: 1px solid var(--rule-strong);
   }
   .work-card--media {
     gap: var(--space-xl);
@@ -127,9 +127,10 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
   .showcase {
     --cut: 22px;
     --frame-fill:
-      radial-gradient(80% 70% at 70% 15%, rgb(0 209 178 / 0.18), transparent 62%),
-      var(--lattice-dark) center bottom / var(--lattice-size),
-      linear-gradient(160deg, var(--graphite-2) 0%, var(--graphite) 100%);
+      radial-gradient(70% 60% at 68% 30%, rgb(0 209 178 / 0.12), transparent 65%),
+      radial-gradient(60% 40% at 50% 100%, rgb(var(--shadow-tint) / 0.08), transparent 70%),
+      var(--lattice) center bottom / var(--lattice-size),
+      linear-gradient(160deg, #f1efe8 0%, #e4e1d8 100%);
     overflow: hidden;
     padding: clamp(2.25rem, 5vw, 3.5rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 7vw, 5rem);
     perspective: 1800px;
@@ -144,7 +145,7 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     display: flex;
     justify-content: space-between;
     gap: var(--space-md);
-    color: var(--on-dark-2);
+    color: var(--muted);
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     letter-spacing: 0.04em;
@@ -152,7 +153,7 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
   .showcase__note {
     position: relative;
     padding-bottom: 0.2rem;
-    border-bottom: 1px solid var(--line-dark-strong);
+    border-bottom: 1px solid var(--rule-strong);
   }
   .showcase__note::after {
     content: "";
@@ -161,7 +162,7 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     left: 0;
     width: 1px;
     height: 0.9rem;
-    background: var(--line-dark-strong);
+    background: var(--rule-strong);
     transform: skewX(-30deg);
     transform-origin: top;
   }
@@ -180,9 +181,9 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     border-radius: 7px;
     background: var(--paper);
     box-shadow:
-      0 0 0 1px rgb(255 255 255 / 0.1),
-      0 40px 60px -30px rgb(0 0 0 / 0.85),
-      0 20px 44px -24px rgb(0 209 178 / 0.35);
+      0 0 0 1px rgb(var(--shadow-tint) / 0.1),
+      0 30px 50px -28px rgb(var(--shadow-tint) / 0.45),
+      0 18px 40px -24px rgb(0 209 178 / 0.28);
     transform: rotateY(-10deg) rotateX(5deg);
     transform-origin: 70% 50%;
     transition: transform 0.9s var(--ease-out-expo);
@@ -238,9 +239,9 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
     border-radius: 18px;
     background: #0b0c0e;
     box-shadow:
-      0 0 0 1px rgb(255 255 255 / 0.14),
-      0 30px 44px -20px rgb(0 0 0 / 0.9),
-      0 0 28px -8px rgb(0 209 178 / 0.35);
+      0 0 0 1px rgb(22 24 26 / 0.5),
+      0 28px 40px -20px rgb(var(--shadow-tint) / 0.55),
+      0 0 28px -8px rgb(0 209 178 / 0.3);
     transform: rotateY(-10deg) rotateX(5deg) translateZ(90px);
     transition: transform 0.9s var(--ease-out-expo);
   }
@@ -321,6 +322,34 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
   .work-card__summary {
     max-width: 52ch;
     color: var(--ink-2);
+  }
+  /* Phones: the phone screenshot is what a visitor here would actually use, so it leads: larger,
+     nearer and less angled, with the browser behind it. */
+  @media (max-width: 39.99em) {
+    .showcase {
+      padding: 3.25rem 0.75rem 2.75rem;
+    }
+    .showcase__notes {
+      top: 0.75rem;
+      right: 0.75rem;
+      left: 0.75rem;
+      font-size: 0.75rem;
+    }
+    .showcase__note {
+      max-width: 46%;
+    }
+    .showcase__browser,
+    .work-card:hover .showcase__browser {
+      width: 82%;
+      transform: rotateY(-6deg) rotateX(3deg);
+    }
+    .showcase__phone,
+    .work-card:hover .showcase__phone {
+      right: 3%;
+      bottom: -12%;
+      width: 38%;
+      transform: rotateY(-6deg) rotateX(3deg) translateZ(60px);
+    }
   }
   /* The work grid has two columns from 48em, so a lone featured card spans both from there. */
   @media (min-width: 48em) {

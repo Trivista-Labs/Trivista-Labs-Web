@@ -1,6 +1,7 @@
 ---
+import ArrowIcon from "./ArrowIcon.astro";
 import BrandMark from "./BrandMark.astro";
-import { navigation } from "../data/site";
+import { navigation, site } from "../data/site";
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(href);
@@ -38,7 +39,9 @@ const onContact = isCurrent("/contact/");
       </a>
     </nav>
 
-    <a class="menu-toggle" href="#site-footer-nav" data-nav-fallback>Menu</a>
+    <a class="menu-toggle" href="#site-footer-nav" data-nav-fallback>
+      <span class="menu-toggle__glyph" aria-hidden="true"></span>Menu
+    </a>
     <button
       class="menu-toggle"
       type="button"
@@ -47,23 +50,28 @@ const onContact = isCurrent("/contact/");
       data-nav-toggle
       hidden
     >
+      <span class="menu-toggle__glyph" aria-hidden="true"></span>
       <span data-nav-label>Menu</span>
     </button>
   </div>
 
-  <div class="mobile-menu" id="mobile-menu" data-nav-menu hidden>
-    <nav class="container" aria-label="Main">
-      <ul class="mobile-menu__list" role="list">
+  <div class="mobile-menu surface-dark" id="mobile-menu" data-nav-menu hidden>
+    <nav class="container mobile-menu__inner" aria-label="Main">
+      <ol class="mobile-menu__list" role="list">
         {
-          navigation.map((item) => (
+          navigation.map((item, index) => (
             <li>
               <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                <span class="mobile-menu__index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 {item.label}
+                <ArrowIcon />
               </a>
             </li>
           ))
         }
-      </ul>
+      </ol>
       <a
         class="button button--primary mobile-menu__cta"
         href="/contact/"
@@ -72,6 +80,10 @@ const onContact = isCurrent("/contact/");
       >
         Start a project
       </a>
+      <p class="mobile-menu__meta">
+        <a href={`mailto:${site.email}`} data-track="Email clicked" data-track-location="mobile-menu">{site.email}</a>
+        <span>{site.locality}, {site.country}</span>
+      </p>
     </nav>
   </div>
 </header>
@@ -154,45 +166,130 @@ const onContact = isCurrent("/contact/");
     background: var(--teal-ink);
     transform: scaleX(1);
   }
+  /* The phone toggle: a mono label led by the tri-band, whose teal segment lights when open. */
   .menu-toggle {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    min-width: 4.75rem;
+    gap: 0.65rem;
+    min-width: 2.75rem;
     min-height: 2.75rem;
-    padding: 0.5rem 0.9rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: var(--radius);
+    padding: 0.5rem 0.25rem 0.5rem 0.75rem;
+    border: 0;
     background: transparent;
-    font-size: var(--text-sm);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
     font-weight: 500;
+    letter-spacing: var(--tracking-label);
     text-decoration: none;
+    text-transform: uppercase;
     cursor: pointer;
   }
+  .menu-toggle__glyph {
+    flex: none;
+    width: 1.5rem;
+    height: 0.55rem;
+    background: linear-gradient(90deg, #c9c5bb 0 28%, transparent 28% 36%, var(--ink-2) 36% 64%, transparent 64% 72%, var(--ink-2) 72%);
+    transform: skewX(-30deg);
+    transition: background 0.3s ease;
+  }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__glyph {
+    background: linear-gradient(90deg, #c9c5bb 0 28%, transparent 28% 36%, var(--ink-2) 36% 64%, transparent 64% 72%, #00a58c 72%);
+  }
+
+  /* The phone menu: a full-height graphite sheet on the lattice, cut open from the top. */
   .mobile-menu {
     position: absolute;
     inset-inline: 0;
     top: 100%;
-    padding-block: var(--space-xs) var(--space-xl);
-    border-bottom: 1px solid var(--rule);
-    background: var(--ivory);
-    box-shadow: 0 24px 32px -28px rgb(22 24 26 / 0.45);
+    height: calc(100dvh - 4.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background:
+      radial-gradient(40rem 26rem at 100% 0%, rgb(0 209 178 / 0.12), transparent 60%),
+      var(--lattice-dark) center top / var(--lattice-size),
+      linear-gradient(180deg, var(--charcoal) 0%, var(--graphite) 100%);
+    animation: menu-open 0.45s var(--ease-out-expo);
+  }
+  @keyframes menu-open {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  .mobile-menu__inner {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xl);
+    min-height: 100%;
+    padding-block: var(--space-lg) var(--space-2xl);
+  }
+  .mobile-menu__list li {
+    animation: menu-item 0.6s var(--ease-out-expo) backwards;
+  }
+  .mobile-menu__list li:nth-child(2) {
+    animation-delay: 0.06s;
+  }
+  .mobile-menu__list li:nth-child(3) {
+    animation-delay: 0.12s;
+  }
+  /* Links arrive along the 60-degree axis, like section headings. */
+  @keyframes menu-item {
+    from {
+      opacity: 0;
+      transform: translate(-0.6rem, 1.05rem);
+    }
   }
   .mobile-menu__list a {
-    display: block;
-    padding-block: 0.9rem;
-    border-bottom: 1px solid var(--rule);
-    font-size: var(--text-xl);
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--line-dark);
+    color: var(--on-dark);
+    font-size: clamp(1.75rem, 1.2rem + 3vw, 2.25rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
     text-decoration: none;
   }
+  .mobile-menu__list a :global(svg) {
+    align-self: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-left: auto;
+    color: var(--teal);
+  }
+  .mobile-menu__index {
+    color: var(--on-dark-2);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
   .mobile-menu__list a[aria-current="page"] {
-    color: var(--teal-ink);
+    color: var(--teal);
   }
   .mobile-menu__cta {
     width: 100%;
-    margin-top: var(--space-lg);
+    min-height: 3.25rem;
+  }
+  .mobile-menu__meta {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--on-dark-2);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+  .mobile-menu__meta a {
+    color: var(--on-dark);
+    text-underline-offset: 0.2em;
+  }
+  /* The page behind the open menu stays still (site.ts sets the class). */
+  :global(html.is-menu-open) {
+    overflow: hidden;
   }
   /* Must match DESKTOP in src/scripts/site.ts. */
   @media (min-width: 60em) {

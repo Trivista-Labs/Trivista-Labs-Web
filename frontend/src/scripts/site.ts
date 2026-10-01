@@ -19,6 +19,7 @@ function initNavigation(): void {
   const setOpen = (open: boolean) => {
     toggle.setAttribute("aria-expanded", String(open));
     menu.hidden = !open;
+    document.documentElement.classList.toggle("is-menu-open", open);
     if (label) label.textContent = open ? "Close" : "Menu";
   };
 

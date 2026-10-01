@@ -7,7 +7,7 @@ import { capabilities } from "../data/capabilities";
 // the page in a stagger that crosses the row lines, rather than sitting in a card grid.
 ---
 
-<ol class="layers" role="list" data-reveal-group>
+<ol class="layers" role="list" data-reveal-group data-carousel>
   {
     capabilities.map((capability, index) => (
       <li class="layer">
@@ -38,6 +38,13 @@ import { capabilities } from "../data/capabilities";
     ))
   }
 </ol>
+<div class="layers__pager" aria-hidden="true" data-carousel-pager>
+  <span class="layers__count"><span data-carousel-current>01</span> / {String(capabilities.length).padStart(2, "0")}</span>
+  <span class="layers__bars">
+    {capabilities.map((_, index) => <span class:list={{ "is-current": index === 0 }} data-carousel-bar />)}
+  </span>
+  <span class="layers__hint">Swipe</span>
+</div>
 
 <style>
   .layers {
@@ -130,6 +137,78 @@ import { capabilities } from "../data/capabilities";
   }
   .layer:hover :global(.layer__glyph) {
     transform: translate(-3px, -5px);
+  }
+
+  .layers__pager {
+    display: none;
+  }
+
+  /* Phones: the layers become a swipeable row of cards, each led by its drawing, with the next
+     card peeking in. The pager shows which layer is in view. */
+  @media (max-width: 39.99em) {
+    .layers {
+      display: flex;
+      gap: var(--space-md);
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 0 var(--gutter) var(--space-xs);
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .layers::-webkit-scrollbar {
+      display: none;
+    }
+    .layer {
+      flex: 0 0 86%;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
+      gap: var(--space-sm);
+      padding-block: 0;
+      border: 0;
+      scroll-snap-align: start;
+    }
+    .layer:last-child {
+      border-bottom: 0;
+    }
+    .layer__visual {
+      order: -1;
+      min-height: 11.5rem;
+    }
+    .layer__index {
+      grid-row: auto;
+      margin-top: var(--space-xs);
+      font-size: 1.75rem;
+    }
+    .layers__pager {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .layers__bars {
+      display: flex;
+      gap: 4px;
+    }
+    .layers__bars span {
+      width: 1.1rem;
+      height: 0.35rem;
+      background: var(--rule-strong);
+      transform: skewX(-30deg);
+      transition: background-color 0.3s ease;
+    }
+    .layers__bars span.is-current {
+      background: var(--teal-ink);
+    }
+    .layers__hint {
+      margin-left: auto;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+    }
   }
 
   /* From tablet width: number, heading, text and plate in four columns, the plates stepping down. */

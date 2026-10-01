@@ -38,6 +38,8 @@ const { schema = [], ...head } = Astro.props;
 
       // The 3D renderer loads only on pages that have a scene.
       if (document.querySelector("[data-scene]")) void import("../scripts/scene");
+      // The phone annotations for the hero stack load only where the stack is.
+      if (document.querySelector("[data-layers]")) void import("../scripts/layers");
     </script>
   </body>
 </html>
