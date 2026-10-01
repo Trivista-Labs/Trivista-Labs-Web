@@ -14,7 +14,8 @@ import { site } from "../data/site";
 import { organizationSchema, websiteSchema } from "../lib/seo";
 import { getWork } from "../lib/work";
 
-const work = (await getWork()).slice(0, 4);
+// The lead project in full, then the next two side by side.
+const work = (await getWork()).slice(0, 3);
 ---
 
 <BaseLayout
@@ -70,8 +71,8 @@ const work = (await getWork()).slice(0, 4);
             </a>
           </SectionHeading>
           <div class="work-grid">
-            {work.map((entry) => (
-              <WorkCard entry={entry} featured={work.length === 1} />
+            {work.map((entry, index) => (
+              <WorkCard entry={entry} featured={index === 0} />
             ))}
           </div>
         </div>

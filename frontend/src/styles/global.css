@@ -118,6 +118,12 @@ main:focus {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+/* The work page shows the lead project in full, then the rest three to a row. */
+@media (min-width: 64em) {
+  .work-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 @media (min-width: 64em) {
   .founder-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

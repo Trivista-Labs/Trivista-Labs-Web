@@ -11,12 +11,8 @@
   See frontend/DESIGN.md ("Trivista UI DNA") before adding new components.
 */
 
-/* Sections after the first are laid out and painted only as they come near the screen, so the
-   first paint pays only for what is visible. The size estimate keeps the scrollbar steady. */
-main > section:not(:first-child) {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
-}
+/* No content-visibility on sections: it lays out skipped sections at an estimated height, so a
+   link to an anchor (the footer menu link, /capabilities/#infrastructure) lands in the wrong place. */
 
 /* ---------- 2. The tri-band ---------- */
 

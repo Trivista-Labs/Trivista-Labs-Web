@@ -102,6 +102,11 @@ test.describe("pages", () => {
     expect(compressed).toBeLessThan(10 * 1024);
   });
 
+  test("links to a section land on that section", async ({ page }) => {
+    await page.goto("/capabilities/#infrastructure");
+    await expect(page.getByRole("heading", { level: 2, name: "Infrastructure that stays up" })).toBeInViewport();
+  });
+
   test("robots.txt points to the sitemap", async ({ request }) => {
     const robots = await request.get("/robots.txt");
     expect(robots.ok()).toBe(true);

@@ -37,9 +37,9 @@ const hasDrafts = work.some((entry) => entry.data.draft);
       }
       {
         work.length > 0 ? (
-          <div class="work-grid">
-            {work.map((entry) => (
-              <WorkCard entry={entry} headingLevel={2} featured={work.length === 1} />
+          <div class="work-grid work-grid--three">
+            {work.map((entry, index) => (
+              <WorkCard entry={entry} headingLevel={2} featured={index === 0} />
             ))}
           </div>
         ) : (

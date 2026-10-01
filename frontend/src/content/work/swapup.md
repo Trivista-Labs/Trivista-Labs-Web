@@ -1,38 +1,25 @@
 ---
 title: SwapUP
-summary: Summary to be written once the project details are confirmed.
-category: To be confirmed
+summary: Shift management for teams. A visual schedule of morning, afternoon and night shifts, swap requests that are tracked and approved by managers, and instant notifications.
+category: Shift management
 capability: products
-caseStudy: true
-draft: true
-order: 2
+status: live
+url: https://www.swapupnow.com/
+# Screenshots of the public site, taken on 1 October 2026.
+cover: ./images/swapup-site.jpg
+coverAlt: "The SwapUP home page: “Shift Management, Simplified.”, beside a weekly shift schedule with a swap approved."
+screen: ./images/swapup-phone.jpg
+screenAlt: The SwapUP site on a phone, showing the weekly shift schedule.
+coverLabel: Public site
+screenLabel: On a phone
+caseStudy: false
+draft: false
+order: 3
 missing:
-  - Which SwapUp this is, since several apps and sites use the name
-  - What the product does and who it is for
-  - Trivista's role, the technology used and the current status
-  - Screenshots, and a public link if there is one
+  - Trivista's role, and what the team designed and built
+  - The technology used and how the product is structured
+  - Screenshots of the product itself, beyond the public site
+  - Any usage figures you are able to verify and share
 ---
 
-## Problem
-
-To be written. The situation before the system existed: who was affected, what it cost them, and the constraints.
-
-## System
-
-To be written. What was built, described as a system: its parts, and how information moves between them.
-
-## Decisions
-
-To be written. The choices that shaped it, the options that were set aside, and why.
-
-## Engineering
-
-To be written. How it was built and tested: the technology, the architecture and the hard parts.
-
-## Experience
-
-To be written. What using it is like, for each kind of person who does.
-
-## Outcome
-
-To be written. Only results that can be verified.
+The summary uses only what swapupnow.com says publicly. A case study needs the details listed under `missing`.

@@ -1,38 +1,21 @@
 ---
 title: GemERP
-summary: An ERP system. Summary to be written once the project details are confirmed.
-category: Business system
+summary: Gemstone resource planning for a gem business in Ratnapura. Purchasing, heat treatment, cutting, certification, sales and exports, with stock value and profit tracked in one place.
+category: Enterprise resource planning
 capability: business-systems
-caseStudy: true
-draft: true
-order: 3
+# The owner's dashboard, with the business's figures blurred, taken on 1 October 2026.
+cover: ./images/gemerp-dashboard.jpg
+coverAlt: "GemERP's home dashboard: inventory, sales and exports, heat treatment, cutting, certificates, financials, reports and an audit trail, with the business's figures blurred."
+coverLabel: Owner's dashboard
+caseStudy: false
+draft: false
+order: 4
 missing:
-  - What GemERP covers and who uses it
-  - Whether it is a client system or Trivista's own product, and whether it can be shown publicly
-  - Trivista's role, the technology used and the current status
-  - Screenshots with any client data removed
+  - Confirmation that the client is happy to be named or shown
+  - Whether the system is live and in daily use
+  - Trivista's role, the technology used and how it is structured
+  - Screenshots with demonstration data, so nothing needs blurring
 ---
 
-## Problem
-
-To be written. The situation before the system existed: who was affected, what it cost them, and the constraints.
-
-## System
-
-To be written. What was built, described as a system: its parts, and how information moves between them.
-
-## Decisions
-
-To be written. The choices that shaped it, the options that were set aside, and why.
-
-## Engineering
-
-To be written. How it was built and tested: the technology, the architecture and the hard parts.
-
-## Experience
-
-To be written. What using it is like, for each kind of person who does.
-
-## Outcome
-
-To be written. Only results that can be verified.
+The summary uses what the system's own screens describe: purchasing, splitting, heat treatment, cutting,
+certification, export and profit, from the mines of Ratnapura to buyers abroad.
