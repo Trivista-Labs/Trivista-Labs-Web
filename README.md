@@ -28,7 +28,8 @@ The contact form posts to the production API by default. To work against a local
 | `npm test` | Unit tests (Vitest) |
 | `npm run lint` | ESLint, including the React hooks rules |
 | `npm run test:e2e` | Builds, then runs the browser tests: layout at six widths, navigation, the contact form, a JavaScript budget and WCAG 2.2 AA checks. Stop any running `npm run preview` first, because Astro allows one preview server per project. |
-| `npm run assets -- --source <folder>` | Rebuilds founder portraits, the logo mark, icons and the share image from original files |
+| `npm run assets -- --source <folder>` | Rebuilds the founder portraits from the original photos |
+| `npm run icons` | Rebuilds the favicons and app icons from the vector mark in `src/data/brand.ts` |
 
 ### Where content lives
 

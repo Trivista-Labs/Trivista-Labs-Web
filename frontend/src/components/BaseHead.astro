@@ -15,7 +15,7 @@ const {
   title,
   description,
   image = "/og/default.png",
-  imageAlt = "The Trivista Labs logo on a charcoal background",
+  imageAlt = "Trivista Labs: “We design and build the software your business runs on.”, beside a 3D drawing of four layered systems",
   type = "website",
   noindex = false,
 } = Astro.props;
@@ -31,6 +31,7 @@ const imageUrl = new URL(image, Astro.site).href;
 <link rel="canonical" href={canonical} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 <meta name="theme-color" content="#f6f4ee" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

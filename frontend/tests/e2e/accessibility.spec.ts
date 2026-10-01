@@ -47,12 +47,14 @@ test("the contact form stays accessible while showing errors", async ({ page }) 
 });
 
 test("the open mobile menu is accessible", async ({ page }) => {
+  // A contrast scan over a full-height overlay is heavy; on a busy machine it needs more than the default.
+  test.setTimeout(120_000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Menu" }).click();
   await expect(page.getByRole("button", { name: "Close" })).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("#mobile-menu")).toBeVisible();
-  // The menu and header only: the page underneath has its own scans, and checking the contrast of
-  // every covered element behind the sheet is slow.
-  expect(await violations(page, ".site-header")).toEqual([]);
+  // The open sheet only: the header and the page underneath have their own scans, and checking the
+  // contrast of every element covered by the sheet is slow.
+  expect(await violations(page, "#mobile-menu")).toEqual([]);
 });

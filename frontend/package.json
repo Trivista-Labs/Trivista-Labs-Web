@@ -15,7 +15,8 @@
     "test": "vitest run",
     "pretest:e2e": "astro build",
     "test:e2e": "playwright test",
-    "assets": "node scripts/prepare-assets.mjs"
+    "assets": "node scripts/prepare-assets.mjs",
+    "icons": "node --experimental-strip-types scripts/brand-icons.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.0",
