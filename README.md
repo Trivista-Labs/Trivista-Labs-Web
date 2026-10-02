@@ -128,21 +128,25 @@ The home page lists facts about this website, such as how much JavaScript it shi
 
 ```bash
 cd backend
-cp .env.example .env   # then fill in EMAIL_USER and EMAIL_PASS
+cp .env.example .env   # then fill in the Resend or Gmail settings
 npm install
 npm run dev            # http://localhost:5000
 npm test
 ```
 
+The API sends email through [Resend](https://resend.com) when `RESEND_API_KEY` is set, and through Gmail otherwise. Render's plan blocks outgoing SMTP, which is how Gmail sending works, so on Render it must use Resend, which sends over HTTPS. Gmail still works for local development.
+
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `EMAIL_USER` | Yes | Gmail account the API sends from |
-| `EMAIL_PASS` | Yes | A Google app password for that account |
-| `CONTACT_TO` | No | Where enquiries go. Defaults to `EMAIL_USER` |
+| `RESEND_API_KEY` | On Render | A Resend API key with permission to send |
+| `MAIL_FROM` | With Resend | The address enquiries are sent from, on a domain verified in Resend, such as `website@trivistalabs.lk` |
+| `CONTACT_TO` | With Resend | Where enquiries go. With Gmail, defaults to `EMAIL_USER` |
+| `EMAIL_USER` | For Gmail | Gmail account the API sends from |
+| `EMAIL_PASS` | For Gmail | A Google app password for that account |
 | `CORS_ORIGINS` | No | Comma-separated browser origins allowed to call the API |
 | `TRUST_PROXY_HOPS` | No | Proxies in front of the API. Defaults to 1, which suits Render |
 
-`POST /api/contact` accepts `name`, `email`, `message` and optionally `company`, `projectType` and `timeline`. Every field is validated and HTML-escaped before it reaches the email. Each visitor can send 5 messages per 15 minutes, with IPv6 addresses grouped by /56 so one allocation counts as one visitor, and the API accepts at most 60 messages an hour in total, so a flood cannot use up the Gmail account's sending quota. A hidden `contact_ref` field catches automated senders: the API answers them as if it worked and sends nothing. `GET /api/health` reports that the service is up; the contact page calls it on load so the server is awake by the time someone submits.
+`POST /api/contact` accepts `name`, `email`, `message` and optionally `company`, `projectType` and `timeline`. Every field is validated and HTML-escaped before it reaches the email. Each visitor can send 5 messages per 15 minutes, with IPv6 addresses grouped by /56 so one allocation counts as one visitor, and the API accepts at most 60 messages an hour in total, so a flood cannot use up the email service's sending quota. A hidden `contact_ref` field catches automated senders: the API answers them as if it worked and sends nothing. `GET /api/health` reports that the service is up; the contact page calls it on load so the server is awake by the time someone submits.
 
 After deploying the API to Render, check that the rate limit sees real visitor addresses: send a few test messages from two different networks and confirm they are limited separately. If every visitor shares one limit, Render has more than one proxy in front of the app; increase `TRUST_PROXY_HOPS`.
 
