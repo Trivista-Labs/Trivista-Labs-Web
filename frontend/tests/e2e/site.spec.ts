@@ -1,21 +1,10 @@
-import { readFileSync, readdirSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { expect, test } from "@playwright/test";
+import { CASE_STUDY_PAGES, WORK_ENTRIES } from "./work-entries";
 
-const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/"];
+const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/", ...CASE_STUDY_PAGES];
 // The widths the briefs ask to check: desktop and tablet, then the common phone widths.
 const WIDTHS = [1440, 1280, 1024, 768, 430, 412, 393, 390, 375, 360];
-
-// Every work entry, read from the content files, so new drafts are covered automatically.
-const WORK_DIR = new URL("../../src/content/work/", import.meta.url);
-const WORK_ENTRIES = readdirSync(WORK_DIR)
-  .filter((file) => file.endsWith(".md"))
-  .map((file) => {
-    const frontmatter = readFileSync(new URL(file, WORK_DIR), "utf8").split("---")[1] ?? "";
-    const field = (name: string) => frontmatter.match(new RegExp(`^${name}:\\s*(.+)$`, "m"))?.[1].trim();
-    // Entries are drafts unless they say otherwise, matching the content schema.
-    return { slug: file.replace(/\.md$/, ""), title: field("title") ?? "", draft: field("draft") !== "false" };
-  });
 
 // Never call the production API from tests. The contact page wakes it on load.
 test.beforeEach(async ({ page }) => {
@@ -25,6 +14,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe("layout", () => {
+  // Each test loads every page, case studies included, so it needs longer than one page's timeout.
+  test.describe.configure({ timeout: 180_000 });
   for (const width of WIDTHS) {
     test(`no page scrolls sideways at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });

@@ -1,15 +1,13 @@
 ---
 import CtaBand from "../components/CtaBand.astro";
-import DraftNotice from "../components/DraftNotice.astro";
 import FounderCard from "../components/FounderCard.astro";
 import PageHero from "../components/PageHero.astro";
 import ProcessSteps from "../components/ProcessSteps.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { founderDetailsMissing, founders } from "../data/founders";
+import { founders } from "../data/founders";
 import { site, social } from "../data/site";
 import { breadcrumbSchema, organizationSchema } from "../lib/seo";
-import { showDrafts } from "../lib/work";
 
 const linkedin = social.find((link) => link.label === "LinkedIn");
 ---
@@ -34,7 +32,6 @@ const linkedin = social.find((link) => link.label === "LinkedIn");
   <section class="section" aria-labelledby="founders-title">
     <div class="container">
       <SectionHeading eyebrow="Founders" title="Each founder leads one part of the company." id="founders-title" index={1} />
-      {showDrafts && <DraftNotice label="Founder bios are not written yet." missing={founderDetailsMissing} />}
       <div class="founder-grid" data-reveal-group>
         {founders.map((founder) => <FounderCard founder={founder} />)}
       </div>

@@ -8,6 +8,7 @@ export const showDrafts: boolean = import.meta.env.DEV || PUBLIC_SHOW_DRAFTS;
 
 export const STATUS_LABELS: Readonly<Record<WorkStatus, string>> = {
   live: "Live",
+  "on-request": "Access on request",
   "in-development": "In development",
   internal: "Internal product",
   completed: "Completed",

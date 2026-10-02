@@ -13,7 +13,7 @@ const work = defineCollection({
       summary: z.string().max(200),
       category: z.string(),
       capability: z.enum(CAPABILITY_IDS),
-      status: z.enum(["live", "in-development", "internal", "completed"]).optional(),
+      status: z.enum(["live", "on-request", "in-development", "internal", "completed"]).optional(),
       client: z.string().optional(),
       year: z.number().int().optional(),
       url: z.httpUrl().optional(),

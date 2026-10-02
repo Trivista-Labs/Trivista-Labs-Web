@@ -23,7 +23,7 @@ const { founder } = Astro.props;
     <p class="mono-label founder__role">{founder.role}</p>
     <h3 class="founder__name">{founder.name}</h3>
     <p class="founder__title">{founder.title}</p>
-    <p class="founder__focus">{founder.focus}</p>
+    <p class="founder__bio">{founder.bio}</p>
     {
       founder.linkedin && (
         <a class="link founder__link" href={founder.linkedin} target="_blank" rel="noopener noreferrer">
@@ -84,7 +84,7 @@ const { founder } = Astro.props;
   .founder__title {
     font-weight: 500;
   }
-  .founder__focus {
+  .founder__bio {
     margin-top: 0.35rem;
     color: var(--ink-2);
   }
