@@ -1,5 +1,6 @@
 ---
 import BrandMark from "./BrandMark.astro";
+import OfficeAddress from "./OfficeAddress.astro";
 import { navigation, site, social } from "../data/site";
 
 const year = new Date().getFullYear();
@@ -38,7 +39,7 @@ const year = new Date().getFullYear();
         <li>
           <a href={`mailto:${site.email}`} data-track="Email clicked" data-track-location="footer">{site.email}</a>
         </li>
-        <li>{site.locality}, {site.country}</li>
+        <li><OfficeAddress location="footer" linkClass="" /></li>
       </ul>
     </div>
 
@@ -75,7 +76,7 @@ const year = new Date().getFullYear();
 
   <div class="container site-footer__base">
     <p>&copy; {year} {site.legalName}. All rights reserved.</p>
-    <p class="site-footer__coordinates">{site.locality} · 6.9271° N, 79.8612° E</p>
+    <p class="site-footer__coordinates">{site.locality} · {site.coordinates.latitude}° N, {site.coordinates.longitude}° E</p>
   </div>
 </footer>
 

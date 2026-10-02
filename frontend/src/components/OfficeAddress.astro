@@ -1,0 +1,40 @@
+---
+import { site } from "../data/site";
+
+interface Props {
+  /** Where the address sits, for analytics. */
+  location: string;
+  /** Class for the map link, so it matches the links around it. */
+  linkClass?: string;
+}
+
+// The office address, with a link out to Trivista Labs on Google Maps. A link rather than an
+// embedded map, so the site sets no cookies and loads nothing from Google.
+const { location, linkClass = "link" } = Astro.props;
+---
+
+<address class="office">
+  <span>{site.address.street}</span>
+  <span>{site.address.area}, {site.country}</span>
+  <a
+    class:list={["office__map", linkClass]}
+    href={site.mapsUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    data-track="Map clicked"
+    data-track-location={location}
+  >
+    Open in Google Maps<span class="visually-hidden"> (opens in a new tab)</span>
+  </a>
+</address>
+
+<style>
+  .office {
+    display: grid;
+    justify-items: start;
+    font-style: normal;
+  }
+  .office__map {
+    margin-top: 0.35rem;
+  }
+</style>

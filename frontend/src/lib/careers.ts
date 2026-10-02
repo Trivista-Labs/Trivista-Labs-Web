@@ -25,6 +25,7 @@ export interface HiringDetails {
   readonly url: string;
   readonly organizationId: string;
   readonly organizationName: string;
+  readonly streetAddress?: string;
   readonly locality: string;
   readonly countryCode: string;
 }
@@ -110,7 +111,12 @@ export function jobPostingSchema(job: Job, hiring: HiringDetails): Record<string
     hiringOrganization: { "@type": "Organization", "@id": hiring.organizationId, name: hiring.organizationName },
     jobLocation: {
       "@type": "Place",
-      address: { "@type": "PostalAddress", addressLocality: hiring.locality, addressCountry: hiring.countryCode },
+      address: {
+        "@type": "PostalAddress",
+        ...(hiring.streetAddress ? { streetAddress: hiring.streetAddress } : {}),
+        addressLocality: hiring.locality,
+        addressCountry: hiring.countryCode,
+      },
     },
     ...(remote
       ? {

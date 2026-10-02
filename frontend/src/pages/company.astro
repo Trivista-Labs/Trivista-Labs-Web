@@ -1,6 +1,7 @@
 ---
 import CtaBand from "../components/CtaBand.astro";
 import FounderCard from "../components/FounderCard.astro";
+import OfficeAddress from "../components/OfficeAddress.astro";
 import PageHero from "../components/PageHero.astro";
 import ProcessSteps from "../components/ProcessSteps.astro";
 import SectionHeading from "../components/SectionHeading.astro";
@@ -54,8 +55,8 @@ const linkedin = social.find((link) => link.label === "LinkedIn");
           <dd>{site.legalName}</dd>
         </div>
         <div class="details__row">
-          <dt>Based in</dt>
-          <dd>{site.locality}, {site.country}</dd>
+          <dt>Address</dt>
+          <dd><OfficeAddress location="company" /></dd>
         </div>
         <div class="details__row">
           <dt>Email</dt>

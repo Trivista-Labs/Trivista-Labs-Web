@@ -5,6 +5,13 @@ export type JsonLd = Record<string, unknown>;
 
 const absolute = (path: string) => new URL(path, site.url).href;
 
+const officeAddress = {
+  "@type": "PostalAddress",
+  streetAddress: `${site.address.street}, ${site.address.area}`,
+  addressLocality: site.locality,
+  addressCountry: site.countryCode,
+};
+
 export function organizationSchema(): JsonLd {
   return {
     "@context": "https://schema.org",
@@ -15,10 +22,12 @@ export function organizationSchema(): JsonLd {
     url: absolute("/"),
     logo: absolute("/icon-512.png"),
     email: site.email,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: site.locality,
-      addressCountry: site.countryCode,
+    address: officeAddress,
+    location: {
+      "@type": "Place",
+      address: officeAddress,
+      geo: { "@type": "GeoCoordinates", ...site.coordinates },
+      hasMap: site.mapsUrl,
     },
     sameAs: social.filter((link) => link.profile).map((link) => link.href),
     founder: founders.map((founder) => ({

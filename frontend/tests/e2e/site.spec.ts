@@ -334,3 +334,23 @@ test.describe("careers", () => {
     expect(rolePages).toHaveLength(OPEN_JOBS.length);
   });
 });
+
+test("the office address and its Google Maps link are in the footer and the structured data", async ({ page }) => {
+  await page.goto("/contact/");
+  const footer = page.locator(".site-footer address");
+  await expect(footer).toContainText("35 Edward Ln");
+  await expect(footer).toContainText("Colombo 03, Sri Lanka");
+  const map = footer.getByRole("link", { name: /Open in Google Maps/ });
+  await expect(map).toHaveAttribute("href", "https://maps.app.goo.gl/S3hWd6dekfDx5goU8");
+  await expect(map).toHaveAttribute("target", "_blank");
+  // A link, never an embedded map, so the site keeps its no-cookies promise.
+  await expect(page.locator("iframe")).toHaveCount(0);
+
+  await page.goto("/");
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const organization = blocks.map((text) => JSON.parse(text) as Record<string, unknown>).find((block) => block["@type"] === "Organization");
+  expect(organization).toMatchObject({
+    address: { streetAddress: "35 Edward Ln, Colombo 03", addressLocality: "Colombo", addressCountry: "LK" },
+    location: { hasMap: "https://maps.app.goo.gl/S3hWd6dekfDx5goU8" },
+  });
+});

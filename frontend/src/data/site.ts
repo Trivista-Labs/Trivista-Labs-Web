@@ -13,10 +13,19 @@ export const site = {
   locality: "Colombo",
   country: "Sri Lanka",
   countryCode: "LK",
+  /** The office. `area` is the Colombo postal district, as people write it. */
+  address: { street: "35 Edward Ln", area: "Colombo 03" },
+  /** Trivista Labs' place on Google Maps. Linked to, never embedded: an embedded map would set cookies. */
+  mapsUrl: "https://maps.app.goo.gl/S3hWd6dekfDx5goU8",
+  /** Where the Google Maps pin sits, to four decimal places. */
+  coordinates: { latitude: 6.8966, longitude: 79.8565 },
   responseTime: "within 24 hours",
   contactApiUrl: PUBLIC_CONTACT_API_URL.replace(/\/+$/, ""),
   legalUpdated: { iso: "2026-09-30", display: "30 September 2026" },
 } as const;
+
+/** The office address on one line: "35 Edward Ln, Colombo 03, Sri Lanka". */
+export const fullAddress = `${site.address.street}, ${site.address.area}, ${site.country}`;
 
 export type SocialLink = {
   readonly label: string;

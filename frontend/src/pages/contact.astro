@@ -1,5 +1,6 @@
 ---
 import ContactForm from "../components/ContactForm";
+import OfficeAddress from "../components/OfficeAddress.astro";
 import PageHero from "../components/PageHero.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { site, social } from "../data/site";
@@ -51,7 +52,7 @@ import { breadcrumbSchema } from "../lib/seo";
         </div>
         <div class="contact__block">
           <h2 class="contact__heading">Where we are</h2>
-          <p>{site.locality}, {site.country}</p>
+          <OfficeAddress location="contact" />
         </div>
         <div class="contact__block">
           <h2 class="contact__heading">Elsewhere</h2>

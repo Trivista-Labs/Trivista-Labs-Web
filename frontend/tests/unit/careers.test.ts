@@ -102,6 +102,11 @@ describe("jobPostingSchema", () => {
     expect(description).toContain("<li>Know &lt;HTML&gt; &amp; CSS</li>");
   });
 
+  it("includes the street address when there is one", () => {
+    const schema = jobPostingSchema(ROLE, { ...HIRING, streetAddress: "1 Test Lane" });
+    expect(schema).toMatchObject({ jobLocation: { address: { streetAddress: "1 Test Lane", addressLocality: "Colombo" } } });
+  });
+
   it("marks remote roles and their closing date", () => {
     const schema = jobPostingSchema({ ...ROLE, arrangement: "remote", closes: new Date("2026-03-01") }, HIRING);
     expect(schema).toMatchObject({

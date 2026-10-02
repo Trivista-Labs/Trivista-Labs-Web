@@ -57,6 +57,7 @@ const lists = [
       url: new URL(path, site.url).href,
       organizationId: new URL("/#organization", site.url).href,
       organizationName: site.legalName,
+      streetAddress: `${site.address.street}, ${site.address.area}`,
       locality: site.locality,
       countryCode: site.countryCode,
     }),

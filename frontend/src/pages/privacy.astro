@@ -1,7 +1,7 @@
 ---
 import PageHero from "../components/PageHero.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { site } from "../data/site";
+import { fullAddress, site } from "../data/site";
 // Plain-language policy that matches what the site does today. Have it reviewed before launch.
 ---
 
@@ -61,7 +61,7 @@ import { site } from "../data/site";
 
         <h2>Contact</h2>
         <p>
-          {site.legalName}, {site.locality}, {site.country}. Email: <a href={`mailto:${site.email}`}>{site.email}</a>
+          {site.legalName}, {fullAddress}. Email: <a href={`mailto:${site.email}`}>{site.email}</a>
         </p>
       </div>
     </div>
