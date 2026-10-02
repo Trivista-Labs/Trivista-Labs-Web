@@ -343,12 +343,26 @@ const Heading = headingLevel === 2 ? "h2" : "h3";
       width: 82%;
       transform: rotateY(-6deg) rotateX(3deg);
     }
+    /* The phone hangs below the browser, so it never covers the callouts along the top. */
+    .showcase:has(.showcase__phone) {
+      padding-bottom: 28vw;
+    }
     .showcase__phone,
     .work-card:hover .showcase__phone {
+      top: 14%;
       right: 3%;
-      bottom: -12%;
+      bottom: auto;
       width: 38%;
       transform: rotateY(-6deg) rotateX(3deg) translateZ(60px);
+    }
+  }
+  /* Single-column cards: what the project is comes first, then the screenshots. */
+  @media (max-width: 47.99em) {
+    .work-card__body {
+      order: -1;
+    }
+    .work-card--media {
+      gap: var(--space-lg);
     }
   }
   /* The work grid has two columns from 48em, so a lone featured card spans both from there. */

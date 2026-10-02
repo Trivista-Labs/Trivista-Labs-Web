@@ -1,5 +1,5 @@
 ---
-title: The Beauty Room
+title: Salon Booking System
 summary: Online booking and salon management for a salon and aesthetic clinic in Ratnapura. Guests book online; staff run bookings, treatments, stock, purchasing and costing from one dashboard.
 category: Booking and salon management
 capability: business-systems

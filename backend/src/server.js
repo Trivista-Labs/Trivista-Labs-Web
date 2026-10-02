@@ -10,12 +10,17 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
+// Give up quickly if the mail server cannot be reached. Nodemailer's defaults wait up to two minutes,
+// far longer than the website waits, so visitors saw a timeout instead of the "email us directly" reply.
+const SMTP_TIMEOUTS = { connectionTimeout: 10_000, greetingTimeout: 10_000, socketTimeout: 20_000 };
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  ...SMTP_TIMEOUTS,
 });
 
 transporter

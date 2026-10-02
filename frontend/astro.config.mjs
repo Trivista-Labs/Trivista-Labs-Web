@@ -11,6 +11,10 @@ const contactApiOrigin = new URL(env.PUBLIC_CONTACT_API_URL || DEFAULT_CONTACT_A
 export default defineConfig({
   site: "https://trivistalabs.io",
   trailingSlash: "always",
+  // Pages that moved after launch. The old address still works, and sends people to the new one.
+  redirects: {
+    "/work/the-beauty-room/": "/work/salon-booking-system/",
+  },
   // Keep HTML whitespace rules. Astro 7 defaults to JSX rules, which join inline words.
   compressHTML: true,
   integrations: [

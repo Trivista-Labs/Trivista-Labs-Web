@@ -354,3 +354,9 @@ test("the office address and its Google Maps link are in the footer and the stru
     location: { hasMap: "https://maps.app.goo.gl/S3hWd6dekfDx5goU8" },
   });
 });
+
+test("the Salon Booking System's old address still leads to its page", async ({ page }) => {
+  await page.goto("/work/the-beauty-room/");
+  await expect(page).toHaveURL(/\/work\/salon-booking-system\/$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Salon Booking System");
+});
