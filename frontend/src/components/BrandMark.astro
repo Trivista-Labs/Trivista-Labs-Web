@@ -6,7 +6,7 @@ import mark from "../assets/brand/trivista-mark.png";
 ---
 
 <span class="brand-mark" aria-hidden="true">
-  <Picture src={mark} alt="" formats={["avif", "webp"]} width={40} densities={[1, 2, 3]} />
+  <Picture src={mark} alt="" formats={["avif", "webp"]} width={30} densities={[1, 2, 3]} />
 </span>
 
 <style>
@@ -15,8 +15,11 @@ import mark from "../assets/brand/trivista-mark.png";
     flex: none;
     align-items: center;
   }
+  /* Sized in em, so it stays in proportion with the name beside it. The shadows follow the mark's
+     outline: a hairline edge that lifts its near-white band off the ivory page, and a soft warm drop. */
   .brand-mark :global(img) {
-    width: 2.4rem;
-    height: auto;
+    width: auto;
+    height: 1.5em;
+    filter: drop-shadow(0 0 0.5px rgb(var(--shadow-tint) / 0.5)) drop-shadow(0 1px 1.5px rgb(var(--shadow-tint) / 0.3));
   }
 </style>
