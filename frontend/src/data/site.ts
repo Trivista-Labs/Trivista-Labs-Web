@@ -8,6 +8,8 @@ export const site = {
   description:
     "Trivista Labs designs and builds web and mobile apps, business systems, connected hardware and infrastructure. Based in Colombo, Sri Lanka.",
   email: "contact@trivistalabs.lk",
+  /** For job applications only. Every careers call to action uses this address. */
+  careersEmail: "careers@trivistalabs.lk",
   locality: "Colombo",
   country: "Sri Lanka",
   countryCode: "LK",
@@ -33,4 +35,5 @@ export const navigation = [
   { label: "Work", href: "/work/" },
   { label: "Capabilities", href: "/capabilities/" },
   { label: "Company", href: "/company/" },
+  { label: "Careers", href: "/careers/" },
 ] as const;

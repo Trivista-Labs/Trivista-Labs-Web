@@ -1,0 +1,256 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+import {
+  ARRANGEMENT_LABELS,
+  EMPLOYMENT_TYPE_LABELS,
+  applicationMailto,
+  applicationSubject,
+  jobPostingSchema,
+  openJobs,
+} from "../../lib/careers";
+import { breadcrumbSchema } from "../../lib/seo";
+
+// One page per open role. Closed roles get no page, so they can never be found or listed as vacancies.
+export async function getStaticPaths() {
+  const jobs = openJobs(await getCollection("jobs"), new Date());
+  return jobs.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<"jobs">;
+}
+
+const { entry } = Astro.props;
+const { data: job } = entry;
+const { Content } = await render(entry);
+const path = `/careers/${entry.id}/`;
+const applyHref = applicationMailto(site.careersEmail, job.title);
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(date);
+
+const facts = [
+  { label: "Department", value: job.department },
+  { label: "Type", value: EMPLOYMENT_TYPE_LABELS[job.type] },
+  { label: "Where", value: `${job.location} · ${ARRANGEMENT_LABELS[job.arrangement]}` },
+  { label: "Posted", value: formatDate(job.posted) },
+  ...(job.closes ? [{ label: "Applications close", value: formatDate(job.closes) }] : []),
+];
+const lists = [
+  { id: "responsibilities", title: "What you’ll do", items: job.responsibilities },
+  { id: "requirements", title: "What you’ll need", items: job.requirements },
+  { id: "nice-to-have", title: "Nice to have", items: job.niceToHave },
+].filter((list) => list.items.length > 0);
+---
+
+<BaseLayout
+  title={`${job.title} | Careers | Trivista Labs`}
+  description={job.summary}
+  schema={[
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Careers", path: "/careers/" },
+      { name: job.title, path },
+    ]),
+    jobPostingSchema(job, {
+      url: new URL(path, site.url).href,
+      organizationId: new URL("/#organization", site.url).href,
+      organizationName: site.legalName,
+      locality: site.locality,
+      countryCode: site.countryCode,
+    }),
+  ]}
+>
+  <article>
+    <header class="role-hero">
+      <div class="container role-hero__inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol role="list">
+            <li><a href="/careers/">Careers</a></li>
+            <li aria-current="page">{job.title}</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">{job.department}</p>
+        <h1 class="role-hero__title">{job.title}</h1>
+        <p class="lede">{job.summary}</p>
+        <dl class="role-facts">
+          {
+            facts.map((fact) => (
+              <div>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <a class="button button--primary role-hero__apply" href={applyHref} data-track="CV email clicked" data-track-location="careers-role-top">
+          Apply by email<span class="visually-hidden"> for {job.title}</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="section">
+      <div class="container role-body">
+        <div class="prose role-prose">
+          <h2 id="overview">The role</h2>
+          <Content />
+          {
+            lists.map((list) => (
+              <>
+                <h2 id={list.id}>{list.title}</h2>
+                <ul>
+                  {list.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </>
+            ))
+          }
+        </div>
+
+        <aside class="apply surface-dark tv-frame tv-frame--dark" aria-labelledby="apply-title">
+          <h2 class="apply__title" id="apply-title">Apply</h2>
+          <p class="apply__text">Email your CV and links to work you’ve built.</p>
+          <a class="button button--primary" href={applyHref} data-track="CV email clicked" data-track-location="careers-role">
+            Apply by email<span class="visually-hidden"> for {job.title}</span>
+          </a>
+          <dl class="apply__facts">
+            <div>
+              <dt>Send to</dt>
+              <dd><a href={applyHref}>{site.careersEmail}</a></dd>
+            </div>
+            <div>
+              <dt>Subject</dt>
+              <dd>{applicationSubject(job.title)}</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .role-hero {
+    padding-block: clamp(2.5rem, 2rem + 3vw, 5rem) clamp(2.5rem, 1.5rem + 3vw, 4rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .role-hero__inner {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-lg);
+  }
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+  .breadcrumb li + li::before {
+    content: "/";
+    margin-right: 0.4rem;
+    color: var(--rule-strong);
+  }
+  .breadcrumb a {
+    color: var(--ink-2);
+  }
+  .role-hero__title {
+    max-width: 18ch;
+    font-size: var(--text-display);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-display);
+  }
+  .role-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-md) var(--space-xl);
+    width: 100%;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--rule);
+  }
+  .role-facts dt {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .role-facts dd {
+    margin: 0.2rem 0 0;
+    font-weight: 500;
+  }
+  .role-body {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  /* Numbered sections, like the case studies. */
+  .role-prose {
+    counter-reset: sheet;
+  }
+  .role-prose :global(h2) {
+    counter-increment: sheet;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule);
+  }
+  .role-prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .role-prose :global(h2)::before {
+    content: counter(sheet, decimal-leading-zero) / "";
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--teal-ink);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+  }
+  .apply {
+    --cut: 18px;
+    --frame-fill:
+      radial-gradient(90% 60% at 100% 0%, rgb(0 209 178 / 0.14), transparent 60%),
+      var(--lattice-dark) right top / var(--lattice-size),
+      linear-gradient(165deg, var(--graphite-2) 0%, var(--graphite) 100%);
+    display: grid;
+    align-self: start;
+    justify-items: start;
+    gap: var(--space-md);
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  }
+  .apply__title {
+    font-size: var(--text-xl);
+  }
+  .apply__text {
+    color: var(--on-dark-2);
+  }
+  .apply__facts {
+    display: grid;
+    gap: var(--space-sm);
+    width: 100%;
+    padding-top: var(--space-md);
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .apply__facts dt {
+    color: var(--on-dark-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .apply__facts dd {
+    margin: 0.15rem 0 0;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 60em) {
+    /* On wide screens the apply panel stays beside the role, so the early button is not needed. */
+    .role-hero__apply {
+      display: none;
+    }
+    .role-body {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      align-items: start;
+      column-gap: var(--space-3xl);
+    }
+    .apply {
+      position: sticky;
+      top: 6.5rem;
+    }
+  }
+</style>

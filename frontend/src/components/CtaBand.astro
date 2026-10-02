@@ -1,39 +1,51 @@
 ---
 import PenroseMark from "./PenroseMark.astro";
 import { site } from "../data/site";
+import { applicationMailto } from "../lib/careers";
 
 interface Props {
   /** Where the band sits, for analytics. */
   location: string;
+  /** "careers" asks for a CV, by email to the careers inbox, instead of a project. */
+  variant?: "project" | "careers";
 }
 
-const { location } = Astro.props;
+const { location, variant = "project" } = Astro.props;
 // The closing band is dark and runs straight into the footer, with the Trivista mark as its object.
+const content =
+  variant === "careers"
+    ? {
+        eyebrow: "Careers",
+        title: "Tell us what you’d like to build.",
+        text: "Send your CV with a link to something you’ve made, and tell us which area interests you.",
+        action: { label: "Send your CV", href: applicationMailto(site.careersEmail), track: "CV email clicked" },
+        email: { address: site.careersEmail, href: applicationMailto(site.careersEmail), track: "CV email clicked" },
+      }
+    : {
+        eyebrow: "Start a project",
+        title: "Tell us what you’re building.",
+        text: `Share a few details about your project, and a member of our team will reply ${site.responseTime}.`,
+        action: { label: "Start a project", href: "/contact/", track: "Start a project clicked" },
+        email: { address: site.email, href: `mailto:${site.email}`, track: "Email clicked" },
+      };
 ---
 
 <section class="cta surface-dark tv-panel" aria-labelledby="cta-title">
   <div class="container cta__inner">
     <div class="cta__content" data-reveal>
       <div class="cta__heading">
-        <p class="eyebrow">Start a project</p>
-        <h2 class="cta__title" id="cta-title">Tell us what you’re building.</h2>
+        <p class="eyebrow">{content.eyebrow}</p>
+        <h2 class="cta__title" id="cta-title">{content.title}</h2>
       </div>
       <div class="cta__body">
-        <p class="cta__text">
-          Share a few details about your project, and a member of our team will reply {site.responseTime}.
-        </p>
+        <p class="cta__text">{content.text}</p>
         <div class="cta__actions">
-          <a
-            class="button button--primary"
-            href="/contact/"
-            data-track="Start a project clicked"
-            data-track-location={location}
-          >
-            Start a project
+          <a class="button button--primary" href={content.action.href} data-track={content.action.track} data-track-location={location}>
+            {content.action.label}
           </a>
           <p class="cta__email">
-            or email <a class="link" href={`mailto:${site.email}`} data-track="Email clicked" data-track-location={location}
-              >{site.email}</a
+            or email <a class="link" href={content.email.href} data-track={content.email.track} data-track-location={location}
+              >{content.email.address}</a
             >
           </p>
         </div>

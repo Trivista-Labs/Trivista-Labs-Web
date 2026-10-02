@@ -1,0 +1,94 @@
+---
+import ArrowIcon from "./ArrowIcon.astro";
+import { ARRANGEMENT_LABELS, EMPLOYMENT_TYPE_LABELS, type Job } from "../lib/careers";
+
+interface Props {
+  slug: string;
+  job: Job;
+}
+
+// One open role in the list: the facts on one line, a short summary, and a link to the full role.
+const { slug, job } = Astro.props;
+const href = `/careers/${slug}/`;
+---
+
+<article class="job-card" data-reveal>
+  <div class="job-card__head">
+    <p class="job-card__meta mono-label">
+      <span>{job.department}</span>
+      <span>{EMPLOYMENT_TYPE_LABELS[job.type]}</span>
+      <span>{job.location} · {ARRANGEMENT_LABELS[job.arrangement]}</span>
+    </p>
+    <h3 class="job-card__title">
+      <a href={href}>
+        {job.title}
+        <ArrowIcon />
+      </a>
+    </h3>
+  </div>
+  <div class="job-card__body">
+    <p class="job-card__summary">{job.summary}</p>
+    <a class="link job-card__more" href={href}>
+      View position<span class="visually-hidden">: {job.title}</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .job-card {
+    display: grid;
+    gap: var(--space-md);
+    padding-block: var(--space-lg);
+    border-top: 1px solid var(--rule-strong);
+  }
+  .job-card__head,
+  .job-card__body {
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+  }
+  .job-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    color: var(--teal-ink);
+  }
+  .job-card__title {
+    font-size: var(--text-xl);
+  }
+  .job-card__title a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .job-card__title a :global(svg) {
+    flex: none;
+    width: 0.7em;
+    height: 0.7em;
+    color: var(--teal-ink);
+    transition: transform var(--duration) var(--ease-out);
+  }
+  .job-card__title a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+  }
+  .job-card__title a:hover :global(svg) {
+    transform: translateX(3px);
+  }
+  .job-card__summary {
+    max-width: var(--measure);
+    color: var(--ink-2);
+  }
+  .job-card__more {
+    justify-self: start;
+  }
+  @media (min-width: 48em) {
+    .job-card {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: var(--space-2xl);
+    }
+  }
+</style>

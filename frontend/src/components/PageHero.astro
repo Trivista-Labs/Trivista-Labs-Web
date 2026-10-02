@@ -1,5 +1,6 @@
 ---
 import ScenePoster from "./ScenePoster.astro";
+import type { SceneName } from "../lib/scenes";
 
 interface Props {
   eyebrow: string;
@@ -7,13 +8,15 @@ interface Props {
   lede?: string;
   /** The 3D site plan behind the header. Off for pages meant for reading, such as legal text. */
   scene?: boolean;
+  /** Which drawing to show. The site plan unless a page has its own. */
+  sceneName?: SceneName;
 }
 
-const { eyebrow, title, lede, scene = true } = Astro.props;
+const { eyebrow, title, lede, scene = true, sceneName = "field" } = Astro.props;
 ---
 
 <section class:list={["page-hero", "tech-grid", { "page-hero--scene": scene }]} data-scene-surface={scene ? "" : undefined}>
-  {scene && <ScenePoster scene="field" width={1200} height={480} fit="xMaxYMid slice" class="page-hero__scene" />}
+  {scene && <ScenePoster scene={sceneName} width={1200} height={480} fit="xMaxYMid slice" class="page-hero__scene" />}
   <div class="container page-hero__inner">
     <p class="eyebrow">{eyebrow}</p>
     <h1 class="page-hero__title">{title}</h1>

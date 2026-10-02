@@ -1,8 +1,8 @@
 import { gzipSync } from "node:zlib";
 import { expect, test } from "@playwright/test";
-import { CASE_STUDY_PAGES, WORK_ENTRIES } from "./work-entries";
+import { CASE_STUDY_PAGES, OPEN_JOBS, OPEN_JOB_PAGES, WORK_ENTRIES } from "./content-entries";
 
-const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/", ...CASE_STUDY_PAGES];
+const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/", "/careers/", ...CASE_STUDY_PAGES, ...OPEN_JOB_PAGES];
 // The widths the briefs ask to check: desktop and tablet, then the common phone widths.
 const WIDTHS = [1440, 1280, 1024, 768, 430, 412, 393, 390, 375, 360];
 
@@ -103,7 +103,9 @@ test.describe("pages", () => {
     expect(robots.ok()).toBe(true);
     expect(await robots.text()).toContain("Sitemap: https://trivistalabs.io/sitemap-index.xml");
     const sitemap = await request.get("/sitemap-0.xml");
-    expect(await sitemap.text()).toContain("<loc>https://trivistalabs.io/capabilities/</loc>");
+    const urls = await sitemap.text();
+    expect(urls).toContain("<loc>https://trivistalabs.io/capabilities/</loc>");
+    expect(urls).toContain("<loc>https://trivistalabs.io/careers/</loc>");
   });
 });
 
@@ -267,5 +269,68 @@ test.describe("navigation", () => {
     await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(page.locator("main")).toBeFocused();
+  });
+});
+
+test.describe("careers", () => {
+  const CAREERS_EMAIL = "careers@trivistalabs.lk";
+
+  test("Careers is in the main navigation on wide screens and in the phone menu", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/careers/");
+    const nav = page.getByRole("navigation", { name: "Main" }).first();
+    await expect(nav.getByRole("link", { name: "Careers" })).toHaveAttribute("aria-current", "page");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole("button", { name: "Menu" }).click();
+    const menuLink = page.locator("#mobile-menu").getByRole("link", { name: "Careers" });
+    await expect(menuLink).toBeVisible();
+    await expect(menuLink).toHaveAttribute("aria-current", "page");
+  });
+
+  test("the page lists exactly the open roles, and says so plainly when there are none", async ({ page }) => {
+    await page.goto("/careers/");
+    const roleLinks = page.locator('main a[href^="/careers/"]');
+    const postings = await page.locator('script[type="application/ld+json"]').allTextContents();
+    // The listing never carries vacancy data; only a role's own page does.
+    expect(postings.join("")).not.toContain("JobPosting");
+
+    if (OPEN_JOBS.length === 0) {
+      await expect(page.getByRole("heading", { level: 2, name: "No open positions right now." })).toBeVisible();
+      await expect(page.getByText("No open roles right now")).toBeVisible();
+      await expect(roleLinks).toHaveCount(0);
+    } else {
+      for (const job of OPEN_JOBS) {
+        await expect(page.getByRole("heading", { level: 3, name: job.title })).toBeVisible();
+      }
+      await expect(page.getByText(`${OPEN_JOBS.length} open role`)).toBeVisible();
+    }
+  });
+
+  test("every application link on the careers pages goes to the careers inbox", async ({ page }) => {
+    for (const path of ["/careers/", ...OPEN_JOB_PAGES]) {
+      await page.goto(path);
+      // Inside the page itself: the shared header and footer keep the general contact address.
+      const hrefs = await page.locator('main a[href^="mailto:"]').evaluateAll((links) =>
+        links.map((link) => link.getAttribute("href") ?? "")
+      );
+      expect(hrefs.length, path).toBeGreaterThan(0);
+      for (const href of hrefs) {
+        expect(href.startsWith(`mailto:${CAREERS_EMAIL}?subject=`), `${path}: ${href}`).toBe(true);
+        expect(decodeURIComponent(href.split("subject=")[1]), path).toMatch(/— \[Your Name\]$/);
+      }
+    }
+  });
+
+  test("each open role has a page with JobPosting data, and no other role does", async ({ page, request }) => {
+    for (const job of OPEN_JOBS) {
+      await page.goto(`/careers/${job.slug}/`);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(job.title);
+      const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+      expect(blocks.map((text) => (JSON.parse(text) as { "@type": string })["@type"])).toContain("JobPosting");
+    }
+    const sitemap = await (await request.get("/sitemap-0.xml")).text();
+    const rolePages = sitemap.match(/careers\/[^<]+\/<\/loc>/g) ?? [];
+    expect(rolePages).toHaveLength(OPEN_JOBS.length);
   });
 });

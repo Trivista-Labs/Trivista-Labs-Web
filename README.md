@@ -41,6 +41,8 @@ The contact form posts to the production API by default. To work against a local
 | "How we build" stages | `frontend/src/data/process.ts` |
 | Engineering principles and the facts about this site | `frontend/src/data/principles.ts` |
 | Projects and case studies | One Markdown file per project in `frontend/src/content/work/` |
+| Job openings | One Markdown file per open role in `frontend/src/content/jobs/` (see "Adding a job") |
+| Careers values and hiring areas | `frontend/src/data/careers.ts` |
 | Privacy Policy and Terms | `frontend/src/pages/privacy.astro` and `terms.astro` |
 
 ### Adding a project
@@ -68,6 +70,38 @@ draft: false                   # drafts never reach the live site
 ```
 
 Only publish verified facts, and name clients only with their permission. Draft entries show in `npm run dev` and in builds made with `PUBLIC_SHOW_DRAFTS=true`, with a checklist of what is still missing.
+
+### Adding a job
+
+The careers page lists the open roles in `frontend/src/content/jobs/`, one Markdown file per role. With none open, it shows its "No open positions right now" state, with general applications by email to `careers@trivistalabs.lk`. Nothing else needs to change when a role opens or closes.
+
+Create `frontend/src/content/jobs/<role>.md`. The file name becomes the address, for example `/careers/software-engineer/`:
+
+```yaml
+---
+title: Software Engineer
+department: Engineering
+type: full-time            # full-time, part-time, contract or internship
+arrangement: hybrid        # on-site, hybrid or remote
+location: Colombo, Sri Lanka
+summary: One or two sentences on the role, shown in the list. Up to 240 characters.
+responsibilities:
+  - What the person will do
+requirements:
+  - What they need to have
+niceToHave:                # optional
+  - What would help
+status: open               # open or closed
+posted: 2026-01-15
+closes: 2026-02-28         # optional; the role leaves the site after this day, at the next build
+---
+
+The overview of the role, in a paragraph or two.
+```
+
+Only roles with `status: open` get a page, a place in the sitemap and JobPosting data for search engines. To take a role down, set `status: closed` or delete the file, then deploy. Because the site is static, a closing date takes effect at the next build. Never add a role that is not really open, even as a placeholder.
+
+While there are no files, the build warns that the `jobs` collection is empty. That is expected.
 
 ### Design system
 

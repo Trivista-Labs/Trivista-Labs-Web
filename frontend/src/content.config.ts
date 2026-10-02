@@ -43,4 +43,25 @@ const work = defineCollection({
     }),
 });
 
-export const collections = { work };
+// Job openings, one Markdown file per role in src/content/jobs/. The body is the role overview.
+// Only roles with `status: open` (and no closing date in the past) are built and listed; the
+// careers page shows its "no open positions" state when there are none. See "Adding a job" in the README.
+const jobs = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/jobs" }),
+  schema: z.object({
+    title: z.string(),
+    department: z.string(),
+    type: z.enum(["full-time", "part-time", "contract", "internship"]),
+    arrangement: z.enum(["on-site", "hybrid", "remote"]),
+    location: z.string().default("Colombo, Sri Lanka"),
+    summary: z.string().max(240),
+    responsibilities: z.array(z.string()).min(1),
+    requirements: z.array(z.string()).min(1),
+    niceToHave: z.array(z.string()).default([]),
+    status: z.enum(["open", "closed"]),
+    posted: z.coerce.date(),
+    closes: z.coerce.date().optional(),
+  }),
+});
+
+export const collections = { work, jobs };

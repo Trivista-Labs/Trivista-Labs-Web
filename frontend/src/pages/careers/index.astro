@@ -1,0 +1,378 @@
+---
+import { getCollection } from "astro:content";
+import CtaBand from "../../components/CtaBand.astro";
+import JobCard from "../../components/JobCard.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { careerValues, hiringAreas } from "../../data/careers";
+import { site } from "../../data/site";
+import { applicationMailto, applicationSubject, openJobs } from "../../lib/careers";
+import { breadcrumbSchema } from "../../lib/seo";
+
+// Open roles come from src/content/jobs/. With none open, the page says so plainly and offers a
+// general application by email. Nothing here needs to change when the company starts hiring.
+const jobs = openJobs(await getCollection("jobs"), new Date());
+const hiring = jobs.length > 0;
+const cvHref = applicationMailto(site.careersEmail);
+const roleCount = `${jobs.length} open ${jobs.length === 1 ? "role" : "roles"}`;
+---
+
+<BaseLayout
+  title="Careers | Trivista Labs"
+  description="Careers at Trivista Labs in Colombo, Sri Lanka: current openings, what we value, the areas we may hire across, and how to send us your CV."
+  schema={[
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Careers", path: "/careers/" },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Careers"
+    title="Build what comes next."
+    lede="We build software, business systems and connected hardware that businesses use every day. We look for people who like to build, solve real problems and keep learning."
+    sceneName="team"
+  >
+    <div class="careers-hero__actions">
+      <a class="button button--primary" href={hiring ? "#openings" : cvHref} data-track={hiring ? undefined : "CV email clicked"} data-track-location="careers-hero">
+        {hiring ? "See open roles" : "Send your CV"}
+      </a>
+      <p class="careers-hero__status tv-state" data-state={hiring ? "live" : "idle"}>
+        {hiring ? roleCount : "No open roles right now"}
+      </p>
+    </div>
+  </PageHero>
+
+  <section class="section" id="openings" aria-labelledby="openings-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Current openings"
+        title={hiring ? "Roles we are hiring for now." : "No open positions right now."}
+        id="openings-title"
+        index={1}
+      />
+      {
+        hiring ? (
+          <>
+            <div class="job-list">
+              {jobs.map((entry) => (
+                <JobCard slug={entry.id} job={entry.data} />
+              ))}
+            </div>
+            <p class="job-list__note">
+              Not the right role? Send your CV to{" "}
+              <a class="link" href={cvHref} data-track="CV email clicked" data-track-location="careers-openings"
+                >{site.careersEmail}</a
+              >.
+            </p>
+          </>
+        ) : (
+          <div class="openings-empty" data-reveal>
+            <div class="readout surface-dark tv-frame tv-frame--dark">
+              <p class="mono-label readout__label">Open roles</p>
+              <p class="readout__count">
+                <span aria-hidden="true">00</span>
+                <span class="visually-hidden">None</span>
+              </p>
+              <p class="readout__state tv-state" data-state="live">
+                General applications open
+              </p>
+              <dl class="readout__facts">
+                <div>
+                  <dt>Apply by</dt>
+                  <dd>Email</dd>
+                </div>
+                <div>
+                  <dt>Based in</dt>
+                  <dd>
+                    {site.locality}, {site.country}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div class="openings-empty__body">
+              <p class="openings-empty__lede">
+                We don’t have any open roles at the moment, but we’re always interested in meeting people who enjoy
+                building thoughtful technology.
+              </p>
+              <div class="openings-empty__send">
+                <h3 class="openings-empty__heading">What to send</h3>
+                <ul class="openings-empty__list" role="list">
+                  <li>Your CV.</li>
+                  <li>Links to work you’ve built: code, products, designs or writing.</li>
+                  <li>The area you’d like to work in.</li>
+                </ul>
+              </div>
+              <div class="openings-empty__actions">
+                <a class="button button--primary" href={cvHref} data-track="CV email clicked" data-track-location="careers-openings">
+                  Send your CV
+                </a>
+                <p class="openings-empty__email">
+                  to{" "}
+                  <a class="link" href={cvHref} data-track="CV email clicked" data-track-location="careers-openings"
+                    >{site.careersEmail}</a
+                  >, with the subject “{applicationSubject()}”.
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section section--dark" aria-labelledby="values-title">
+    <div class="container">
+      <SectionHeading eyebrow="What we value" title="How we like to build, together." id="values-title" index={2} />
+      <ol class="values" role="list" data-reveal-group>
+        {
+          careerValues.map((value, index) => (
+            <li class="value">
+              <span class="value__index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 class="value__title">{value.title}</h3>
+              <p class="value__text">{value.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="areas-title">
+    <div class="container areas">
+      <div class="areas__intro">
+        <SectionHeading eyebrow="Who we look for" title="Areas we may hire across." id="areas-title" index={3} />
+        <p class="areas__note">
+          {
+            hiring
+              ? "The roles open now are listed above. These are the areas we may hire across in future; they are not current openings."
+              : "We hire when there is work that needs someone. These are the areas that work tends to come from. None of them is an opening today."
+          }
+        </p>
+      </div>
+      <ul class="areas__list" role="list" data-reveal-group>
+        {
+          hiringAreas.map((area) => (
+            <li class="area">
+              <h3 class="area__title">{area.title}</h3>
+              <p class="area__text">{area.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand location="careers" variant="careers" />
+</BaseLayout>
+
+<style>
+  .careers-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-xl);
+    margin-top: var(--space-xs);
+  }
+  .careers-hero__status {
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  /* Openings */
+  .job-list {
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .job-list__note {
+    margin-top: var(--space-lg);
+    color: var(--ink-2);
+  }
+
+  /* No openings: an instrument readout that reads zero, beside what to send instead. */
+  .openings-empty {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .readout {
+    --cut: 18px;
+    --frame-fill:
+      radial-gradient(90% 70% at 100% 0%, rgb(0 209 178 / 0.14), transparent 60%),
+      var(--lattice-dark) right top / var(--lattice-size),
+      linear-gradient(165deg, var(--graphite-2) 0%, var(--graphite) 100%);
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  }
+  .readout__label {
+    color: var(--on-dark-2);
+  }
+  .readout__count {
+    font-family: var(--font-mono);
+    font-size: clamp(4rem, 3rem + 5vw, 7rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .readout__state {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .readout__facts {
+    display: grid;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .readout__facts dt {
+    color: var(--on-dark-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .readout__facts dd {
+    margin: 0.15rem 0 0;
+  }
+  .openings-empty__body {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xl);
+  }
+  .openings-empty__lede {
+    max-width: 30ch;
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .openings-empty__send {
+    display: grid;
+    gap: var(--space-sm);
+  }
+  .openings-empty__heading {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+  .openings-empty__list {
+    display: grid;
+    gap: 0.4rem;
+    color: var(--ink-2);
+  }
+  .openings-empty__list li {
+    display: flex;
+    gap: 0.75rem;
+  }
+  /* A short teal band, the site's list marker. */
+  .openings-empty__list li::before {
+    content: "";
+    flex: none;
+    width: 0.9rem;
+    height: 3px;
+    margin-top: 0.7em;
+    background: var(--teal);
+  }
+  .openings-empty__actions {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-sm);
+  }
+  .openings-empty__email {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+  }
+
+  /* Values */
+  .values {
+    display: grid;
+    gap: var(--space-xl);
+  }
+  .value {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    padding-top: var(--space-md);
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+  }
+  .value__index {
+    color: var(--teal);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+  .value__title {
+    font-size: var(--text-lg);
+  }
+  .value__text {
+    color: var(--on-dark-2);
+  }
+
+  /* Areas */
+  .areas {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  .areas__note {
+    max-width: 36ch;
+    margin-top: var(--space-md);
+    color: var(--ink-2);
+  }
+  .areas__list {
+    display: grid;
+    border-top: 1px solid var(--rule-strong);
+  }
+  .area {
+    display: grid;
+    gap: 0.15rem;
+    padding-block: var(--space-md);
+    border-bottom: 1px solid var(--rule);
+  }
+  .area__title {
+    font-size: var(--text-base);
+    font-weight: 600;
+  }
+  .area__text {
+    color: var(--ink-2);
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 40em) {
+    .values {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .areas__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-xl);
+    }
+  }
+  @media (min-width: 60em) {
+    .openings-empty {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      align-items: start;
+      column-gap: var(--space-3xl);
+    }
+    .values {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .areas {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      align-items: start;
+      column-gap: var(--space-3xl);
+    }
+    .areas__intro {
+      position: sticky;
+      top: 6.5rem;
+    }
+  }
+</style>

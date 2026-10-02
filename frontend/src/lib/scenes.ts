@@ -146,6 +146,57 @@ export const FIELD_SCENE: SceneModel = {
   ],
 };
 
+/**
+ * The careers header: people as small blocks, connected into a system that is still being built.
+ * Pulses run in from each person; one runs out to an empty pad, the place for the next person.
+ */
+export const TEAM_SCENE: SceneModel = {
+  thickness: 0.08,
+  gap: [0, 0],
+  labels: false,
+  plates: [
+    {
+      size: 8,
+      grid: 16,
+      boxes: [
+        // The system being built: a platform with its core, and a structure still rising beside it.
+        { x: 1, z: 0, w: 1.4, d: 1.4, h: 0.14, tone: "light" },
+        { x: 1, z: 0, w: 0.5, d: 0.5, h: 0.62, tone: "teal" },
+        { x: 2.6, z: -1.6, w: 0.45, d: 0.45, h: 1.05, tone: "dark" },
+        { x: 2.6, z: -1, w: 0.45, d: 0.45, h: 0.7, tone: "dark" },
+        { x: 2.6, z: -0.4, w: 0.45, d: 0.45, h: 0.35, tone: "dark" },
+        // The people.
+        { x: -2.5, z: -1.5, w: 0.36, d: 0.36, h: 0.36, tone: "light" },
+        { x: -2.5, z: 1.5, w: 0.36, d: 0.36, h: 0.36, tone: "light" },
+        { x: -0.5, z: 2.5, w: 0.36, d: 0.36, h: 0.36, tone: "dark" },
+        { x: 1, z: -2.5, w: 0.36, d: 0.36, h: 0.36, tone: "teal" },
+        { x: 3, z: 2, w: 0.36, d: 0.36, h: 0.36, tone: "light" },
+        // An empty pad: the next person's place.
+        { x: -0.5, z: -2.5, w: 0.5, d: 0.5, h: 0.02, tone: "light" },
+      ],
+    },
+  ],
+  risers: [],
+  traces: [
+    { plate: 0, points: [[-2.5, -1.3], [-2.5, -0.3], [0.3, -0.3]] },
+    { plate: 0, points: [[-2.5, 1.3], [-2.5, 0.3], [0.3, 0.3]] },
+    { plate: 0, points: [[-0.5, 2.3], [-0.5, 1], [1, 1], [1, 0.7]] },
+    { plate: 0, points: [[1, -2.3], [1, -0.7]] },
+    { plate: 0, points: [[3, 1.8], [3, 0.4], [1.7, 0.4]] },
+    { plate: 0, points: [[0.6, -0.7], [0.6, -1.5], [-0.5, -1.5], [-0.5, -2.25]] },
+    { plate: 0, points: [[2.38, -1], [1.95, -1], [1.95, -0.45], [1.7, -0.45]] },
+  ],
+  pulses: [
+    { on: "trace", index: 0, phase: 0, speed: 0.16 },
+    { on: "trace", index: 1, phase: 0.35, speed: 0.15 },
+    { on: "trace", index: 2, phase: 0.65, speed: 0.17 },
+    { on: "trace", index: 3, phase: 0.2, speed: 0.18 },
+    { on: "trace", index: 4, phase: 0.8, speed: 0.14 },
+    { on: "trace", index: 5, phase: 0.5, speed: 0.13 },
+    { on: "trace", index: 6, phase: 0.1, speed: 0.2 },
+  ],
+};
+
 export interface ScenePose {
   readonly frame: Frame;
   readonly view: Omit<Viewport, "width" | "height">;
@@ -164,6 +215,14 @@ export const SCENES = {
   },
   field: {
     model: FIELD_SCENE,
+    pose: {
+      frame: { time: 0, yaw: 0.55, pitch: 0.52, spread: 0, light: [0.3, -0.6], pulses: false },
+      view: { zoom: 1.05, distance: 10, offsetX: 0.3, offsetY: 0.1 },
+      reach: { yaw: 0.08, pitch: 0.03 },
+    },
+  },
+  team: {
+    model: TEAM_SCENE,
     pose: {
       frame: { time: 0, yaw: 0.55, pitch: 0.52, spread: 0, light: [0.3, -0.6], pulses: false },
       view: { zoom: 1.05, distance: 10, offsetX: 0.3, offsetY: 0.1 },
