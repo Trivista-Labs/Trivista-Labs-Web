@@ -21,6 +21,7 @@ export const founders: readonly Founder[] = [
     title: "Chief Executive & Engineer",
     focus: "Leads the company and its engineering direction.",
     photo: esala,
+    linkedin: "https://www.linkedin.com/in/esala-gamage/",
   },
   {
     name: "Umesh Isuranga",
@@ -28,6 +29,7 @@ export const founders: readonly Founder[] = [
     title: "Lead Systems Architect",
     focus: "Leads system architecture and technical decisions.",
     photo: umesh,
+    linkedin: "https://www.linkedin.com/in/umesh-isuranga/",
   },
   {
     name: "Dulaj Yuthsara",
@@ -35,12 +37,12 @@ export const founders: readonly Founder[] = [
     title: "Hardware & Operations Lead",
     focus: "Leads hardware engineering and day-to-day operations.",
     photo: dulaj,
+    linkedin: "https://www.linkedin.com/in/dulaj-yuthsara-9b0a0b338/",
   },
 ];
 
 /** Shown only in draft previews, as a checklist for the founders. */
 export const founderDetailsMissing: readonly string[] = [
   "A two or three sentence bio for each founder",
-  "Each founder’s LinkedIn profile URL",
   "Portraits on a plain background, to replace the composited photos",
 ];

@@ -25,6 +25,7 @@ export function organizationSchema(): JsonLd {
       "@type": "Person",
       name: founder.name,
       jobTitle: founder.title,
+      ...(founder.linkedin ? { sameAs: [founder.linkedin] } : {}),
     })),
   };
 }
