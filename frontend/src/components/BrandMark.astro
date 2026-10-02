@@ -1,33 +1,22 @@
 ---
-import { PENROSE_FACES, PENROSE_VIEWBOX } from "../data/brand";
-// The mark, drawn from its traced vector faces so it is sharp at any size. Its light bands need a
-// dark ground, so it sits on a charcoal tile, cut at 60 degrees like every Trivista frame.
-const { width, height } = PENROSE_VIEWBOX;
-const toPoints = (points: readonly (readonly [number, number])[]) => points.map(([x, y]) => `${x},${y}`).join(" ");
+import { Picture } from "astro:assets";
+import mark from "../assets/brand/trivista-mark.png";
+// The light version of the mark, on a transparent ground, so it sits directly on the page.
+// The favicons and app icons keep the charcoal tile: see scripts/brand-icons.mjs.
 ---
 
 <span class="brand-mark" aria-hidden="true">
-  <svg viewBox={`-1 -1 ${width + 2} ${height + 2}`} focusable="false">
-    {
-      PENROSE_FACES.map((face) => (
-        <polygon points={toPoints(face.points)} fill={face.fill} stroke={face.fill} stroke-width="0.4" stroke-linejoin="round" />
-      ))
-    }
-  </svg>
+  <Picture src={mark} alt="" formats={["avif", "webp"]} width={40} densities={[1, 2, 3]} />
 </span>
 
 <style>
   .brand-mark {
-    display: inline-grid;
+    display: inline-flex;
     flex: none;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    background: var(--charcoal);
-    clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 5px) 100%, 0 100%, 0 9px);
+    align-items: center;
   }
-  .brand-mark svg {
-    width: 1.55rem;
+  .brand-mark :global(img) {
+    width: 2.4rem;
     height: auto;
   }
 </style>
