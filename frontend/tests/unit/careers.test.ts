@@ -4,6 +4,7 @@ import {
   applicationSubject,
   isOpen,
   jobPostingSchema,
+  jobSubject,
   openJobs,
   type Job,
 } from "../../src/lib/careers";
@@ -41,11 +42,27 @@ describe("applicationSubject", () => {
   });
 });
 
+describe("jobSubject", () => {
+  it("uses the subject line the role asks for", () => {
+    expect(jobSubject({ title: "Test Role", subject: "Test & Co Intern" })).toBe("Test & Co Intern — [Your Name]");
+  });
+
+  it("names the role when it asks for no particular subject", () => {
+    expect(jobSubject({ title: "Test Role" })).toBe("Application: Test Role — [Your Name]");
+  });
+});
+
 describe("applicationMailto", () => {
   it("addresses the careers inbox with an encoded subject", () => {
     const href = applicationMailto("careers@example.com");
     expect(href).toBe("mailto:careers@example.com?subject=General%20Application%20%E2%80%94%20%5BYour%20Name%5D");
     expect(decodeURIComponent(href.split("subject=")[1])).toBe(applicationSubject());
+  });
+
+  it("keeps an ampersand in the subject, rather than starting a new field", () => {
+    const href = applicationMailto("careers@example.com", "Test & Co Intern — [Your Name]");
+    expect(href).toContain("subject=Test%20%26%20Co%20Intern");
+    expect(decodeURIComponent(href.split("subject=")[1])).toBe("Test & Co Intern — [Your Name]");
   });
 });
 
@@ -95,6 +112,11 @@ describe("jobPostingSchema", () => {
     });
     expect(schema).not.toHaveProperty("validThrough");
     expect(schema).not.toHaveProperty("jobLocationType");
+  });
+
+  it("lists what the role offers in the description", () => {
+    const { description } = jobPostingSchema({ ...ROLE, benefits: ["Monthly allowance"] }, HIRING) as { description: string };
+    expect(description).toContain("<h3>What you’ll get</h3><ul><li>Monthly allowance</li></ul>");
   });
 
   it("escapes the text it puts in the HTML description", () => {

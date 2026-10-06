@@ -58,6 +58,15 @@ const jobs = defineCollection({
     responsibilities: z.array(z.string()).min(1),
     requirements: z.array(z.string()).min(1),
     niceToHave: z.array(z.string()).default([]),
+    /** What the role offers, shown as "What you'll get". */
+    benefits: z.array(z.string()).default([]),
+    /** How long the role lasts, for fixed-term roles and internships, such as "3 to 6 months". */
+    duration: z.string().optional(),
+    /** The email subject applicants are asked to use. Defaults to "Application: <title>". */
+    subject: z.string().max(60).optional(),
+    /** A share image for this role, in public/og/, such as the hiring poster. 1200 × 630. */
+    shareImage: z.string().startsWith("/og/").optional(),
+    shareImageAlt: z.string().optional(),
     status: z.enum(["open", "closed"]),
     posted: z.coerce.date(),
     closes: z.coerce.date().optional(),

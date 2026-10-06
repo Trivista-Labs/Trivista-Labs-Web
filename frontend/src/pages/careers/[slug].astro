@@ -6,8 +6,8 @@ import {
   ARRANGEMENT_LABELS,
   EMPLOYMENT_TYPE_LABELS,
   applicationMailto,
-  applicationSubject,
   jobPostingSchema,
+  jobSubject,
   openJobs,
 } from "../../lib/careers";
 import { breadcrumbSchema } from "../../lib/seo";
@@ -26,7 +26,8 @@ const { entry } = Astro.props;
 const { data: job } = entry;
 const { Content } = await render(entry);
 const path = `/careers/${entry.id}/`;
-const applyHref = applicationMailto(site.careersEmail, job.title);
+const subject = jobSubject(job);
+const applyHref = applicationMailto(site.careersEmail, subject);
 const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(date);
 
@@ -34,6 +35,7 @@ const facts = [
   { label: "Department", value: job.department },
   { label: "Type", value: EMPLOYMENT_TYPE_LABELS[job.type] },
   { label: "Where", value: `${job.location} · ${ARRANGEMENT_LABELS[job.arrangement]}` },
+  ...(job.duration ? [{ label: "Duration", value: job.duration }] : []),
   { label: "Posted", value: formatDate(job.posted) },
   ...(job.closes ? [{ label: "Applications close", value: formatDate(job.closes) }] : []),
 ];
@@ -41,12 +43,15 @@ const lists = [
   { id: "responsibilities", title: "What you’ll do", items: job.responsibilities },
   { id: "requirements", title: "What you’ll need", items: job.requirements },
   { id: "nice-to-have", title: "Nice to have", items: job.niceToHave },
+  { id: "what-you-get", title: "What you’ll get", items: job.benefits },
 ].filter((list) => list.items.length > 0);
 ---
 
 <BaseLayout
   title={`${job.title} | Careers | Trivista Labs`}
   description={job.summary}
+  image={job.shareImage}
+  imageAlt={job.shareImageAlt}
   schema={[
     breadcrumbSchema([
       { name: "Home", path: "/" },
@@ -123,7 +128,7 @@ const lists = [
             </div>
             <div>
               <dt>Subject</dt>
-              <dd>{applicationSubject(job.title)}</dd>
+              <dd>{subject}</dd>
             </div>
           </dl>
         </aside>

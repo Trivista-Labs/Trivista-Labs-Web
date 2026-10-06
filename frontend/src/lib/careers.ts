@@ -15,6 +15,12 @@ export interface Job {
   readonly responsibilities: readonly string[];
   readonly requirements: readonly string[];
   readonly niceToHave: readonly string[];
+  /** What the role offers: allowance, mentorship, a path to a permanent role. */
+  readonly benefits?: readonly string[];
+  /** How long the role lasts, for fixed-term roles and internships. */
+  readonly duration?: string;
+  /** The email subject applicants are asked to use, if the role has its own. */
+  readonly subject?: string;
   readonly status: "open" | "closed";
   readonly posted: Date;
   readonly closes?: Date;
@@ -57,8 +63,12 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export const applicationSubject = (role?: string): string =>
   role ? `Application: ${role} — [Your Name]` : "General Application — [Your Name]";
 
-export const applicationMailto = (address: string, role?: string): string =>
-  `mailto:${address}?subject=${encodeURIComponent(applicationSubject(role))}`;
+/** The subject for applying to one role: the role's own subject line if it has one, else its title. */
+export const jobSubject = (job: Pick<Job, "title" | "subject">): string =>
+  job.subject ? `${job.subject} — [Your Name]` : applicationSubject(job.title);
+
+export const applicationMailto = (address: string, subject: string = applicationSubject()): string =>
+  `mailto:${address}?subject=${encodeURIComponent(subject)}`;
 
 /** Open, and not past its closing date. A role stays open for the whole of its closing day. */
 export function isOpen(job: Job, now: Date): boolean {
@@ -86,6 +96,7 @@ function descriptionHtml(job: Job): string {
     list("Responsibilities", job.responsibilities),
     list("Requirements", job.requirements),
     list("Nice to have", job.niceToHave),
+    list("What you’ll get", job.benefits ?? []),
   ].join("");
 }
 

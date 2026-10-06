@@ -47,7 +47,11 @@ test.describe("pages", () => {
       const description = await page.locator('meta[name="description"]').getAttribute("content");
       expect(description?.length ?? 0).toBeGreaterThan(50);
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://trivistalabs.io${path}`);
-      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/default\.png$/);
+      // The default share image, or a page's own, such as a hiring poster for an open role.
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+        "content",
+        /^https:\/\/trivistalabs\.io\/og\/[\w-]+\.(png|jpg)$/
+      );
       await expect(page.locator('meta[http-equiv="content-security-policy"]')).toHaveCount(1);
       expect(errors).toEqual([]);
     });
@@ -359,4 +363,13 @@ test("the Salon Booking System's old address still leads to its page", async ({ 
   await page.goto("/work/the-beauty-room/");
   await expect(page).toHaveURL(/\/work\/salon-booking-system\/$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Salon Booking System");
+});
+
+test("every page's share image exists", async ({ page, request }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const image = await page.locator('meta[property="og:image"]').getAttribute("content");
+    const response = await request.get(new URL(image ?? "", "https://trivistalabs.io").pathname);
+    expect(response.status(), `${path}: ${image}`).toBe(200);
+  }
 });

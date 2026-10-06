@@ -16,7 +16,7 @@ const href = `/careers/${slug}/`;
   <div class="job-card__head">
     <p class="job-card__meta mono-label">
       <span>{job.department}</span>
-      <span>{EMPLOYMENT_TYPE_LABELS[job.type]}</span>
+      <span>{EMPLOYMENT_TYPE_LABELS[job.type]}{job.duration && `, ${job.duration}`}</span>
       <span>{job.location} · {ARRANGEMENT_LABELS[job.arrangement]}</span>
     </p>
     <h3 class="job-card__title">
