@@ -15,11 +15,9 @@ responsibilities:
 requirements:
   - An undergraduate in Marketing, Business Management or a related field
   - A confident communicator, comfortable speaking with business owners
-  - Good written and spoken English
+  - Good written and spoken English (Sinhala is a plus)
   - Organised, reliable and self-motivated
   - Interested in technology and startups
-niceToHave:
-  - Sinhala
 benefits:
   - A monthly allowance
   - Hands-on mentorship from the founding team
