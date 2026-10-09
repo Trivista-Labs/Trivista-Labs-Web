@@ -10,7 +10,7 @@ import { fullAddress, site } from "../data/site";
   description="How Trivista Labs handles the information you send through this website."
 >
   <PageHero eyebrow="Legal" title="Privacy Policy" scene={false}>
-    <p class="mono-label">Last updated <time datetime={site.legalUpdated.iso}>{site.legalUpdated.display}</time></p>
+    <p class="mono-label">Last updated <time datetime={site.privacyUpdated.iso}>{site.privacyUpdated.display}</time></p>
   </PageHero>
 
   <section class="section">
@@ -22,25 +22,49 @@ import { fullAddress, site } from "../data/site";
         </p>
 
         <h2>What we collect</h2>
-        <p>We only collect what you choose to send us through the contact form:</p>
+        <p>Through the contact form, we collect what you choose to send us:</p>
         <ul>
           <li>your name and email address</li>
           <li>your company name, if you give it</li>
           <li>the type of project and the timeline you choose</li>
           <li>your message</li>
         </ul>
-        <p>This website does not use cookies, advertising tools or tracking scripts.</p>
+        <p>
+          If you apply for a role, you send your CV and any links by email to
+          <a href={`mailto:${site.careersEmail}`}>{site.careersEmail}</a>.
+        </p>
 
         <h2>How we use it</h2>
         <p>
-          We use your details only to reply to your enquiry and to discuss the project you asked about. We do not sell
-          your information or share it with anyone for marketing.
+          We use your details only to reply to your enquiry and to discuss the project you asked about, and a CV only to
+          consider you for a role at Trivista Labs. We do not sell your information or share it with anyone for
+          marketing.
+        </p>
+
+        <h2>Analytics and cookies</h2>
+        <p>
+          We use Google Analytics to understand how this website is used: which pages are visited, how visitors arrive,
+          roughly where they are (country and city, worked out from the IP address), the device and browser they use,
+          and which buttons they click, such as &ldquo;Start a project&rdquo;. Google Analytics does not see what you
+          write in the contact form.
+        </p>
+        <p>
+          Outside the European Economic Area, the United Kingdom and Switzerland, Google Analytics sets cookies, named
+          <code>_ga</code>, to recognise a returning browser. Inside those areas it sets no analytics cookies, and visits
+          are counted without them. Advertising features are switched off everywhere, and we do not use analytics to
+          identify you.
+        </p>
+        <p>
+          Google handles this data under its own <a href="https://policies.google.com/privacy">privacy policy</a>. You
+          can stop Google Analytics measuring your visits with Google&rsquo;s
+          <a href="https://tools.google.com/dlpage/gaoptout">opt-out browser add-on</a>, or by blocking cookies in your
+          browser.
         </p>
 
         <h2>How it is handled</h2>
         <p>
           When you send the form, your message goes to our server, which is hosted by Render, and is delivered to our
-          team’s inbox by email through Google. This website is hosted on GitHub Pages. Like most hosting providers,
+          team’s inbox by email through Resend. This website is hosted on GitHub Pages. Like most hosting providers,
           these services may keep technical logs, such as IP addresses, to run and protect their systems.
         </p>
 

@@ -6,6 +6,7 @@ import JsonLdScript from "../components/JsonLd.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import type { JsonLd } from "../lib/seo";
+import { site } from "../data/site";
 
 interface Props {
   title: string;
@@ -26,7 +27,7 @@ const { schema = [], ...head } = Astro.props;
     <BaseHead {...head} />
     {schema.map((data) => <JsonLdScript data={data} />)}
   </head>
-  <body>
+  <body data-ga-id={site.googleAnalyticsId} data-live-host={new URL(site.url).hostname}>
     <SiteHeader />
     <main id="main" tabindex="-1">
       <slot />
@@ -35,6 +36,8 @@ const { schema = [], ...head } = Astro.props;
     <script>
       import "../scripts/site";
       import "../scripts/motion";
+      // Google Analytics, on the live site only, after the page has loaded.
+      import "../scripts/google-analytics";
 
       // The 3D renderer loads only on pages that have a scene.
       if (document.querySelector("[data-scene]")) void import("../scripts/scene");

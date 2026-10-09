@@ -21,7 +21,11 @@ export const site = {
   coordinates: { latitude: 6.8966, longitude: 79.8565 },
   responseTime: "within 24 hours",
   contactApiUrl: PUBLIC_CONTACT_API_URL.replace(/\/+$/, ""),
-  legalUpdated: { iso: "2026-09-30", display: "30 September 2026" },
+  /** Google Analytics measurement ID. Public by design: it appears in every page's tag. */
+  googleAnalyticsId: "G-Y8H2QNC50C",
+  /** When each legal page last changed. Update the date with the page. */
+  termsUpdated: { iso: "2026-09-30", display: "30 September 2026" },
+  privacyUpdated: { iso: "2026-10-09", display: "9 October 2026" },
 } as const;
 
 /** The office address on one line: "35 Edward Ln, Colombo 03, Sri Lanka". */

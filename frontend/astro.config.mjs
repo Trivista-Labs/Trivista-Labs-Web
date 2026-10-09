@@ -7,6 +7,8 @@ import { loadEnv } from "vite";
 const env = loadEnv(process.env.NODE_ENV ?? "production", process.cwd(), "");
 const DEFAULT_CONTACT_API = "https://trivista-labs-api.onrender.com";
 const contactApiOrigin = new URL(env.PUBLIC_CONTACT_API_URL || DEFAULT_CONTACT_API).origin;
+// Where Google Analytics loads from and sends to, per Google's guide to content security policies.
+const GOOGLE_ANALYTICS_HOSTS = "https://*.google-analytics.com https://*.googletagmanager.com";
 
 export default defineConfig({
   site: "https://trivistalabs.io",
@@ -66,14 +68,19 @@ export default defineConfig({
     csp: {
       directives: [
         "default-src 'self'",
-        "img-src 'self' data:",
+        // Google Analytics sends its measurements as requests and image pings to these hosts.
+        `img-src 'self' data: ${GOOGLE_ANALYTICS_HOSTS}`,
         "font-src 'self'",
-        `connect-src 'self' ${contactApiOrigin}`,
+        `connect-src 'self' ${contactApiOrigin} ${GOOGLE_ANALYTICS_HOSTS} https://*.analytics.google.com`,
         "form-action 'self'",
         "base-uri 'self'",
         "object-src 'none'",
         "upgrade-insecure-requests",
       ],
+      // Our own scripts stay hashed; the only outside script is Google's tag.
+      scriptDirective: {
+        resources: ["'self'", "https://*.googletagmanager.com"],
+      },
     },
   },
 });

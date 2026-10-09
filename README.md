@@ -120,8 +120,8 @@ The visual language is written down in [`frontend/DESIGN.md`](frontend/DESIGN.md
 
 The home page lists facts about this website, such as how much JavaScript it ships, in `frontend/src/data/principles.ts`. Visitors can check them in their browser, so they must stay accurate:
 
-- A browser test in `tests/e2e/site.spec.ts` fails if the home page ships 10 KB or more of compressed JavaScript. The 3D drawing is most of it, and loads only on pages that have one.
-- If you add analytics, cookies or third-party scripts, update those facts, the Privacy Policy and the Content-Security-Policy together.
+- A browser test in `tests/e2e/site.spec.ts` fails if the home page ships 10 KB or more of its own compressed JavaScript. The 3D drawing is most of it, and loads only on pages that have one. Google Analytics is not counted in that figure, and the fact says so.
+- If you change analytics, cookies or third-party scripts, update those facts, the Privacy Policy and the Content-Security-Policy together.
 - Capability, project and founder copy should only state what the founders have confirmed.
 
 ## Contact API
@@ -162,4 +162,9 @@ The site sets a strict Content-Security-Policy in every page's `<meta>` tag, wit
 
 ### Analytics
 
-Click tracking is wired but sends nothing yet. Adding a cookie-free provider such as Plausible or Umami turns it on: add the provider's script to `frontend/src/components/BaseHead.astro` and its domain to the CSP in `frontend/astro.config.mjs`. Tracked events: contact form sent, "Start a project" clicks, email clicks and social profile clicks. Update the Privacy Policy at the same time.
+The site uses Google Analytics 4, measurement ID `G-Y8H2QNC50C` (`site.googleAnalyticsId` in `frontend/src/data/site.ts`).
+
+- It loads only on trivistalabs.io, after the page has loaded (`frontend/src/lib/googleAnalytics.ts`). Local copies, previews and the tests never send anything.
+- Consent is set before anything is measured: advertising features are off everywhere, and in the EEA, the UK and Switzerland analytics cookies are off too, so those visits are counted without cookies. There is no cookie banner. To measure those visitors with cookies, add a consent banner that grants `analytics_storage`.
+- Events: page views, plus the clicks marked with `data-track` in the markup and the contact form being sent, named for GA, for example `start_a_project_clicked`, `email_clicked`, `cv_email_clicked`, `map_clicked`, `linkedin_clicked` and `contact_form_sent`. Clicks carry a `location` parameter saying where on the site they happened; `contact_form_sent` carries the chosen `projectType`.
+- The Content-Security-Policy in `frontend/astro.config.mjs` allows Google's tag script and its measurement hosts. A browser test serves the build as trivistalabs.io to check the tag loads, runs and sets consent first.

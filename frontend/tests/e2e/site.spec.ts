@@ -85,10 +85,12 @@ test.describe("pages", () => {
     }
   });
 
-  test("the home page ships under 10 KB of compressed JavaScript, as it claims", async ({ page }) => {
+  test("the home page ships under 10 KB of its own compressed JavaScript, as it claims", async ({ page, baseURL }) => {
     const bodies: Promise<Buffer>[] = [];
     page.on("response", (response) => {
-      if (response.request().resourceType() === "script") bodies.push(response.body());
+      // Our scripts only: Google Analytics is counted separately in the claim, and loads after the page.
+      const ours = new URL(response.url()).origin === new URL(baseURL ?? "").origin;
+      if (ours && response.request().resourceType() === "script") bodies.push(response.body());
     });
     await page.goto("/", { waitUntil: "networkidle" });
     const scripts = await Promise.all(bodies);
@@ -372,4 +374,40 @@ test("every page's share image exists", async ({ page, request }) => {
     const response = await request.get(new URL(image ?? "", "https://trivistalabs.io").pathname);
     expect(response.status(), `${path}: ${image}`).toBe(200);
   }
+});
+
+test.describe("Google Analytics", () => {
+  const MEASUREMENT_ID = "G-Y8H2QNC50C";
+
+  test("never loads on a local copy, so tests and previews are not counted", async ({ page }) => {
+    const googleRequests: string[] = [];
+    page.on("request", (request) => {
+      if (/google(tagmanager|-analytics)\.com/.test(request.url())) googleRequests.push(request.url());
+    });
+    await page.goto("/", { waitUntil: "networkidle" });
+    expect(googleRequests).toEqual([]);
+    expect(await page.evaluate(() => "gtag" in window)).toBe(false);
+  });
+
+  test("loads on the live site, after consent defaults, and the security policy lets it run", async ({ page, baseURL }) => {
+    // Serve this build as if it were trivistalabs.io, and stand in for Google's script.
+    await page.route("https://trivistalabs.io/**", async (route) => {
+      const local = route.request().url().replace("https://trivistalabs.io", baseURL ?? "");
+      await route.fulfill({ response: await route.fetch({ url: local }) });
+    });
+    const tagRequests: string[] = [];
+    await page.route("https://www.googletagmanager.com/**", async (route) => {
+      tagRequests.push(route.request().url());
+      await route.fulfill({ contentType: "text/javascript", body: "window.__googleTagRan = true;" });
+    });
+
+    await page.goto("https://trivistalabs.io/");
+    await expect.poll(() => page.evaluate(() => (window as { __googleTagRan?: boolean }).__googleTagRan)).toBe(true);
+
+    expect(tagRequests).toEqual([`https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`]);
+    const queued = await page.evaluate(() =>
+      ((window as unknown as { dataLayer: ArrayLike<unknown>[] }).dataLayer ?? []).map((entry) => Array.from(entry)[0])
+    );
+    expect(queued.slice(0, 4)).toEqual(["consent", "consent", "js", "config"]);
+  });
 });
