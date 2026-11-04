@@ -69,7 +69,8 @@ export default defineConfig({
       directives: [
         "default-src 'self'",
         // Google Analytics sends its measurements as requests and image pings to these hosts.
-        `img-src 'self' data: ${GOOGLE_ANALYTICS_HOSTS}`,
+        // The footer's DMCA.com badge must load from DMCA's servers for DMCA to verify the site.
+        `img-src 'self' data: ${GOOGLE_ANALYTICS_HOSTS} https://images.dmca.com`,
         "font-src 'self'",
         `connect-src 'self' ${contactApiOrigin} ${GOOGLE_ANALYTICS_HOSTS} https://*.analytics.google.com`,
         "form-action 'self'",

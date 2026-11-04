@@ -4,6 +4,15 @@ import OfficeAddress from "./OfficeAddress.astro";
 import { navigation, site, social } from "../data/site";
 
 const year = new Date().getFullYear();
+
+// The DMCA.com protection badge. The image must load from DMCA's servers: that request is what prompts
+// DMCA's crawler to check the page for the badge. DMCA's embed code also loads a helper script, which only
+// adds the page's address to the link as `refurl`. The pages are static, so that is done here at build time
+// instead, and Google's tag stays the only outside script, as the home page states.
+const dmcaStatus = new URL("https://www.dmca.com/Protection/Status.aspx");
+dmcaStatus.searchParams.set("ID", site.dmcaProtectionId);
+dmcaStatus.searchParams.set("refurl", new URL(Astro.url.pathname, Astro.site).href);
+const dmcaBadge = `https://images.dmca.com/Badges/dmca_protected_sml_120m.png?ID=${site.dmcaProtectionId}`;
 ---
 
 <footer class="site-footer">
@@ -70,6 +79,11 @@ const year = new Date().getFullYear();
       <ul role="list">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
+        <li>
+          <a class="dmca-badge site-footer__dmca" href={dmcaStatus.href} title="DMCA.com Protection Status">
+            <img src={dmcaBadge} alt="DMCA.com Protection Status" width="121" height="24" />
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -135,6 +149,16 @@ const year = new Date().getFullYear();
     color: var(--ink);
     text-decoration: underline;
     text-underline-offset: 0.2em;
+  }
+  /* The badge keeps its own size, with no text line around it to add space below. */
+  .site-footer__dmca {
+    display: inline-block;
+    margin-top: var(--space-xs);
+    line-height: 0;
+  }
+  .site-footer__dmca img {
+    width: 121px;
+    height: 24px;
   }
   .site-footer__base {
     margin-top: var(--space-3xl);

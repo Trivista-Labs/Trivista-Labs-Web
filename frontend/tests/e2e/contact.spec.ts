@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { stubDmcaBadge } from "./outside-services";
 
 // The contact API is mocked. These tests cover the form, not the server.
 const API = "https://trivista-labs-api.onrender.com";
@@ -21,6 +22,7 @@ async function fillForm(page: Page) {
 
 test.beforeEach(async ({ page }) => {
   await page.route(`${API}/api/health`, (route) => route.fulfill({ status: 200, json: { status: "ok" } }));
+  await stubDmcaBadge(page);
 });
 
 test("wakes the API when the page opens", async ({ page }) => {

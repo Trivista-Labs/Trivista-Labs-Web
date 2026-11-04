@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import { CASE_STUDY_PAGES, OPEN_JOB_PAGES } from "./content-entries";
+import { stubDmcaBadge } from "./outside-services";
 
 const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/", "/404", "/careers/", ...CASE_STUDY_PAGES, ...OPEN_JOB_PAGES];
 // WCAG 2.2 AA rules, plus axe best practices such as heading order and unique landmarks.
@@ -14,6 +15,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://trivista-labs-api.onrender.com/**", (route) =>
     route.fulfill({ status: 200, json: { status: "ok" } })
   );
+  await stubDmcaBadge(page);
 });
 
 /** WCAG violations on the page, or only inside the given selector. */

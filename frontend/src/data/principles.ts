@@ -31,7 +31,7 @@ export const siteFacts: readonly SiteFact[] = [
     value: "Under 10 KB compressed, including the 3D drawing. Google Analytics loads after the page",
   },
   { label: "Cookies", value: "Google Analytics only, to count visits. None in the EEA, UK or Switzerland" },
-  { label: "Images", value: "Sized for each screen and served as AVIF or WebP" },
+  { label: "Images", value: "Ours are sized for each screen and served as AVIF or WebP" },
   {
     label: "Content security policy",
     value: "Strict, with hashed scripts and styles. Google's tag is the only outside script",

@@ -44,6 +44,7 @@ The contact form posts to the production API by default. To work against a local
 | Job openings | One Markdown file per open role in `frontend/src/content/jobs/` (see "Adding a job") |
 | Careers values and hiring areas | `frontend/src/data/careers.ts` |
 | Privacy Policy and Terms | `frontend/src/pages/privacy.astro` and `terms.astro` |
+| DMCA badge in the footer | `dmcaProtectionId` in `frontend/src/data/site.ts`. The image must load from `images.dmca.com`, which the Content-Security-Policy allows, because that request is what prompts DMCA to verify the page. DMCA's helper script is not needed, because the page address it adds to the link is added at build time; adding the script would break the Content-Security-Policy and the site's "only outside script" claim |
 
 ### Adding a project
 

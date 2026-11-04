@@ -1,6 +1,7 @@
 import { gzipSync } from "node:zlib";
 import { expect, test } from "@playwright/test";
 import { CASE_STUDY_PAGES, OPEN_JOBS, OPEN_JOB_PAGES, WORK_ENTRIES } from "./content-entries";
+import { stubDmcaBadge } from "./outside-services";
 
 const PAGES = ["/", "/work/", "/capabilities/", "/company/", "/contact/", "/privacy/", "/terms/", "/careers/", ...CASE_STUDY_PAGES, ...OPEN_JOB_PAGES];
 // The widths the briefs ask to check: desktop and tablet, then the common phone widths.
@@ -11,6 +12,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://trivista-labs-api.onrender.com/**", (route) =>
     route.fulfill({ status: 200, json: { status: "ok" } })
   );
+  await stubDmcaBadge(page);
 });
 
 test.describe("layout", () => {
@@ -359,6 +361,24 @@ test("the office address and its Google Maps link are in the footer and the stru
     address: { streetAddress: "35 Edward Ln, Colombo 03", addressLocality: "Colombo", addressCountry: "LK" },
     location: { hasMap: "https://maps.app.goo.gl/S3hWd6dekfDx5goU8" },
   });
+});
+
+test("the DMCA.com badge loads from DMCA and links to the status page for the page it is on", async ({ page }) => {
+  const badgeRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().startsWith("https://images.dmca.com/")) badgeRequests.push(request.url());
+  });
+  await page.goto("/work/");
+  const badge = page.locator(".site-footer a.dmca-badge");
+  await expect(badge).toHaveAttribute(
+    "href",
+    /^https:\/\/www\.dmca\.com\/Protection\/Status\.aspx\?ID=[\w-]+&refurl=https%3A%2F%2Ftrivistalabs\.io%2Fwork%2F$/
+  );
+  // DMCA verifies the site from the request for its own image, so it must never be served from this site.
+  await expect(badge.getByRole("img", { name: "DMCA.com Protection Status" })).toHaveJSProperty("complete", true);
+  expect(badgeRequests).toHaveLength(1);
+  // No helper script: the page address is in the link already, and Google's tag stays the only outside script.
+  await expect(page.locator('script[src*="dmca.com"]')).toHaveCount(0);
 });
 
 test("the Salon Booking System's old address still leads to its page", async ({ page }) => {
