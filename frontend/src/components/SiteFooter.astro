@@ -12,7 +12,7 @@ const year = new Date().getFullYear();
 const dmcaStatus = new URL("https://www.dmca.com/Protection/Status.aspx");
 dmcaStatus.searchParams.set("ID", site.dmcaProtectionId);
 dmcaStatus.searchParams.set("refurl", new URL(Astro.url.pathname, Astro.site).href);
-const dmcaBadge = `https://images.dmca.com/Badges/DMCA_logo-std-btn225w.png?ID=${site.dmcaProtectionId}`;
+const dmcaBadge = `https://images.dmca.com/Badges/dmca_protected_sml_120m.png?ID=${site.dmcaProtectionId}`;
 ---
 
 <footer class="site-footer">
@@ -81,7 +81,7 @@ const dmcaBadge = `https://images.dmca.com/Badges/DMCA_logo-std-btn225w.png?ID=$
         <li><a href="/terms/">Terms</a></li>
         <li>
           <a class="dmca-badge site-footer__dmca" href={dmcaStatus.href} title="DMCA.com Protection Status">
-            <img src={dmcaBadge} alt="DMCA.com Protection Status" width="225" height="84" />
+            <img src={dmcaBadge} alt="DMCA.com Protection Status" width="121" height="24" />
           </a>
         </li>
       </ul>
@@ -150,16 +150,15 @@ const dmcaBadge = `https://images.dmca.com/Badges/DMCA_logo-std-btn225w.png?ID=$
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
-  /* The badge scales down where this column is narrower than it, with no text line around it to add space below. */
+  /* The badge keeps its own size, with no text line around it to add space below. */
   .site-footer__dmca {
-    display: block;
-    max-width: 225px;
+    display: inline-block;
     margin-top: var(--space-xs);
     line-height: 0;
   }
   .site-footer__dmca img {
-    width: 100%;
-    height: auto;
+    width: 121px;
+    height: 24px;
   }
   .site-footer__base {
     margin-top: var(--space-3xl);

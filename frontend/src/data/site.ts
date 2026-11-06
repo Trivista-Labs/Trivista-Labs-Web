@@ -24,7 +24,7 @@ export const site = {
   /** Google Analytics measurement ID. Public by design: it appears in every page's tag. */
   googleAnalyticsId: "G-Y8H2QNC50C",
   /** DMCA.com protection ID. The footer badge links to its status page. Public by design. */
-  dmcaProtectionId: "ace4b28c-4726-48a9-af29-8aee649ee67f",
+  dmcaProtectionId: "e9af9910-3c7b-4aba-90fc-fc92230415bb",
   /** When each legal page last changed. Update the date with the page. */
   termsUpdated: { iso: "2026-09-30", display: "30 September 2026" },
   privacyUpdated: { iso: "2026-11-04", display: "4 November 2026" },
